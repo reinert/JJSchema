@@ -39,15 +39,21 @@ public class Main {
 		numeroSchema.setTitle("Número");
 		numeroSchema.setType("integer");
 		telefoneSchema.addProperty("numero", numeroSchema);
-		telsSchema.setItens(telefoneSchema);
+		telsSchema.setItems(telefoneSchema);
 		schema.addProperty("tels", telsSchema);
 		
 		ObjectMapper m = new ObjectMapper();
-		System.out.println(m.writeValueAsString(schema));
+//		System.out.println(m.writeValueAsString(schema));
+		
+		JsonSchema gen = JsonSchema.generateSchema(Pessoa.class);
+		gen.getProperty("idade").setRequired(true);
+		System.out.println(m.writeValueAsString(gen));
 	}
 	
 	static class Pessoa {
+		@SchemaProperty(title="Nome", required=true, enums={"JOAO", "MARIA"})
     	String nome;
+		@SchemaProperty(description="A idade do sujeito", minimum=12, maximun=902901920989l)
     	Integer idade;
     	ArrayList<Telefone> tels = new ArrayList<Telefone>();
     	public String getNome() {
@@ -70,18 +76,18 @@ public class Main {
 		}
 
 		static class Telefone {
-    		byte ddd;
-    		int numero;
-			public byte getDdd() {
+    		Byte ddd;
+    		Integer numero;
+			public Byte getDdd() {
 				return ddd;
 			}
-			public void setDdd(byte ddd) {
+			public void setDdd(Byte ddd) {
 				this.ddd = ddd;
 			}
-			public int getNumero() {
+			public Integer getNumero() {
 				return numero;
 			}
-			public void setNumero(int numero) {
+			public void setNumero(Integer numero) {
 				this.numero = numero;
 			}
     	}
