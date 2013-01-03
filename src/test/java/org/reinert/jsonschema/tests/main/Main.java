@@ -1,10 +1,12 @@
-package org.reinert.jsonschema;
+package org.reinert.jsonschema.tests.main;
 
 import java.util.ArrayList;
 
-import org.reinert.experiments.App;
+import org.reinert.jsonschema.JsonSchema;
+import org.reinert.jsonschema.SchemaProperty;
+import org.reinert.jsonschema.tests.model.Funcionario;
+import org.reinert.jsonschema.tests.model.Funcionarios;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -47,7 +49,10 @@ public class Main {
 		
 		JsonSchema gen = JsonSchema.generateSchema(Pessoa.class);
 		gen.getProperty("idade").setRequired(true);
-		System.out.println(m.writeValueAsString(gen));
+//		System.out.println(m.writeValueAsString(gen));
+		
+		JsonSchema genSch = JsonSchema.generateSchema(Pessoa.class);
+		System.out.println(m.writeValueAsString(genSch));
 	}
 	
 	static class Pessoa {

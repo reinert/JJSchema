@@ -5,10 +5,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_DEFAULT)
@@ -197,8 +197,15 @@ public class JsonSchema {
 		else if (type == Boolean.class) {
 			schema.setType("boolean");
 		}
-		else if (Collection.class.isAssignableFrom(type)) {
+		else if (Iterable.class.isAssignableFrom(type)) {
 			schema.setType("array");
+			
+			if (!Collection.class.isAssignableFrom(type)) {
+				Field field = type.getDeclaredFields()[0];
+				ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+		        Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+		        schema.setItems(generateSchema(genericClass));
+			}
 		}
 		else {
 			schema.setType("object");

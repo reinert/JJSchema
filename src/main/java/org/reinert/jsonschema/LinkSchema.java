@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class LinkSchema {
 
 	private String mHref;
-	private String mRel;
+	private String mRel = "";
 	private JsonSchema mTargetSchema = null;
 	private String mMethod = "GET";
 	private String mEncType = null;
