@@ -3,10 +3,14 @@ package org.reinert.jsonschema.tests.model;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
+import org.reinert.jsonschema.SchemaProperty;
+
 
 public class Empresa {
 
+	@SchemaProperty(required=true, title="ID", minimum=10, maximun=50)
 	private Short id;
+	@SchemaProperty(required=true, description="O nome da empresa", title="EMPRESA")
 	private String nome;
 	//private Collection<Funcionario> funcionarios;
 	

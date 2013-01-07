@@ -2,20 +2,29 @@ package org.reinert.jsonschema;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_DEFAULT)
 public class HyperSchema extends JsonSchema {
 
-	private ArrayList<LinkSchema> mLinks = null;
+	private ArrayList<Link> mLinks = null;
 	private String mFragmentResolution = null;
 	private boolean mReadonly = false;
 	private String mContentEncoding = null;
 	private String mPathStart = null;
 	private String mMediaType = null;
-	private ArrayList<String> mRequiredProperties = null;
-	public ArrayList<LinkSchema> getLinks() {
+//	private ArrayList<String> mRequiredProperties = null;
+	public ArrayList<Link> getLinks() {
 		return mLinks;
 	}
-	public void setLinks(ArrayList<LinkSchema> links) {
+	public void setLinks(ArrayList<Link> links) {
 		this.mLinks = links;
+	}
+	public void addLink(Link link) {
+		if (mLinks == null)
+			mLinks = new ArrayList<Link>();
+		mLinks.add(link);
 	}
 	public String getFragmentResolution() {
 		return mFragmentResolution;
@@ -47,11 +56,11 @@ public class HyperSchema extends JsonSchema {
 	public void setMediaType(String mediaType) {
 		this.mMediaType = mediaType;
 	}
-	public ArrayList<String> getRequiredProperties() {
-		return mRequiredProperties;
-	}
-	public void setRequiredProperties(ArrayList<String> requiredProperties) {
-		this.mRequiredProperties = requiredProperties;
-	}
+//	public ArrayList<String> getRequiredProperties() {
+//		return mRequiredProperties;
+//	}
+//	public void setRequiredProperties(ArrayList<String> requiredProperties) {
+//		this.mRequiredProperties = requiredProperties;
+//	}
 	
 }

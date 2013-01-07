@@ -4,10 +4,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -29,7 +30,9 @@ public class JsonSchema {
 	private Integer mMinItems = null;
 	private Boolean mUniqueItems = false;
 	private JsonSchema mItems = null;
-	private Boolean mRequired = false;
+	private ArrayList<String> mRequired = null;
+	@JsonIgnore
+	private Boolean mSelfRequired = false;
 	private String[] mEnum = null;
 	private String mType = null;
 	private HashMap<String, JsonSchema> mProperties = null;
@@ -81,11 +84,22 @@ public class JsonSchema {
 	public void setItems(JsonSchema items) {
 		mItems = items;
 	}
-	public Boolean getRequired() {
+	public ArrayList<String> getRequired() {
 		return mRequired;
 	}
-	public void setRequired(Boolean required) {
+	public void setRequired(ArrayList<String> required) {
 		mRequired = required;
+	}
+	public void addRequired(String field) {
+		if (mRequired == null)
+			mRequired = new ArrayList<String>();
+		mRequired.add(field);
+	}
+	protected Boolean getSelfRequired() {
+		return mSelfRequired;
+	}
+	protected void setSelfRequired(Boolean selfRequired) {
+		mSelfRequired = selfRequired;
 	}
 	public String[] getEnum() {
 		return mEnum;
@@ -212,6 +226,9 @@ public class JsonSchema {
 			
 			for (Field field : type.getDeclaredFields()) {
 				JsonSchema prop = generateSchema(field);
+				if (prop.getSelfRequired()) {
+					schema.addRequired(field.getName());
+				}
 				schema.addProperty(field.getName(), prop);
 			}
 		}
@@ -238,8 +255,8 @@ public class JsonSchema {
 				if (!props.id().isEmpty()) {
 					schema.setId(props.id());
 				}
-				if (!props.required()) {
-					schema.setRequired(true);
+				if (props.required()) {
+					schema.setSelfRequired(true);
 				}
 				if (!props.description().isEmpty()) {
 					schema.setDescription(props.description());

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.reinert.jsonschema.JsonSchema;
 import org.reinert.jsonschema.SchemaProperty;
+import org.reinert.jsonschema.tests.model.Empresa;
 import org.reinert.jsonschema.tests.model.Funcionario;
 import org.reinert.jsonschema.tests.model.Funcionarios;
 
@@ -24,7 +25,7 @@ public class Main {
 		JsonSchema nomeSchema = new JsonSchema();
 		nomeSchema.setType("string");
 		nomeSchema.setTitle("Nome");
-		nomeSchema.setRequired(true);
+//		nomeSchema.setRequired(true);
 		schema.addProperty("nome", nomeSchema);
 		
 		JsonSchema telsSchema = new JsonSchema();
@@ -48,17 +49,17 @@ public class Main {
 //		System.out.println(m.writeValueAsString(schema));
 		
 		JsonSchema gen = JsonSchema.generateSchema(Pessoa.class);
-		gen.getProperty("idade").setRequired(true);
-//		System.out.println(m.writeValueAsString(gen));
+//		gen.getProperty("idade").setRequired(true);
+		System.out.println(m.writeValueAsString(gen));
 		
-		JsonSchema genSch = JsonSchema.generateSchema(Pessoa.class);
-		System.out.println(m.writeValueAsString(genSch));
+		JsonSchema genSch = JsonSchema.generateSchema(Empresa.class);
+		//System.out.println(m.writeValueAsString(genSch));
 	}
 	
 	static class Pessoa {
-		@SchemaProperty(title="Nome", required=true, enums={"JOAO", "MARIA"})
+		@SchemaProperty(title="Nomiu", required=true, enums={"JOAO", "MARIA"})
     	String nome;
-		@SchemaProperty(description="A idade do sujeito", minimum=12, maximun=902901920989l)
+		@SchemaProperty(description="A idade do sujeito", required=true, minimum=12, maximun=902901920989l)
     	Integer idade;
     	ArrayList<Telefone> tels = new ArrayList<Telefone>();
     	public String getNome() {
@@ -81,7 +82,9 @@ public class Main {
 		}
 
 		static class Telefone {
+			@SchemaProperty(required=true)
     		Byte ddd;
+			@SchemaProperty(required=true)
     		Integer numero;
 			public Byte getDdd() {
 				return ddd;

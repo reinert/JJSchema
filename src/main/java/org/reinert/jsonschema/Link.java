@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_DEFAULT)
-public class LinkSchema {
+public class Link {
 
 	private String mHref;
 	private String mRel = "";
@@ -13,7 +13,7 @@ public class LinkSchema {
 	private String mEncType = null;
 	private JsonSchema mSchema = null;
 	
-	public LinkSchema(String href, String rel) {
+	public Link(String href, String rel) {
 		super();
 		this.mHref = href;
 		this.mRel = rel;
