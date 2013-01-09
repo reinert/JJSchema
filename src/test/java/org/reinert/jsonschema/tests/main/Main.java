@@ -1,12 +1,21 @@
 package org.reinert.jsonschema.tests.main;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 
+import javax.ws.rs.Path;
+
+import org.reinert.jsonschema.HyperSchema;
+import org.reinert.jsonschema.JsonSchema;
 import org.reinert.jsonschema.JsonSchema;
 import org.reinert.jsonschema.SchemaProperty;
+import org.reinert.jsonschema.tests.main.Main.Pessoa;
 import org.reinert.jsonschema.tests.model.Empresa;
+import org.reinert.jsonschema.tests.model.Empresas;
 import org.reinert.jsonschema.tests.model.Funcionario;
 import org.reinert.jsonschema.tests.model.Funcionarios;
+import org.reinert.jsonschema.tests.resource.EmpresaResource;
+import org.reinert.jsonschema.tests.resource.EmpresasResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,14 +57,20 @@ public class Main {
 		ObjectMapper m = new ObjectMapper();
 //		System.out.println(m.writeValueAsString(schema));
 		
-		JsonSchema gen = JsonSchema.generateSchema(Pessoa.class);
-//		gen.getProperty("idade").setRequired(true);
-		System.out.println(m.writeValueAsString(gen));
-		
-		JsonSchema genSch = JsonSchema.generateSchema(Empresa.class);
-		//System.out.println(m.writeValueAsString(genSch));
+//		
+//		JsonSchema gen = JsonSchema.generateSchema(Pessoa.class);
+//		System.out.println(m.writeValueAsString(gen));
+//		
+//		Class<Empresas> etype = Empresas.class;
+//		JsonSchema genSch = JsonSchema.generateSchema(etype);
+//		System.out.println(m.writeValueAsString(genSch));
+//		
+		Class<EmpresasResource> type = EmpresasResource.class;
+		HyperSchema hyper = HyperSchema.generateHyperSchema(type);
+		System.out.println(m.writeValueAsString(hyper));
 	}
 	
+	@Path("dada")
 	static class Pessoa {
 		@SchemaProperty(title="Nomiu", required=true, enums={"JOAO", "MARIA"})
     	String nome;

@@ -3,18 +3,21 @@ package org.reinert.jsonschema;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@JsonInclude(Include.NON_DEFAULT)
+@JsonInclude(Include.NON_EMPTY)
 public class Link {
 
-	private String mHref;
-	private String mRel = "";
+	private String mHref = "#";
+	private String mRel;
 	private JsonSchema mTargetSchema = null;
 	private String mMethod = "GET";
 	private String mEncType = null;
 	private JsonSchema mSchema = null;
 	
+	
+	public Link() {
+	}
+
 	public Link(String href, String rel) {
-		super();
 		this.mHref = href;
 		this.mRel = rel;
 	}
