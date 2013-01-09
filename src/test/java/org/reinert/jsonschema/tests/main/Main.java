@@ -1,20 +1,12 @@
 package org.reinert.jsonschema.tests.main;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 
 import javax.ws.rs.Path;
 
 import org.reinert.jsonschema.HyperSchema;
 import org.reinert.jsonschema.JsonSchema;
-import org.reinert.jsonschema.JsonSchema;
 import org.reinert.jsonschema.SchemaProperty;
-import org.reinert.jsonschema.tests.main.Main.Pessoa;
-import org.reinert.jsonschema.tests.model.Empresa;
-import org.reinert.jsonschema.tests.model.Empresas;
-import org.reinert.jsonschema.tests.model.Funcionario;
-import org.reinert.jsonschema.tests.model.Funcionarios;
-import org.reinert.jsonschema.tests.resource.EmpresaResource;
 import org.reinert.jsonschema.tests.resource.EmpresasResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

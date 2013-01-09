@@ -8,18 +8,14 @@ public class Link {
 
 	private String mHref = "#";
 	private String mRel;
-	private JsonSchema mTargetSchema = null;
+	private HyperSchema mTargetSchema = null;
 	private String mMethod = "GET";
 	private String mEncType = null;
-	private JsonSchema mSchema = null;
+	private HyperSchema mSchema = null;
 	
-	
-	public Link() {
-	}
-
 	public Link(String href, String rel) {
-		this.mHref = href;
-		this.mRel = rel;
+		mHref = href != null ? href : mHref;
+		mRel = rel;
 	}
 
 	public String getHref() {
@@ -38,11 +34,11 @@ public class Link {
 		this.mRel = rel;
 	}
 
-	public JsonSchema getTargetSchema() {
+	public HyperSchema getTargetSchema() {
 		return mTargetSchema;
 	}
 
-	public void setTargetSchema(JsonSchema targetSchema) {
+	public void setTargetSchema(HyperSchema targetSchema) {
 		this.mTargetSchema = targetSchema;
 	}
 
@@ -63,11 +59,11 @@ public class Link {
 			this.mEncType = encType;
 	}
 
-	public JsonSchema getSchema() {
+	public HyperSchema getSchema() {
 		return mSchema;
 	}
 
-	public void setSchema(JsonSchema schema) {
+	public void setSchema(HyperSchema schema) {
 		this.mSchema = schema;
 	}
 

@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface LinkProperty {
-	String rel() default "";
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
+public @interface Media {
+	String type();
+	String binaryEncoding();
 }

@@ -1,8 +1,6 @@
 package org.reinert.jsonschema.tests.model;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-
+import org.reinert.jsonschema.Media;
 import org.reinert.jsonschema.SchemaProperty;
 
 
@@ -10,9 +8,12 @@ public class Empresa {
 
 	@SchemaProperty(required=true, title="ID", minimum=10, maximun=50)
 	private Short id;
-	@SchemaProperty(required=true, description="O nome da empresa", title="EMPRESA")
+	@SchemaProperty(required=true, description="O nome da empresa.", title="EMPRESA")
 	private String nome;
 	//private Collection<Funcionario> funcionarios;
+	@SchemaProperty(title="FOTO", description="A foto da fachada empresa.")
+	@Media(type="image/jpg", binaryEncoding="base64")
+	private Byte[] foto;
 	
 
 	public Empresa(){}
@@ -22,6 +23,14 @@ public class Empresa {
 		this.nome = nome;
 	}
 	
+	public Byte[] getFoto() {
+		return foto;
+	}
+
+	public void setFoto(Byte[] foto) {
+		this.foto = foto;
+	}
+
 	public Short getId() {
 		return this.id;
 	}

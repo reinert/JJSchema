@@ -13,6 +13,8 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonInclude(Include.NON_DEFAULT)
 public class JsonSchema {
@@ -196,6 +198,9 @@ public class JsonSchema {
 	public JsonSchema getProperty(String name) {
 		return mProperties.get(name);
 	}
+	public boolean hasProperties() {
+		return mProperties != null;
+	}
 	/* (non-Javadoc)
 	 * @see org.reinert.jsonschema.JsonSchema#addProperty(java.lang.String, org.reinert.jsonschema.JsonSchemaImpl)
 	 */
@@ -306,6 +311,17 @@ public class JsonSchema {
 		mProperties = properties;
 	}
 	
+	@Override
+	public String toString() {
+		ObjectMapper m = new ObjectMapper();
+		try {
+			return m.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static <T> JsonSchema generateSchema(Class<T> type) {
 		for (Annotation a : type.getAnnotations()) {
 			System.out.println(a);
@@ -348,8 +364,8 @@ public class JsonSchema {
 		}
 		else if (Iterable.class.isAssignableFrom(type)) {
 			schema.setType("array");
-			
 			if (!Collection.class.isAssignableFrom(type)) {
+				// NOTE: Customized Iterable Class must declare the Collection object at first
 				Field field = type.getDeclaredFields()[0];
 				ParameterizedType genericType = (ParameterizedType) field.getGenericType();
 		        Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
@@ -361,14 +377,6 @@ public class JsonSchema {
 		}
 		else {
 			schema.setType("object");
-			
-//			for (Field field : type.getDeclaredFields()) {
-//				JsonSchema prop = generateSchema(field);
-//				if (prop.getSelfRequired()) {
-//					schema.addRequired(field.getName());
-//				}
-//				schema.addProperty(field.getName(), prop);
-//			}
 			
 			Field[] fields = type.getDeclaredFields();
 			Method[] methods = type.getMethods();
@@ -448,13 +456,7 @@ public class JsonSchema {
 				}
 				if (!props.title().isEmpty()) {
 					schema.setTitle(props.title());
-				} 
-//				else {
-//					String fieldName = field.getName();
-//					StringBuilder titleBuilder = new StringBuilder(fieldName.substring(0,1).toUpperCase());
-//					titleBuilder.append(fieldName.substring(1));
-//					schema.setTitle(titleBuilder.toString());
-//				}
+				}
 				if (props.maximun() > -1) {
 					schema.setMaximum(props.maximun());
 				}
