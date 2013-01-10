@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -139,13 +141,15 @@ public class HyperSchema extends JsonSchema {
 			JsonSchema jsonSchema = generateSchema(type);
 			if (jsonSchema != null) {
 				if (jsonSchema.getType().equals("array")) {
-					JsonSchema items = jsonSchema.getItems();
-					// NOTE: Customized Iterable Class must declare the Collection object at first
-					Field field = type.getDeclaredFields()[0];
-					ParameterizedType genericType = (ParameterizedType) field.getGenericType();
-			        Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
-			        HyperSchema hyperItems = transformJsonToHyperSchema(genericClass, items);
-			        jsonSchema.setItems(hyperItems);
+					if (!Collection.class.isAssignableFrom(type)) {
+						JsonSchema items = jsonSchema.getItems();
+						// NOTE: Customized Iterable Class must declare the Collection object at first
+						Field field = type.getDeclaredFields()[0];
+						ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+				        Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+				        HyperSchema hyperItems = transformJsonToHyperSchema(genericClass, items);
+				        jsonSchema.setItems(hyperItems);
+					}
 			        hyperSchema = new HyperSchema(jsonSchema);
 				}
 				else if (jsonSchema.hasProperties()) {
