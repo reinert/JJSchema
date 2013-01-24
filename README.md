@@ -7,6 +7,7 @@ It is a fresh project and I expect more contributors joining it.
 How to use:
 
 Suppose the following bean styled class:
+
     public class User {
           
         @SchemaProperty(required=true, title="ID", minimum=100000, maximun=999999)
@@ -56,11 +57,13 @@ Suppose the following bean styled class:
     }
 
 Type the following code:
+
     HyperSchema hyperSchema = HyperSchema.generateHyperSchema(User.class);
     System.out.println(hyperSchema.toString());
 
 
 The output:
+
     {
         "properties":{
         "id":{
