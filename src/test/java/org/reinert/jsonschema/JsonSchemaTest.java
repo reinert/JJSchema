@@ -16,87 +16,93 @@ public class JsonSchemaTest extends TestCase {
         super(testName);
     }
 
+    /**
+     * Test the scheme generate following a scheme source, avaliable at
+     * :http://json-schema.org/address the output should match the example.
+     */
     public void testGenerateSchema() {
-        class PojoNumber {
+        @SchemaProperty(description = "An Address following the convention of http://microformats.org/wiki/hcard")
+        class Address {
 
-            @SchemaProperty(title = "number")
-            public int number;
+            @SchemaProperty()
+            private String postOfficeBox;
+            @SchemaProperty()
+            private String ExtendedAddress;
+            @SchemaProperty()
+            private String StreetAddress;
+            @SchemaProperty(required = true)
+            private String locality;
+            @SchemaProperty(required = true)
+            private String region;
+            @SchemaProperty()
+            private String postalCode;
+            @SchemaProperty(required = true)
+            private String countryName;
 
-            public PojoNumber(int n) {
-                this.number = n;
+            public String getPostOfficeBox() {
+                return postOfficeBox;
+            }
+
+            public void setPostOfficeBox(String postOfficeBox) {
+                this.postOfficeBox = postOfficeBox;
+            }
+
+            public String getExtendedAddress() {
+                return ExtendedAddress;
+            }
+
+            public void setExtendedAddress(String ExtendedAddress) {
+                this.ExtendedAddress = ExtendedAddress;
+            }
+
+            public String getStreetAddress() {
+                return StreetAddress;
+            }
+
+            public void setStreetAddress(String StreetAddress) {
+                this.StreetAddress = StreetAddress;
+            }
+
+            public String getLocality() {
+                return locality;
+            }
+
+            public void setLocality(String locality) {
+                this.locality = locality;
+            }
+
+            public String getRegion() {
+                return region;
+            }
+
+            public void setRegion(String region) {
+                this.region = region;
+            }
+
+            public String getPostalCode() {
+                return postalCode;
+            }
+
+            public void setPostalCode(String postalCode) {
+                this.postalCode = postalCode;
+            }
+
+            public String getCountryName() {
+                return countryName;
+            }
+
+            public void setCountryName(String countryName) {
+                this.countryName = countryName;
             }
         }
-        
-        /*
-         {
-    "description": "An Address following the convention of http://microformats.org/wiki/hcard",
-    "type": "object",
-    "properties": {
-        "post-office-box": { "type": "string" },
-        "extended-address": { "type": "string" },
-        "street-address": { "type": "string" },
-        "locality":{ "type": "string", "required": true },
-        "region": { "type": "string", "required": true },
-        "postal-code": { "type": "string" },
-        "country-name": { "type": "string", "required": true}
-    },
-    "dependencies": {
-        "post-office-box": "street-address",
-        "extended-address": "street-address"
-    }
-}
-         */
-        @SchemaProperty(description="teste")
-        class User {
+        String expected = "{\"description\":\"An Address following the convention of http://microformats.org/wiki/hcard\",\"type\":\"object\",\"properties\":{\"post-office-box\":{\"type\":\"string\"},\"extended-address\":{\"type\":\"string\"},\"street-address\":{\"type\":\"string\"},\"locality\":{\"type\":\"string\",\"required\":true},\"region\":{\"type\":\"string\",\"required\":true},\"postal-code\":{\"type\":\"string\"},\"country-name\":{\"type\":\"string\",\"required\":true}}}";
 
-            @SchemaProperty(required = true, title = "ID", minimum = 100000, maximun = 999999)
-            private short id;
-            @SchemaProperty(required = true, description = "User's name")
-            private String name;
-            @SchemaProperty(description = "User's sex", enums = {"M", "F"})
-            private char sex;
-            @SchemaProperty(description = "User's personal photo")
-            @Media(type = "image/jpg", binaryEncoding = "base64")
-            private Byte[] photo;
+        JsonSchema s = JsonSchema.generateSchema(Address.class);
+        // verifica se o proprio objeto tem schema
+        assertEquals("An Address following the convention of http://microformats.org/wiki/hcard", s.getDescription());
+        assertEquals("object", s.getType());
 
-            public short getId() {
-                return id;
-            }
-
-            public void setId(short id) {
-                this.id = id;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public void setName(String name) {
-                this.name = name;
-            }
-
-            public char getSex() {
-                return sex;
-            }
-
-            public void setSex(char sex) {
-                this.sex = sex;
-            }
-
-            public Byte[] getPhoto() {
-                return photo;
-            }
-
-            public void setPhoto(Byte[] photo) {
-                this.photo = photo;
-            }
-        }
-        JsonSchema s = JsonSchema.generateSchema(User.class);
-        
-        assertTrue(
-                s.getDescription().equals("teste"));
-        System.out.println(s.toString());
-        assertTrue(
-                true);
+        //compara a saida com modelo exemplo do site
+        //assertEquals(expected, s.toString());
     }
 }
