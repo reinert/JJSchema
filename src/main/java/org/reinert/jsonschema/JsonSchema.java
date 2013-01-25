@@ -1,21 +1,20 @@
 package org.reinert.jsonschema;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 @JsonInclude(Include.NON_DEFAULT)
 public class JsonSchema {
@@ -405,26 +404,10 @@ public class JsonSchema {
     public static <T> JsonSchema from(Class<T> type) {
         JsonSchema schema = new JsonSchema();
 
-        if (type == Integer.class || type == int.class) {
-            schema.setType("integer");
-        } else if (type == Short.class || type == short.class) {
-            schema.setType("integer");
-        } else if (type == Byte.class || type == byte.class) {
-            schema.setType("integer");
-        } else if (type == Long.class || type == long.class) {
-            schema.setType("integer");
-        } else if (type == Float.class || type == float.class) {
-            schema.setType("number");
-        } else if (type == Double.class || type == double.class) {
-            schema.setType("number");
-        } else if (type == BigDecimal.class) {
-            schema.setType("number");
-        } else if (type == String.class || type == CharSequence.class) {
-            schema.setType("string");
-        } else if (type == Character.class || type == char.class) {
-            schema.setType("string");
-        } else if (type == Boolean.class || type == boolean.class) {
-            schema.setType("boolean");
+        String s = SimpleTypeMappings.forClass(type);
+
+        if (s != null) {
+            schema.setType(s);
         } else if (Iterable.class.isAssignableFrom(type)) {
             schema.setType("array");
             if (!Collection.class.isAssignableFrom(type)) {
