@@ -138,7 +138,7 @@ public class HyperSchema extends JsonSchema {
 		if (path != null) {
 			hyperSchema = generateHyperSchemaFromResource(type);
 		} else {
-			JsonSchema jsonSchema = generateSchema(type);
+			JsonSchema jsonSchema = from(type);
 			if (jsonSchema != null) {
 				if (jsonSchema.getType().equals("array")) {
 					if (!Collection.class.isAssignableFrom(type)) {
@@ -297,7 +297,7 @@ public class HyperSchema extends JsonSchema {
 							schema.setType("object");
 						}
 						QueryParam q = (QueryParam) a;
-						schema.addProperty(q.value(), new HyperSchema(JsonSchema.generateSchema(paramTypes[i])));
+						schema.addProperty(q.value(), new HyperSchema(JsonSchema.from(paramTypes[i])));
 						prop = q.value();
 						hasParam = true;
 						isBodyParam = false;
@@ -309,7 +309,7 @@ public class HyperSchema extends JsonSchema {
 							schema.setType("object");
 						}
 						FormParam q = (FormParam) a;
-						schema.addProperty(q.value(), new HyperSchema(JsonSchema.generateSchema(paramTypes[i])));
+						schema.addProperty(q.value(), new HyperSchema(JsonSchema.from(paramTypes[i])));
 						prop = q.value();
 						hasParam = true;
 						isBodyParam = false;

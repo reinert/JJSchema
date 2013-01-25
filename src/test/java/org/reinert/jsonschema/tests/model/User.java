@@ -6,7 +6,7 @@ import org.reinert.jsonschema.SchemaProperty;
 
 public class User {
 
-	@SchemaProperty(required=true, title="ID", minimum=100000, maximun=999999)
+	@SchemaProperty(required=true, title="ID", minimum=100000, maximum=999999)
 	private short id;
 	
 	@SchemaProperty(required=true, description="User's name")

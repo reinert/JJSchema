@@ -66,7 +66,7 @@ public class Main {
 	static class Pessoa {
 		@SchemaProperty(title="Nomiu", required=true, enums={"JOAO", "MARIA"})
     	String nome;
-		@SchemaProperty(description="A idade do sujeito", required=true, minimum=12, maximun=902901920989l)
+		@SchemaProperty(description="A idade do sujeito", required=true, minimum=12, maximum=902901920989l)
     	Integer idade;
     	ArrayList<Telefone> tels = new ArrayList<Telefone>();
     	public String getNome() {
