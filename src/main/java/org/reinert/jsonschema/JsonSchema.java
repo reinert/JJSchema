@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,20 +21,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JsonSchema {
 
 	private String m$schema = "";
-	private String m$ref = null;
+	private String m$ref = "";
     private String mId = "";
     private String mTitle = "";
     private String mDescription = "";
     private Object mDefault = null;
-    private Integer mMultipleOf = null;
+    private Integer mMultipleOf = 0;
     private Long mMaximum = -1l;
     private Boolean mExclusiveMaximum = false;
     private Integer mMinimum = -1;
     private Boolean mExclusiveMinimum = false;
-    private Integer mMaxLength = null;
-    private Integer mMinLength = null;
+    private Integer mMaxLength = 0;
+    private Integer mMinLength = 0;
     private String mPattern = "";
-    private Integer mMaxItems = null;
+    private Integer mMaxItems = 0;
     private Integer mMinItems = 0;
     private Boolean mUniqueItems = false;
     private JsonSchema mItems = null;
@@ -41,7 +42,7 @@ public class JsonSchema {
     @JsonIgnore
     private Boolean mSelfRequired = false;
     private String[] mEnum = null;
-    private String mType = null;
+    private String mType = "";
     private HashMap<String, JsonSchema> mProperties = null;
 
     public JsonSchema() {
@@ -269,6 +270,9 @@ public class JsonSchema {
     }
 
     private void bindProperties(SchemaProperty props) {
+    	if (!props.$ref().isEmpty()) {
+        	this.set$ref(props.$ref());
+        }
     	if (!props.$schema().isEmpty()) {
         	this.set$schema(props.$schema());
         }
@@ -309,15 +313,96 @@ public class JsonSchema {
         	this.setMinItems(props.minItems());
         }
     }
+    
+    //TODO: compare with default values using reflection
+    private void mergeSchema(JsonSchema schema, boolean forceOverride) {
+    	if (forceOverride) {
+    		if (!schema.get$ref().isEmpty() && !schema.get$ref().equals(m$ref)) {
+    			set$ref(schema.get$ref());
+    		}
+    		if (!schema.get$schema().isEmpty() && !schema.get$schema().equals(m$schema)) {
+    			set$schema(schema.get$schema());
+    		}
+    		if (schema.getDefault() != null && !schema.getDefault().equals(mDefault)) {
+    			setDefault(schema.getDefault());
+    		}
+    		if (!schema.getDescription().isEmpty() && !schema.getDescription().equals(mDescription)) {
+    			setDescription(schema.getDescription());
+    		}
+    		if (schema.getEnum() != null && !schema.getEnum().equals(mEnum)) {
+    			setEnum(schema.getEnum());
+    		}
+    		if (!schema.getExclusiveMaximum().equals(mExclusiveMaximum)) {
+    			setExclusiveMaximum(schema.getExclusiveMaximum());
+    		}
+    		if (!schema.getExclusiveMinimum().equals(mExclusiveMinimum)) {
+    			setExclusiveMinimum(schema.getExclusiveMinimum());
+    		}
+    		if (!schema.getId().isEmpty() && !schema.getId().equals(mId)) {
+    			setId(schema.getId());
+    		}
+    		if (schema.getItems() != null && !schema.getItems().equals(mItems)) {
+    			setItems(schema.getItems());
+    		}
+    		if (schema.getMaximum() > -1l && !schema.getMaximum().equals(mMaximum)) {
+    			setMaximum(schema.getMaximum());
+    		}
+    		if (schema.getMaxItems() > 0 && !schema.getMaxItems().equals(mMaxItems)) {
+    			setMaxItems(schema.getMaxItems());
+    		}
+    		if (schema.getMaxLength() > 0 && !schema.getMaxLength().equals(mMaxLength)) {
+    			setMaxLength(schema.getMaxLength());
+    		}
+    		if (getMinimum() > -1 && !schema.getMinimum().equals(mMinimum)) {
+    			setMinimum(schema.getMinimum());
+    		}
+    		if (schema.getMinItems() > 0 && !schema.getMinItems().equals(mMinItems)) {
+    			setMinItems(schema.getMinItems());
+    		}
+    		if ((schema.getMinLength() > 0) && !schema.getMinLength().equals(mMinLength)) {
+    			setMinLength(schema.getMinLength());
+    		}
+    		if (!schema.getMultipleOf().equals(mMultipleOf)) {
+    			setMultipleOf(schema.getMultipleOf());
+    		}
+    		if (!schema.getPattern().isEmpty() && !schema.getPattern().equals(mPattern)) {
+    			setPattern(schema.getPattern());
+    		}
+    		if (schema.getRequired() != null && !schema.getRequired().equals(mRequired)) {
+    			setRequired(schema.getRequired());
+    		}
+    		if (!schema.getSelfRequired().equals(mSelfRequired)) {
+    			setSelfRequired(schema.getSelfRequired());
+    		}
+    		if (!schema.getTitle().isEmpty() && !schema.getTitle().equals(mTitle)) {
+    			setTitle(schema.getTitle());
+    		}
+    		if (!schema.getType().equals(mType)) {
+    			setType(schema.getType());
+    		}
+    		if (!schema.getUniqueItems().equals(mUniqueItems)) {
+    			setUniqueItems(schema.getUniqueItems());
+    		}
+
+    		HashMap<String, JsonSchema> properties = schema.getProperties();
+			if (properties != null) {
+				if (mProperties == null) mProperties = new HashMap<String, JsonSchema>();
+    			for (Entry<String, JsonSchema> entry : properties.entrySet()) {
+    				String pName = entry.getKey();
+    				JsonSchema pSchema = entry.getValue();
+    				JsonSchema actualSchema = mProperties.get(pName);
+    				if (actualSchema != null) {
+    					pSchema.mergeSchema(actualSchema, true);
+    				}
+    				mProperties.put(pName, pSchema);
+    			}
+    		}
+    	} else {
+    		//TODO: implement not forcing overriding
+    	}
+    }
 
     public static <T> JsonSchema from(Class<T> type) {
-        for (Annotation a : type.getAnnotations()) {
-            System.out.println(a);
-        }
-        for (Annotation a : type.getDeclaredAnnotations()) {
-            System.out.println(a);
-        }
-
         JsonSchema schema = new JsonSchema();
 
         if (type == Integer.class || type == int.class) {
@@ -353,15 +438,15 @@ public class JsonSchema {
             return null;
         } else {
             schema.setType("object");
-            //define as propriedades do objeto
+            // fill base object properties
             SchemaProperty sProp = type.getAnnotation(SchemaProperty.class);
             if(sProp != null)
                 schema.bindProperties(sProp);
+            
             Field[] fields = type.getDeclaredFields();
             Method[] methods = type.getMethods();
-
             HashMap<Method, Field> props = new HashMap<Method, Field>();
-
+            // get valid properties (get method and respective field (if exists))
             for (Method method : methods) {
                 Class<?> declaringClass = method.getDeclaringClass();
                 if (declaringClass.equals(Object.class) || Collection.class.isAssignableFrom(declaringClass)) {
@@ -384,7 +469,7 @@ public class JsonSchema {
                     }
                 }
             }
-
+            
             for (Map.Entry<Method, Field> entry : props.entrySet()) {
                 Field field = entry.getValue();
                 Method method = entry.getKey();
@@ -398,6 +483,14 @@ public class JsonSchema {
                 }
 
                 schema.addProperty(name, prop);
+            }
+            
+            // Merge with parent class
+            Class<? super T> superclass = type.getSuperclass();
+			if (superclass != Object.class) {
+            	JsonSchema parentSchema = from(superclass);
+            	parentSchema.mergeSchema(schema, true);
+            	schema = parentSchema;
             }
         }
 
@@ -423,10 +516,8 @@ public class JsonSchema {
             if (a.annotationType() == SchemaProperty.class) {
                 SchemaProperty sProp = (SchemaProperty) a;
                 schema.bindProperties(sProp);
-                if (!schema.get$schema().isEmpty()) {
-                	schema.set$ref(schema.get$schema());
-                	schema.set$schema("");
-                }
+                // The declaration of $schema is only necessary at the root object
+                schema.set$schema("");
             }
         }
 

@@ -116,7 +116,7 @@ public class ProductTest extends TestCase {
 		
 	}
 	
-	@SchemaProperty($schema="http://json-schema.org/geo", description="A geographical coordinate")
+	@SchemaProperty($ref="http://json-schema.org/geo", description="A geographical coordinate")
 	static class Geo {
 		
 		private BigDecimal latitude;
