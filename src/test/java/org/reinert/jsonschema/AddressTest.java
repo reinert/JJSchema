@@ -5,6 +5,7 @@
 package org.reinert.jsonschema;
 
 import junit.framework.TestCase;
+import org.reinert.jsonschema.exception.UnavailableVersion;
 
 /**
  *
@@ -20,7 +21,7 @@ public class AddressTest extends TestCase {
      * Test the scheme generate following a scheme source, avaliable at
      * :http://json-schema.org/address the output should match the example.
      */
-    public void testGenerateSchema() {
+    public void testGenerateSchema() throws UnavailableVersion {
         @SchemaProperty(description = "An Address following the convention of http://microformats.org/wiki/hcard")
         class Address {
 
@@ -97,7 +98,7 @@ public class AddressTest extends TestCase {
         }
         String expected = "{\"description\":\"An Address following the convention of http://microformats.org/wiki/hcard\",\"type\":\"object\",\"properties\":{\"post-office-box\":{\"type\":\"string\"},\"extended-address\":{\"type\":\"string\"},\"street-address\":{\"type\":\"string\"},\"locality\":{\"type\":\"string\",\"required\":true},\"region\":{\"type\":\"string\",\"required\":true},\"postal-code\":{\"type\":\"string\"},\"country-name\":{\"type\":\"string\",\"required\":true}}}";
 
-        JsonSchema s = JsonSchema.from(Address.class);
+        JsonSchema s = SchemaGenerator.getInstance().from(Address.class);
         // verifica se o proprio objeto tem schema
         assertEquals("An Address following the convention of http://microformats.org/wiki/hcard", s.getDescription());
         assertEquals("object", s.getType());

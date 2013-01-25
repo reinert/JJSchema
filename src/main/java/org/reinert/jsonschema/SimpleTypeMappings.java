@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Mapping of builtin Java types to their matching JSON Schema primitive type
  */
-enum SimpleTypeMappings
+public enum SimpleTypeMappings
 {
     // Integer types
     PRIMITIVE_BYTE(byte.class, "integer"),

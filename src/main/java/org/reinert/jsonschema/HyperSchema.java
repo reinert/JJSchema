@@ -25,6 +25,7 @@ import org.reinert.jsonschema.exception.InvalidLinkMethod;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.reinert.jsonschema.exception.UnavailableVersion;
 
 @JsonInclude(Include.NON_DEFAULT)
 public class HyperSchema extends JsonSchema {
@@ -138,7 +139,13 @@ public class HyperSchema extends JsonSchema {
 		if (path != null) {
 			hyperSchema = generateHyperSchemaFromResource(type);
 		} else {
-			JsonSchema jsonSchema = from(type);
+                    JsonSchema jsonSchema = null;
+                        try{
+                            SchemaGenerator g = SchemaGenerator.getInstance();
+                            jsonSchema = g.from(type);
+                        }catch(UnavailableVersion e) {
+                            
+                        }
 			if (jsonSchema != null) {
 				if (jsonSchema.getType().equals("array")) {
 					if (!Collection.class.isAssignableFrom(type)) {
@@ -215,14 +222,14 @@ public class HyperSchema extends JsonSchema {
 				} else {
 					schema.addLink(link);
 				}
-			} catch(InvalidLinkMethod e){}
+			} catch(Exception e){}
 		}
 		
 		return schema;
 	}
 	
 	
-	static Link generateLink(Method method) throws InvalidLinkMethod {
+	static Link generateLink(Method method) throws InvalidLinkMethod, UnavailableVersion {
 		String href = null, rel = null, httpMethod = null;
 		boolean isLink = false;
 		
@@ -297,7 +304,7 @@ public class HyperSchema extends JsonSchema {
 							schema.setType("object");
 						}
 						QueryParam q = (QueryParam) a;
-						schema.addProperty(q.value(), new HyperSchema(JsonSchema.from(paramTypes[i])));
+						schema.addProperty(q.value(), new HyperSchema(SchemaGenerator.getInstance().from(paramTypes[i])));
 						prop = q.value();
 						hasParam = true;
 						isBodyParam = false;
@@ -309,7 +316,8 @@ public class HyperSchema extends JsonSchema {
 							schema.setType("object");
 						}
 						FormParam q = (FormParam) a;
-						schema.addProperty(q.value(), new HyperSchema(JsonSchema.from(paramTypes[i])));
+                                                
+						schema.addProperty(q.value(), new HyperSchema(SchemaGenerator.getInstance().from(paramTypes[i])));
 						prop = q.value();
 						hasParam = true;
 						isBodyParam = false;

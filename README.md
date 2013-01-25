@@ -9,57 +9,49 @@ How to use:
 
 Suppose the following bean styled class:
 
-    public class User {
-          
-        @SchemaProperty(required=true, title="ID", minimum=100000, maximun=999999)
-    	private short id;
-        
-        @SchemaProperty(required=true, description="User's name")
-        private String name;
+    @SchemaProperty($schema=SchemaRef.V4, title="Product", description="A product from Acme's catalog")
+    static class Product {
+
+	    @SchemaProperty(required=true, description="The unique identifier for a product")
+	    private long id;
+	    @SchemaProperty(required=true, description="Name of the product")
+	    private String name;
+	    @SchemaProperty(required=true, minimum=0, exclusiveMinimum=true)
+	    private BigDecimal price;
+	    @SchemaProperty(minItems=1,uniqueItems=true)
+	    private List<String> tags;
 	
-        @SchemaProperty(description="User's sex", enums={"M","F"})
-        private char sex;
+	    public long getId() {
+		    return id;
+	    }
+	    public void setId(long id) {
+		    this.id = id;
+	    }
+	    public String getName() {
+		    return name;
+	    }
+	    public void setName(String name) {
+		    this.name = name;
+	    }
+	    public BigDecimal getPrice() {
+		    return price;
+	    }
+	    public void setPrice(BigDecimal price) {
+		    this.price = price;
+	    }
+	    public List<String> getTags() {
+		    return tags;
+	    }
+	    public void setTags(List<String> tags) {
+		    this.tags = tags;
+	    }
 	
-        @SchemaProperty(description="User's personal photo")
-        @Media(type="image/jpg", binaryEncoding="base64")
-        private Byte[] photo;
-        
-        public short getId() {
-            return id;
-        }
-        
-        public void setId(short id) {
-            this.id = id;
-        }
-        
-        public String getName() {
-            return name;
-        }
-        
-        public void setName(String name) {
-            this.name = name;
-        }
-        
-        public char getSex() {
-            return sex;
-        }
-        
-        public void setSex(char sex) {
-            this.sex = sex;
-        }
-        
-        public Byte[] getPhoto() {
-            return photo;
-        }
-        
-        public void setPhoto(Byte[] photo) {
-            this.photo = photo;
-        }
     }
 
 Type the following code:
 
-    HyperSchema hyperSchema = HyperSchema.generateHyperSchema(User.class);
+    SchemaGenerator generator = SchemaGenerator.getInstance("draft-4");
+    JsonSchema jsonSchema = generator.from(Product.class);
     System.out.println(hyperSchema.toString());
 
 
@@ -68,29 +60,37 @@ The output:
     {
         "properties":{
         "id":{
-            "type":"integer",
-            "maximum":999999,
-            "minimum":100000,
-            "title":"ID"
+          "type":"integer",
+          "description":"The unique identifier for a product",
+          "selfRequired":true
         },
-        "sex":{
-            "type":"string",
-            "description":"User's sex",
-            "enum":["M","F"]
+        "tags":{
+          "type":"array",
+          "items":{
+            "type":"string"
+          },
+          "minItems":1,
+          "uniqueItems":true
+        },
+        "price":{
+          "type":"number",
+          "selfRequired":true,
+          "exclusiveMinimum":true,
+          "minimum":0
         },
         "name":{
-            "type":"string",
-            "description":"User's name"
-        },
-        "photo":{
-            "media":{
-                "type":"image/jpg",
-                "binaryEncoding":"base64"
-            },
-            "type":"object",
-            "description":"User's personal photo"
+          "type":"string",
+          "description":"Name of the product",
+          "selfRequired":true
         }
-    },
-    "type":"object",
-    "required":["id","name"]
+        },
+        "type":"object",
+        "description":"A product from Acme's catalog",
+        "$schema":"http://json-schema.org/draft-04/schema#",
+        "required":[
+        "price",
+        "name",
+        "id"
+        ],
+        "title":"Product"
     }

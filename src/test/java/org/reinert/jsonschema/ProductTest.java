@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import junit.framework.TestCase;
+import org.reinert.jsonschema.exception.UnavailableVersion;
 
 public class ProductTest extends TestCase {
 
@@ -19,14 +20,14 @@ public class ProductTest extends TestCase {
      * http://json-schema.org/example1.html the output should match the example.
 	 * @throws JsonProcessingException 
      */
-	public void testProductSchema() throws JsonProcessingException {
-		JsonSchema productSchema = JsonSchema.from(Product.class);
+	public void testProductSchema() throws JsonProcessingException, UnavailableVersion {
+		JsonSchema productSchema = SchemaGenerator.getInstance().from(Product.class);
 		System.out.println(om.writeValueAsString(productSchema));
 		
-		JsonSchema complexProductSchema = JsonSchema.from(ComplexProduct.class);
+		JsonSchema complexProductSchema = SchemaGenerator.getInstance().from(ComplexProduct.class);
 		System.out.println(om.writeValueAsString(complexProductSchema));
 		
-		JsonSchema productSetSchema = JsonSchema.from(ProductSet.class);
+		JsonSchema productSetSchema = SchemaGenerator.getInstance().from(ProductSet.class);
 		System.out.println(om.writeValueAsString(productSetSchema));
 	}
 	
