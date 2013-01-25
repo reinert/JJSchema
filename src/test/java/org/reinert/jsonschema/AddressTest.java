@@ -10,9 +10,9 @@ import junit.framework.TestCase;
  *
  * @author heatbr
  */
-public class JsonSchemaTest extends TestCase {
+public class AddressTest extends TestCase {
 
-    public JsonSchemaTest(String testName) {
+    public AddressTest(String testName) {
         super(testName);
     }
 

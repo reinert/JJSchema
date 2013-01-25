@@ -1,4 +1,4 @@
-package org.reinert.jsonschema.tests.model;
+package org.reinert.jsonschema.model;
 
 import java.util.Collection;
 import java.util.Iterator;

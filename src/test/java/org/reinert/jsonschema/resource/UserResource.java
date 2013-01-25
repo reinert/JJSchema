@@ -1,4 +1,4 @@
-package org.reinert.jsonschema.tests.resource;
+package org.reinert.jsonschema.resource;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -14,47 +14,46 @@ import javax.ws.rs.core.MediaType;
 
 import org.reinert.jsonschema.Media;
 import org.reinert.jsonschema.Rel;
-import org.reinert.jsonschema.tests.model.Empresa;
-import org.reinert.jsonschema.tests.model.Empresas;
-import org.reinert.jsonschema.tests.model.Funcionarios;
+import org.reinert.jsonschema.model.User;
+import org.reinert.jsonschema.model.Users;
 
-@Path("/empresas")
+@Path("/users")
 @Consumes( { MediaType.APPLICATION_JSON })
 @Produces( { MediaType.APPLICATION_JSON })
-public class EmpresaAllResource {
+public class UserResource {
 	
 	@GET
-    public Empresas getAll(@QueryParam("funcionarios") boolean funcionarios) {
-    	Empresas empresas = null;
-    	return empresas;
+    public Users getAll(@QueryParam("minAge") boolean funcionarios) {
+    	Users users = null;
+    	return users;
     }
     
 	@POST
 	@Rel("create")
-    public Short createEmpresa(Empresa empresa) {
+    public Short createUser(User user) {
         return (short)0;
     }
 	
     @GET
     @Path("/{id}")
-    @Rel("empresa")
-    public Empresa getEmpresa(@PathParam("id") Short id) {
-    	Empresa empresa = null;
-    	return empresa;
+    @Rel("user")
+    public User getUser(@PathParam("id") Short id) {
+    	User user = null;
+    	return user;
     }
     
     @GET
-    @Path("/{id}/funcionarios")
-    @Rel("funcionarios")
-    public Funcionarios getFuncionarios(@PathParam("id") Short id) {
-    	Funcionarios funcionarios = null;
-    	return funcionarios;
+    @Path("/{id}/admin")
+    @Rel("admin")
+    public Users getAdminUsers(@PathParam("id") Short id) {
+    	Users users = null;
+    	return users;
     }
     
     @PUT
     @Path("/{id}")
     @Rel("update")
-    public void updateEmpresa(@PathParam("id") Short id, Empresa empresa) {
+    public void updateUser(@PathParam("id") Short id, User user) {
     	return;
     }
     
@@ -79,7 +78,7 @@ public class EmpresaAllResource {
     @DELETE
     @Path("/{id}")
     @Rel("delete")
-    public void deleteEmpresa(@PathParam("id") Short id) {
+    public void deleteUser(@PathParam("id") Short id) {
     	return;
     }
 

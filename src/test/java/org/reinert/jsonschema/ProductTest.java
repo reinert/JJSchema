@@ -1,7 +1,9 @@
 package org.reinert.jsonschema;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,11 +20,14 @@ public class ProductTest extends TestCase {
 	 * @throws JsonProcessingException 
      */
 	public void testProductSchema() throws JsonProcessingException {
-//		JsonSchema productSchema = JsonSchema.from(Product.class);
-//		System.out.println(om.writeValueAsString(productSchema));
+		JsonSchema productSchema = JsonSchema.from(Product.class);
+		System.out.println(om.writeValueAsString(productSchema));
 		
 		JsonSchema complexProductSchema = JsonSchema.from(ComplexProduct.class);
 		System.out.println(om.writeValueAsString(complexProductSchema));
+		
+		JsonSchema productSetSchema = JsonSchema.from(ProductSet.class);
+		System.out.println(om.writeValueAsString(productSetSchema));
 	}
 	
 	
@@ -134,6 +139,21 @@ public class ProductTest extends TestCase {
 		public void setLongitude(BigDecimal longitude) {
 			this.longitude = longitude;
 		}
+	}
+	
+	static class ProductSet implements Iterable<ComplexProduct> {
+		
+		private Set<ComplexProduct> products;
+
+		public ProductSet(Set<ComplexProduct> products) {
+			this.products = products;
+		}
+
+		@Override
+		public Iterator<ComplexProduct> iterator() {
+			return products.iterator();
+		} 
+		
 	}
 	
 

@@ -1,4 +1,4 @@
-package org.reinert.jsonschema.tests.model;
+package org.reinert.jsonschema.model;
 
 import org.reinert.jsonschema.Media;
 import org.reinert.jsonschema.SchemaProperty;
