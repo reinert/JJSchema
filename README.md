@@ -1,7 +1,8 @@
-Bean2JsonSchema
+JJSchema
 ===============
 
 A Java JSON Schema and Hyper-Schema generator.
+Currently, it is based on v4 draft.
 It is a fresh project and I expect more contributors joining it.
 
 How to use:
