@@ -19,8 +19,8 @@ import java.util.Map.Entry;
 @JsonInclude(Include.NON_DEFAULT)
 public class JsonSchema {
 
-	private String m$schema = "";
-	private String m$ref = "";
+    private String m$schema = "";
+    private String m$ref = "";
     private String mId = "";
     private String mTitle = "";
     private String mDescription = "";
@@ -268,7 +268,7 @@ public class JsonSchema {
         }
     }
 
-    private void bindProperties(SchemaProperty props) {
+    public void bind(SchemaProperty props) {
     	if (!props.$ref().isEmpty()) {
         	this.set$ref(props.$ref());
         }
@@ -424,7 +424,7 @@ public class JsonSchema {
             // fill base object properties
             SchemaProperty sProp = type.getAnnotation(SchemaProperty.class);
             if(sProp != null)
-                schema.bindProperties(sProp);
+                schema.bind(sProp);
             
             Field[] fields = type.getDeclaredFields();
             Method[] methods = type.getMethods();
@@ -498,7 +498,7 @@ public class JsonSchema {
         for (Annotation a : ans) {
             if (a.annotationType() == SchemaProperty.class) {
                 SchemaProperty sProp = (SchemaProperty) a;
-                schema.bindProperties(sProp);
+                schema.bind(sProp);
                 // The declaration of $schema is only necessary at the root object
                 schema.set$schema("");
             }
