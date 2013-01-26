@@ -1,309 +1,102 @@
 package org.reinert.jsonschema;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
-@JsonInclude(Include.NON_DEFAULT)
-public class JsonSchema {
+public interface JsonSchema {
 
-    private String m$schema = "";
-    private String m$ref = "";
-    private String mId = "";
-    private String mTitle = "";
-    private String mDescription = "";
-    private Object mDefault = null;
-    private Integer mMultipleOf = 0;
-    private Long mMaximum = -1l;
-    private Boolean mExclusiveMaximum = false;
-    private Integer mMinimum = -1;
-    private Boolean mExclusiveMinimum = false;
-    private Integer mMaxLength = 0;
-    private Integer mMinLength = 0;
-    private String mPattern = "";
-    private Integer mMaxItems = 0;
-    private Integer mMinItems = 0;
-    private Boolean mUniqueItems = false;
-    private JsonSchema mItems = null;
-    private ArrayList<String> mRequired = null;
-    @JsonIgnore
-    private Boolean mSelfRequired = false;
-    private String[] mEnum = null;
-    private String mType = "";
-    private HashMap<String, JsonSchema> mProperties = null;
+	String get$schema();
 
-    public JsonSchema() {
-	}
-    
-    public JsonSchema(String $schema) {
-    	m$schema = $schema;
-	}
+	void set$schema(String $schema);
 
-	public String get$schema() {
-		return m$schema;
-	}
+	String get$ref();
 
-	public void set$schema(String $schema) {
-		m$schema = $schema;
-	}
+	void set$ref(String $ref);
 
-	public String get$ref() {
-		return m$ref;
-	}
+	String getId();
 
-	public void set$ref(String $ref) {
-		m$ref = $ref;
-	}
+	void setId(String id);
 
-	public String getId() {
-        return mId;
-    }
+	String getTitle();
 
-    public void setId(String id) {
-        mId = id;
-    }
+	void setTitle(String title);
 
-    public String getTitle() {
-        return mTitle;
-    }
+	String getDescription();
 
-    public void setTitle(String title) {
-        mTitle = title;
-    }
+	void setDescription(String description);
 
-    public String getDescription() {
-        return mDescription;
-    }
+	Object getDefault();
 
-    public void setDescription(String description) {
-        mDescription = description;
-    }
+	void setDefault(Object default1);
 
-    public Object getDefault() {
-        return mDefault;
-    }
+	Integer getMultipleOf();
 
-    public void setDefault(Object default1) {
-        mDefault = default1;
-    }
+	void setMultipleOf(Integer multipleOf);
 
-    public Integer getMultipleOf() {
-        return mMultipleOf;
-    }
+	Long getMaximum();
 
-    public void setMultipleOf(Integer multipleOf) {
-        mMultipleOf = multipleOf;
-    }
+	void setMaximum(Long maximum);
 
-    public Long getMaximum() {
-        return mMaximum;
-    }
+	Integer getMinimum();
 
-    public void setMaximum(Long maximum) {
-        mMaximum = maximum;
-    }
+	void setMinimum(Integer minimum);
 
-    public Integer getMinimum() {
-        return mMinimum;
-    }
+	JsonSchema getItems();
 
-    public void setMinimum(Integer minimum) {
-        mMinimum = minimum;
-    }
+	void setItems(JsonSchema items);
 
-    public JsonSchema getItems() {
-        return mItems;
-    }
+	ArrayList<String> getRequired();
 
-    public void setItems(JsonSchema items) {
-        mItems = items;
-    }
+	void addRequired(String field);
 
-    public ArrayList<String> getRequired() {
-        return mRequired;
-    }
+	String[] getEnum();
 
-    public void setRequired(ArrayList<String> required) {
-        mRequired = required;
-    }
+	void setEnum(String[] values);
 
-    public void addRequired(String field) {
-        if (mRequired == null) {
-            mRequired = new ArrayList<String>();
-        }
-        mRequired.add(field);
-    }
+	String getType();
 
-    public Boolean getSelfRequired() {
-        return mSelfRequired;
-    }
+	void setType(String type);
 
-    public void setSelfRequired(Boolean selfRequired) {
-        mSelfRequired = selfRequired;
-    }
+	Map<String, JsonSchema> getProperties();
 
-    public String[] getEnum() {
-        return mEnum;
-    }
+	JsonSchema getProperty(String name);
 
-    public void setEnum(String[] values) {
-        mEnum = values;
-    }
-    
-    public String getType() {
-        return mType;
-    }
+	boolean hasProperties();
 
-    public void setType(String type) {
-        mType = type;
-    }
+	void addProperty(String propertyName, JsonSchema propertyValue);
 
-    public HashMap<String, JsonSchema> getProperties() {
-        return mProperties;
-    }
+	Boolean getExclusiveMaximum();
 
-    public JsonSchema getProperty(String name) {
-        return mProperties.get(name);
-    }
+	void setExclusiveMaximum(Boolean exclusiveMaximum);
 
-    public boolean hasProperties() {
-        return mProperties != null;
-    }
+	Boolean getExclusiveMinimum();
 
-    public void addProperty(String propertyName, JsonSchema propertyValue) {
-        if (mProperties == null) {
-            mProperties = new HashMap<String, JsonSchema>();
-        }
-        mProperties.put(propertyName, propertyValue);
-    }
+	void setExclusiveMinimum(Boolean exclusiveMinimum);
 
-    public Boolean getExclusiveMaximum() {
-        return mExclusiveMaximum;
-    }
+	Integer getMaxLength();
 
-    public void setExclusiveMaximum(Boolean exclusiveMaximum) {
-        mExclusiveMaximum = exclusiveMaximum;
-    }
+	void setMaxLength(Integer maxLength);
 
-    public Boolean getExclusiveMinimum() {
-        return mExclusiveMinimum;
-    }
+	Integer getMinLength();
 
-    public void setExclusiveMinimum(Boolean exclusiveMinimum) {
-        mExclusiveMinimum = exclusiveMinimum;
-    }
+	void setMinLength(Integer minLength);
 
-    public Integer getMaxLength() {
-        return mMaxLength;
-    }
+	String getPattern();
 
-    public void setMaxLength(Integer maxLength) {
-        mMaxLength = maxLength;
-    }
+	void setPattern(String pattern);
 
-    public Integer getMinLength() {
-        return mMinLength;
-    }
+	Integer getMaxItems();
 
-    public void setMinLength(Integer minLength) {
-        mMinLength = minLength;
-    }
+	void setMaxItems(Integer maxItems);
 
-    public String getPattern() {
-        return mPattern;
-    }
+	Integer getMinItems();
 
-    public void setPattern(String pattern) {
-        mPattern = pattern;
-    }
+	void setMinItems(Integer minItems);
 
-    public Integer getMaxItems() {
-        return mMaxItems;
-    }
+	Boolean getUniqueItems();
 
-    public void setMaxItems(Integer maxItems) {
-        mMaxItems = maxItems;
-    }
+	void setUniqueItems(Boolean uniqueItems);
 
-    public Integer getMinItems() {
-        return mMinItems;
-    }
+	String toString();
 
-    public void setMinItems(Integer minItems) {
-        mMinItems = minItems;
-    }
-
-    public Boolean getUniqueItems() {
-        return mUniqueItems;
-    }
-
-    public void setUniqueItems(Boolean uniqueItems) {
-        mUniqueItems = uniqueItems;
-    }
-
-    public void setProperties(HashMap<String, JsonSchema> properties) {
-        mProperties = properties;
-    }
-
-    @Override
-    public String toString() {
-        ObjectMapper m = new ObjectMapper();
-        try {
-            return m.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public void bind(SchemaProperty props) {
-    	if (!props.$ref().isEmpty()) {
-        	this.set$ref(props.$ref());
-        }
-    	if (!props.$schema().isEmpty()) {
-        	this.set$schema(props.$schema());
-        }
-        if (!props.id().isEmpty()) {
-            this.setId(props.id());
-        }
-        if (props.required()) {
-            this.setSelfRequired(true);
-        }
-        if (!props.description().isEmpty()) {
-            this.setDescription(props.description());
-        }
-        if (!props.pattern().isEmpty()) {
-            this.setPattern(props.pattern());
-        }
-        if (!props.title().isEmpty()) {
-            this.setTitle(props.title());
-        }
-        if (props.maximum() > -1) {
-        	this.setMaximum(props.maximum());
-        }
-        if (props.exclusiveMaximum()) {
-        	this.setExclusiveMaximum(true);
-        }
-        if (props.minimum() > -1) {
-        	this.setMinimum(props.minimum());
-        }
-        if (props.exclusiveMinimum()) {
-        	this.setExclusiveMinimum(true);
-        }
-        if (props.enums().length > 0) {
-        	this.setEnum(props.enums());
-        }
-        if (props.uniqueItems()) {
-        	this.setUniqueItems(true);
-        }
-        if (props.minItems() > 0) {
-        	this.setMinItems(props.minItems());
-        }
-    }
-    
 }

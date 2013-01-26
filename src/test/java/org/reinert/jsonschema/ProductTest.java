@@ -21,13 +21,13 @@ public class ProductTest extends TestCase {
 	 * @throws JsonProcessingException 
      */
 	public void testProductSchema() throws JsonProcessingException, UnavailableVersion {
-		JsonSchema productSchema = SchemaGenerator.getInstance().from(Product.class);
+		JsonSchema productSchema = Schema.v4SchemaFrom(Product.class);
 		System.out.println(om.writeValueAsString(productSchema));
 		
-		JsonSchema complexProductSchema = SchemaGenerator.getInstance().from(ComplexProduct.class);
+		JsonSchema complexProductSchema =Schema.v4SchemaFrom(ComplexProduct.class);
 		System.out.println(om.writeValueAsString(complexProductSchema));
 		
-		JsonSchema productSetSchema = SchemaGenerator.getInstance().from(ProductSet.class);
+		JsonSchema productSetSchema = Schema.v4SchemaFrom(ProductSet.class);
 		System.out.println(om.writeValueAsString(productSetSchema));
 	}
 	

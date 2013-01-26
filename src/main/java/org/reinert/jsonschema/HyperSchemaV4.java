@@ -25,10 +25,9 @@ import org.reinert.jsonschema.exception.InvalidLinkMethod;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import org.reinert.jsonschema.exception.UnavailableVersion;
 
 @JsonInclude(Include.NON_DEFAULT)
-public class HyperSchema extends JsonSchema {
+public class HyperSchemaV4 extends JsonSchemaV4 {
 
 	private ArrayList<Link> mLinks = null;
 	private String mFragmentResolution = null;
@@ -36,9 +35,9 @@ public class HyperSchema extends JsonSchema {
 	private String mPathStart = null;
 	private Media mMedia = null;
 
-	public HyperSchema() {
+	public HyperSchemaV4() {
 	}
-	public HyperSchema(JsonSchema schema) {
+	public HyperSchemaV4(JsonSchemaV4 schema) {
 		incorporateSchema(schema);
 	}
 	
@@ -110,7 +109,7 @@ public class HyperSchema extends JsonSchema {
 		}
 	}
 	
-	protected void incorporateSchema(JsonSchema schema) {
+	protected void incorporateSchema(JsonSchemaV4 schema) {
 		if (schema != null) {
 			setDefault(schema.getDefault());
 			setDescription(schema.getDescription());
@@ -133,19 +132,13 @@ public class HyperSchema extends JsonSchema {
 		}
 	}
 	
-	public static <T> HyperSchema generateHyperSchema(Class<T> type) {
-		HyperSchema hyperSchema = null;
+	public static <T> HyperSchemaV4 generateHyperSchema(Class<T> type) {
+		HyperSchemaV4 hyperSchema = null;
 		Annotation path = type.getAnnotation(Path.class);
 		if (path != null) {
 			hyperSchema = generateHyperSchemaFromResource(type);
 		} else {
-                    JsonSchema jsonSchema = null;
-                        try{
-                            SchemaGenerator g = SchemaGenerator.getInstance();
-                            jsonSchema = g.from(type);
-                        }catch(UnavailableVersion e) {
-                            
-                        }
+            JsonSchemaV4 jsonSchema = (JsonSchemaV4) Schema.v4SchemaFrom(type);
 			if (jsonSchema != null) {
 				if (jsonSchema.getType().equals("array")) {
 					if (!Collection.class.isAssignableFrom(type)) {
@@ -154,10 +147,10 @@ public class HyperSchema extends JsonSchema {
 						Field field = type.getDeclaredFields()[0];
 						ParameterizedType genericType = (ParameterizedType) field.getGenericType();
 				        Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
-				        HyperSchema hyperItems = transformJsonToHyperSchema(genericClass, items);
+				        HyperSchemaV4 hyperItems = transformJsonToHyperSchema(genericClass, (JsonSchemaV4) items);
 				        jsonSchema.setItems(hyperItems);
 					}
-			        hyperSchema = new HyperSchema(jsonSchema);
+			        hyperSchema = new HyperSchemaV4(jsonSchema);
 				}
 				else if (jsonSchema.hasProperties()) {
 					hyperSchema = transformJsonToHyperSchema(type, jsonSchema);
@@ -167,14 +160,14 @@ public class HyperSchema extends JsonSchema {
 		return hyperSchema;
 	}
 	
-	private static <T> HyperSchema transformJsonToHyperSchema(Class<T> type, JsonSchema jsonSchema) {
-		HyperSchema hyperSchema = new HyperSchema(jsonSchema);
+	private static <T> HyperSchemaV4 transformJsonToHyperSchema(Class<T> type, JsonSchemaV4 jsonSchema) {
+		HyperSchemaV4 hyperSchema = new HyperSchemaV4(jsonSchema);
 		for (String prop : jsonSchema.getProperties().keySet()) {
 			try {
 				Field field = type.getDeclaredField(prop);
 				org.reinert.jsonschema.Media media = field.getAnnotation(org.reinert.jsonschema.Media.class);
 				if (media != null) {
-					HyperSchema hyperProp = new HyperSchema(jsonSchema.getProperty(prop));
+					HyperSchemaV4 hyperProp = new HyperSchemaV4((JsonSchemaV4) jsonSchema.getProperty(prop));
 					hyperProp.setMediaType(media.type());
 					hyperProp.setBinaryEncoding(media.binaryEncoding());
 					jsonSchema.addProperty(prop, hyperProp);
@@ -188,8 +181,8 @@ public class HyperSchema extends JsonSchema {
 		return hyperSchema;
 	}
 	
-	public static <T> HyperSchema generateHyperSchemaFromResource(Class<T> type) {
-		HyperSchema schema = null;
+	public static <T> HyperSchemaV4 generateHyperSchemaFromResource(Class<T> type) {
+		HyperSchemaV4 schema = null;
 		
 		Annotation[] ans = type.getAnnotations();
 		boolean hasPath = false;
@@ -198,14 +191,14 @@ public class HyperSchema extends JsonSchema {
 				hasPath = true;
 				Path p = (Path) a;
 				if (schema == null) {
-					schema = new HyperSchema();
+					schema = new HyperSchemaV4();
 				}
 				schema.setPathStart(p.value());
 			}
 			if (a instanceof Produces) {
 				Produces p = (Produces) a;
 				if (schema == null) {
-					schema = new HyperSchema();
+					schema = new HyperSchemaV4();
 				}
 				schema.setMediaType(p.value()[0]);
 			}
@@ -222,14 +215,16 @@ public class HyperSchema extends JsonSchema {
 				} else {
 					schema.addLink(link);
 				}
-			} catch(Exception e){}
+			} catch(InvalidLinkMethod e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return schema;
 	}
 	
 	
-	static Link generateLink(Method method) throws InvalidLinkMethod, UnavailableVersion {
+	static Link generateLink(Method method) throws InvalidLinkMethod {
 		String href = null, rel = null, httpMethod = null;
 		boolean isLink = false;
 		
@@ -277,7 +272,7 @@ public class HyperSchema extends JsonSchema {
 			link.setRel(method.getName());
 		}
 		
-		HyperSchema tgtSchema = generateHyperSchema(method.getReturnType());
+		HyperSchemaV4 tgtSchema = generateHyperSchema(method.getReturnType());
 		if (tgtSchema != null)
 			link.setTargetSchema(tgtSchema);
 		
@@ -287,7 +282,7 @@ public class HyperSchema extends JsonSchema {
 		// object and it is passed by the body.
 		Class<?>[] paramTypes = method.getParameterTypes();
 		if (paramTypes.length > 0) {
-			HyperSchema schema = null;
+			HyperSchemaV4 schema = null;
 			boolean hasParam = false;
 			boolean hasBodyParam = false;
 			for (int i = 0; i < paramTypes.length; i++) {
@@ -300,11 +295,11 @@ public class HyperSchema extends JsonSchema {
 					Annotation a = paramAns[j];
 					if (a instanceof QueryParam) {
 						if (schema == null) {
-							schema = new HyperSchema();
+							schema = new HyperSchemaV4();
 							schema.setType("object");
 						}
 						QueryParam q = (QueryParam) a;
-						schema.addProperty(q.value(), new HyperSchema(SchemaGenerator.getInstance().from(paramTypes[i])));
+						schema.addProperty(q.value(), new HyperSchemaV4((JsonSchemaV4) Schema.v4SchemaFrom(paramTypes[i])));
 						prop = q.value();
 						hasParam = true;
 						isBodyParam = false;
@@ -312,12 +307,12 @@ public class HyperSchema extends JsonSchema {
 					}
 					else if (a instanceof FormParam) {
 						if (schema == null) {
-							schema = new HyperSchema();
+							schema = new HyperSchemaV4();
 							schema.setType("object");
 						}
 						FormParam q = (FormParam) a;
                                                 
-						schema.addProperty(q.value(), new HyperSchema(SchemaGenerator.getInstance().from(paramTypes[i])));
+						schema.addProperty(q.value(), new HyperSchemaV4((JsonSchemaV4) Schema.v4SchemaFrom(paramTypes[i])));
 						prop = q.value();
 						hasParam = true;
 						isBodyParam = false;
@@ -374,7 +369,7 @@ public class HyperSchema extends JsonSchema {
 				}
 				if (isBodyParam) {
 					hasBodyParam = true;
-					schema = new HyperSchema(generateHyperSchema(paramTypes[i]));
+					schema = new HyperSchemaV4(generateHyperSchema(paramTypes[i]));
 					if (media != null) {
 						schema.setMediaType(media.type());
 						schema.setBinaryEncoding(media.binaryEncoding());
@@ -382,7 +377,7 @@ public class HyperSchema extends JsonSchema {
 				} else if (isParam) {
 					hasParam = true;
 					if (media != null) {
-						HyperSchema hs = (HyperSchema) schema.getProperty(prop);
+						HyperSchemaV4 hs = (HyperSchemaV4) schema.getProperty(prop);
 						hs.setMediaType(media.type());
 						hs.setBinaryEncoding(media.binaryEncoding());
 						schema.addProperty(prop, hs);
