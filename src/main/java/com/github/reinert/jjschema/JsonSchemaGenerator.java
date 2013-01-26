@@ -9,28 +9,69 @@ import java.util.Map;
 
 public abstract class JsonSchemaGenerator {
 
+	abstract protected AbstractJsonSchema createInstance();
+	abstract protected void bind(AbstractJsonSchema schema, SchemaProperty props);
+	abstract protected AbstractJsonSchema mergeSchema(AbstractJsonSchema parent, AbstractJsonSchema child, boolean forceOverride);
+	
 	public <T> AbstractJsonSchema generateSchema(Class<T> type) {
 		AbstractJsonSchema schema = createInstance();
         schema = checkType(type, schema);
         return schema;
 	}
-
-	abstract protected void bind(AbstractJsonSchema schema, SchemaProperty props);
-
-	abstract protected AbstractJsonSchema mergeSchema(
-			AbstractJsonSchema parent, AbstractJsonSchema child,
-			boolean forceOverride);
 	
-	abstract protected AbstractJsonSchema createInstance();
+	protected <T> AbstractJsonSchema checkType(Class<T> type, AbstractJsonSchema schema) {
+		String s = SimpleTypeMappings.forClass(type);
+	    if (s != null) {
+	        schema.setType(s);
+	    } else if (Iterable.class.isAssignableFrom(type)) {
+	        checkCustomCollection(type, schema);
+	    } else if (type == Void.class || type == void.class) {
+	    	schema = null;
+	    } else {
+	    	checkCustomObject(type, schema);
+	    }
+		return schema;
+	}
+	
+	private <T> void checkCustomObject(Class<T> type, AbstractJsonSchema schema) {
+		schema.setType("object");
+	    // fill root object properties
+	    bindRoot(type, schema);
+	    // Generate the class properties' schemas
+	    bindProperties(type, schema);
+	    // Merge with parent class
+	    mergeWithParent(type, schema);
+	}
+
+	private <T> void checkCustomCollection(Class<T> type, AbstractJsonSchema schema) {
+		if (!Collection.class.isAssignableFrom(type)) {
+		    // NOTE: Customized Iterable Class must declare the Collection object at first
+		    bindArraySchema(type, schema);
+		} else {
+			schema.setType("array");
+		}
+	}
+
+	private <T> void bindArraySchema(Class<T> type, AbstractJsonSchema schema) {
+		schema.setType("array");
+		Field field = type.getDeclaredFields()[0];
+		ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+		Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+		schema.setItems(generateSchema(genericClass));
+	}
+	
+	private void bindArraySchema(Method method, AbstractJsonSchema schema) {
+		schema.setType("array");
+		ParameterizedType genericType = (ParameterizedType) method.getGenericReturnType();
+		Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+		schema.setItems(generateSchema(genericClass));
+	}
 	
 	protected AbstractJsonSchema generatePropertySchema(Method method, Field field) {
     	AbstractJsonSchema schema = createInstance();
 
         if (Collection.class.isAssignableFrom(method.getReturnType())) {
-            schema.setType("array");
-            ParameterizedType genericType = (ParameterizedType) method.getGenericReturnType();
-            Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
-            schema.setItems(generateSchema(genericClass));
+            bindArraySchema(method, schema);
         } else {
             schema = generateSchema(method.getReturnType());
         }
@@ -124,43 +165,7 @@ public abstract class JsonSchemaGenerator {
 	}
 
 	private String firstToLowCase(String string) {
-		return Character.toLowerCase(string.charAt(0))
-				+ (string.length() > 1 ? string.substring(1) : "");
-	}
-
-	protected <T> AbstractJsonSchema checkType(Class<T> type, AbstractJsonSchema schema) {
-		String s = SimpleTypeMappings.forClass(type);
-	    if (s != null) {
-	        schema.setType(s);
-	    } else if (Iterable.class.isAssignableFrom(type)) {
-	        checkCustomCollection(type, schema);
-	    } else if (type == Void.class || type == void.class) {
-	    	schema = null;
-	    } else {
-	    	checkCustomObject(type, schema);
-	    }
-		return schema;
-	}
-
-	private <T> void checkCustomObject(Class<T> type, AbstractJsonSchema schema) {
-		schema.setType("object");
-	    // fill root object properties
-	    bindRoot(type, schema);
-	    // Generate the class properties' schemas
-	    bindProperties(type, schema);
-	    // Merge with parent class
-	    mergeWithParent(type, schema);
-	}
-
-	private <T> void checkCustomCollection(Class<T> type, AbstractJsonSchema schema) {
-		schema.setType("array");
-		if (!Collection.class.isAssignableFrom(type)) {
-		    // NOTE: Customized Iterable Class must declare the Collection object at first
-		    Field field = type.getDeclaredFields()[0];
-		    ParameterizedType genericType = (ParameterizedType) field.getGenericType();
-		    Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
-		    schema.setItems(generateSchema(genericClass));
-		}
+		return Character.toLowerCase(string.charAt(0)) + (string.length() > 1 ? string.substring(1) : "");
 	}
 
 }
