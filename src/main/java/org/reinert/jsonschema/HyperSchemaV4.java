@@ -170,6 +170,7 @@ public class HyperSchemaV4 extends JsonSchemaV4 {
 					HyperSchemaV4 hyperProp = new HyperSchemaV4((JsonSchemaV4) jsonSchema.getProperty(prop));
 					hyperProp.setMediaType(media.type());
 					hyperProp.setBinaryEncoding(media.binaryEncoding());
+					hyperProp.setType("string");
 					jsonSchema.addProperty(prop, hyperProp);
 				}
 			} catch (NoSuchFieldException e) {
@@ -207,7 +208,7 @@ public class HyperSchemaV4 extends JsonSchemaV4 {
 			throw new RuntimeException("Invalid Resource class. Must use Path annotation.");
 		}
 		
-		for (Method method : type.getMethods()) {
+		for (Method method : type.getDeclaredMethods()) {
 			try {
 				Link link = generateLink(method);
 				if (link.getMethod().equals("GET") && link.getHref().equals("#")) {
@@ -261,7 +262,7 @@ public class HyperSchemaV4 extends JsonSchemaV4 {
 		
 		// Check if the method is actually a link
 		if (!isLink) {
-			throw new InvalidLinkMethod("Method is not a link. Must use a HTTP METHOD annotation.");
+			throw new InvalidLinkMethod("Method " + method.getName() + " is not a link. Must use a HTTP METHOD annotation.");
 		}
 		
 		Link link = new Link(href, rel);
