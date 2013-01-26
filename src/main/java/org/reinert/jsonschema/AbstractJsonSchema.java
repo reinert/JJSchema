@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 @JsonInclude(Include.NON_DEFAULT)
 public abstract class AbstractJsonSchema implements JsonSchema {
@@ -248,7 +249,7 @@ public abstract class AbstractJsonSchema implements JsonSchema {
 	
 	@Override
     public String toString() {
-        ObjectMapper m = new ObjectMapper();
+		ObjectWriter m = new ObjectMapper().writerWithDefaultPrettyPrinter();
         try {
             return m.writeValueAsString(this);
         } catch (JsonProcessingException e) {

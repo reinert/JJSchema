@@ -7,13 +7,14 @@ import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import junit.framework.TestCase;
 import org.reinert.jsonschema.exception.UnavailableVersion;
 
 public class ProductTest extends TestCase {
 
-	ObjectMapper om = new ObjectMapper();
+	ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
 	
 	/**
      * Test the scheme generate following a scheme source, avaliable at
