@@ -1,77 +1,19 @@
 package com.github.reinert.jjschema;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
 
 	@Override
-    public <T> AbstractJsonSchema generateSchema(Class<T> type) {
+	protected AbstractJsonSchema createInstance() {
 		AbstractJsonSchema schema = new JsonSchemaV4();
-
-        String s = SimpleTypeMappings.forClass(type);
-
-        if (s != null) {
-            schema.setType(s);
-        } else if (Iterable.class.isAssignableFrom(type)) {
-            schema.setType("array");
-            if (!Collection.class.isAssignableFrom(type)) {
-                // NOTE: Customized Iterable Class must declare the Collection object at first
-                Field field = type.getDeclaredFields()[0];
-                ParameterizedType genericType = (ParameterizedType) field.getGenericType();
-                Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
-                schema.setItems(generateSchema(genericClass));
-            }
-        } else if (type == Void.class || type == void.class) {
-            return null;
-        } else {
-            schema.setType("object");
-            // fill root object properties
-            bindRoot(type, schema);
-            // Generate the class properties' schemas
-            bindProperties(type, schema);
-            // Merge with parent class
-            mergeWithParent(type, schema);
-        }
-
-        return schema;
-    }
-
-	public AbstractJsonSchema generatePropertySchema(Method method, Field field) {
-    	AbstractJsonSchema schema = new JsonSchemaV4();
-
-        if (Collection.class.isAssignableFrom(method.getReturnType())) {
-            schema.setType("array");
-            ParameterizedType genericType = (ParameterizedType) method.getGenericReturnType();
-            Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
-            schema.setItems(generateSchema(genericClass));
-        } else {
-            schema = generateSchema(method.getReturnType());
-        }
-
-        // Check the field annotations if the get method references a field or the   
-        // method annotations on the other hand and bind them to the JsonSchema object
-        SchemaProperty sProp = field != null ? field.getAnnotation(SchemaProperty.class) : method.getAnnotation(SchemaProperty.class);
-        if (sProp != null) {
-            bind(schema, sProp);
-            // The declaration of $schema is only necessary at the root object
-            schema.set$schema(null);
-        }
-        
-        Nullable nullable = field != null ? field.getAnnotation(Nullable.class) : method.getAnnotation(Nullable.class);
-        if (nullable != null) {
-        	schema.setType(new String[]{schema.getType().toString(),"null"});
-        }
-            
-        return schema;
-    }
+		return schema;
+	}
 
     //TODO: compare with default values using constants
-    public AbstractJsonSchema mergeSchema(AbstractJsonSchema parent, AbstractJsonSchema child, boolean forceOverride) {
+	@Override
+	protected AbstractJsonSchema mergeSchema(AbstractJsonSchema parent, AbstractJsonSchema child, boolean forceOverride) {
     	JsonSchemaV4 _parent = (JsonSchemaV4) parent;
     	//JsonSchemaV4 _child = (JsonSchemaV4) child;
     	if (forceOverride) {
@@ -162,7 +104,8 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
 		return parent;
     }
 
-	public void bind(AbstractJsonSchema schema, SchemaProperty props) {
+	@Override
+	protected void bind(AbstractJsonSchema schema, SchemaProperty props) {
     	if (!props.$ref().isEmpty()) {
         	schema.set$ref(props.$ref());
         }
