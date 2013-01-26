@@ -170,7 +170,12 @@ public class HyperSchemaV4 extends JsonSchemaV4 {
 					HyperSchemaV4 hyperProp = new HyperSchemaV4((JsonSchemaV4) jsonSchema.getProperty(prop));
 					hyperProp.setMediaType(media.type());
 					hyperProp.setBinaryEncoding(media.binaryEncoding());
-					hyperProp.setType("string");
+					Object t = hyperProp.getType();
+					if (t instanceof String[]) {
+						((String[]) hyperProp.getType())[0] = "string";
+					} else {
+						hyperProp.setType("string");
+					}
 					jsonSchema.addProperty(prop, hyperProp);
 				}
 			} catch (NoSuchFieldException e) {

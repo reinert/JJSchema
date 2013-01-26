@@ -1,6 +1,7 @@
 package org.reinert.jsonschema.model;
 
 import org.reinert.jsonschema.Media;
+import org.reinert.jsonschema.Nullable;
 import org.reinert.jsonschema.SchemaProperty;
 
 
@@ -13,10 +14,12 @@ public class User {
 	private String name;
 	
 	@SchemaProperty(description="User's sex", enums={"M","F"})
+	@Nullable
 	private char sex;
 	
 	@SchemaProperty(description="User's personal photo")
 	@Media(type="image/jpg", binaryEncoding="base64")
+	@Nullable
 	private Byte[] photo;
 
 	public short getId() {

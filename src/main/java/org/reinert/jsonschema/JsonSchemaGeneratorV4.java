@@ -108,6 +108,11 @@ public class JsonSchemaGeneratorV4 implements JsonSchemaGenerator {
             // The declaration of $schema is only necessary at the root object
             schema.set$schema(null);
         }
+        
+        Nullable nullable = field != null ? field.getAnnotation(Nullable.class) : method.getAnnotation(Nullable.class);
+        if (nullable != null) {
+        	schema.setType(new String[]{schema.getType().toString(),"null"});
+        }
             
         return schema;
     }

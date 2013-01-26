@@ -33,7 +33,7 @@ public abstract class AbstractJsonSchema implements JsonSchema {
 	@JsonIgnore
 	protected Boolean mSelfRequired = false;
 	protected String[] mEnum;
-	protected String mType;
+	protected Object mType;
 //	protected Map<String,JsonBaseSchema> mProperties;
 	protected Map<String,JsonSchema> mProperties;
 
@@ -136,11 +136,11 @@ public abstract class AbstractJsonSchema implements JsonSchema {
         mEnum = values;
     }
     
-    public String getType() {
+    public Object getType() {
         return mType;
     }
 
-    public void setType(String type) {
+    public void setType(Object type) {
         mType = type;
     }
 

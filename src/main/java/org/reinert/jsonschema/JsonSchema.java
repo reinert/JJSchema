@@ -53,9 +53,9 @@ public interface JsonSchema {
 
 	void setEnum(String[] values);
 
-	String getType();
+	Object getType();
 
-	void setType(String type);
+	void setType(Object type);
 
 	Map<String, JsonSchema> getProperties();
 
