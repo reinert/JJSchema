@@ -2,13 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.reinert</groupId>
-    <artifactId>bean2jsonschema</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>com.github.reinert</groupId>
+    <artifactId>jjschema</artifactId>
+    <version>0.0.8-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Bean2JsonSchema</name>
-    <url>http://maven.apache.org</url>
+    <name>JJSchema</name>
+    <url>http://github.com/reinert/JJSchema/</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -56,6 +56,6 @@
         </dependency>
     </dependencies>
     <organization>
-        <name>Reinert, Inc.</name>
+        <name>Reinert, Danilo</name>
     </organization>
 </project>
