@@ -1,6 +1,5 @@
 package com.github.reinert.jjschema;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public interface JsonSchema {
@@ -45,9 +44,11 @@ public interface JsonSchema {
 
 	void setItems(JsonSchema items);
 
-	ArrayList<String> getRequired();
+	Object getRequired();
 
 	void addRequired(String field);
+	
+	void setRequired(Object required);
 
 	String[] getEnum();
 

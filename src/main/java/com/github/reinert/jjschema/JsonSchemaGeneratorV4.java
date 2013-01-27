@@ -14,7 +14,7 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
     //TODO: compare with default values using constants
 	@Override
 	protected AbstractJsonSchema mergeSchema(AbstractJsonSchema parent, AbstractJsonSchema child, boolean forceOverride) {
-    	JsonSchemaV4 _parent = (JsonSchemaV4) parent;
+    	JsonSchemaV4 parentV4 = (JsonSchemaV4) parent;
     	//JsonSchemaV4 _child = (JsonSchemaV4) child;
     	if (forceOverride) {
     		if (child.get$ref() != null && !child.get$ref().equals(parent.get$ref())) {
@@ -69,7 +69,7 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
     			parent.setPattern(child.getPattern());
     		}
     		if (child.getRequired() != null && !child.getRequired().equals(parent.getRequired())) {
-    			_parent.setRequired(child.getRequired());
+    			parentV4.setRequired(child.getRequired());
     		}
     		if (child.getSelfRequired() != null && !child.getSelfRequired().equals(parent.getSelfRequired())) {
     			parent.setSelfRequired(child.getSelfRequired());

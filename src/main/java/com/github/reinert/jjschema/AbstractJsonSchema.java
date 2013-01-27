@@ -1,6 +1,5 @@
 package com.github.reinert.jjschema;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -238,7 +237,7 @@ public abstract class AbstractJsonSchema implements JsonSchema {
     }
 
 	@Override
-	public ArrayList<String> getRequired() {
+	public Object getRequired() {
 		throw new UnsupportedOperationException("Not supported in this version.");
 	}
 
@@ -248,7 +247,13 @@ public abstract class AbstractJsonSchema implements JsonSchema {
 	}
 	
 	@Override
+	public void setRequired(Object required) {
+		throw new UnsupportedOperationException("Not supported in this version.");	
+	}
+	
+	@Override
     public String toString() {
+		// Of course this won't remain like this
 		ObjectWriter m = new ObjectMapper().writerWithDefaultPrettyPrinter();
         try {
             return m.writeValueAsString(this);
