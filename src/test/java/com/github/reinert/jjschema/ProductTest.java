@@ -1,15 +1,16 @@
 package com.github.reinert.jjschema;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.reinert.jjschema.JsonSchema;
-import com.github.reinert.jjschema.Schema;
+import com.github.reinert.jjschema.SchemaFactory;
 import com.github.reinert.jjschema.SchemaProperty;
 import com.github.reinert.jjschema.SchemaRef;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
@@ -19,21 +20,51 @@ import junit.framework.TestCase;
 public class ProductTest extends TestCase {
 
 	ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
+	static final ObjectMapper MAPPER = new ObjectMapper();
 	
 	/**
      * Test the scheme generate following a scheme source, avaliable at
      * http://json-schema.org/example1.html the output should match the example.
-	 * @throws JsonProcessingException 
+	 * @throws IOException 
      */
-	public void testProductSchema() throws JsonProcessingException, UnavailableVersion {
-		JsonSchema productSchema = Schema.v4SchemaFrom(Product.class);
-		System.out.println(om.writeValueAsString(productSchema));
+	public void testProductSchema() throws UnavailableVersion, IOException {
+		JsonSchema productSchema = SchemaFactory.v4SchemaFrom(Product.class);
+//		System.out.println(om.writeValueAsString(productSchema));
 		
-		JsonSchema complexProductSchema =Schema.v4SchemaFrom(ComplexProduct.class);
-		System.out.println(om.writeValueAsString(complexProductSchema));
+		// Test new implementation using ObjectNode representation
+		JsonNode prodNodeSchema = SchemaFactory.v4NodeSchemaFrom(Product.class);
+//		System.out.println(om.writeValueAsString(prodNodeSchema));
 		
-		JsonSchema productSetSchema = Schema.v4SchemaFrom(ProductSet.class);
-		System.out.println(om.writeValueAsString(productSetSchema));
+		JsonNode productPojoSchema = MAPPER.readTree(om.writeValueAsString(productSchema));
+		assertTrue(prodNodeSchema.equals(productPojoSchema));
+		
+		
+		
+
+		JsonSchema complexProductSchema = SchemaFactory.v4SchemaFrom(ComplexProduct.class);
+//		System.out.println(om.writeValueAsString(complexProductSchema));
+		
+		// Test new implementation using ObjectNode representation
+		JsonNode complexProdNodeSchema = SchemaFactory.v4NodeSchemaFrom(ComplexProduct.class);
+		System.out.println(om.writeValueAsString(complexProdNodeSchema));
+		
+		JsonNode complexProductPojoSchema = MAPPER.readTree(om.writeValueAsString(complexProductSchema));
+		assertTrue(complexProdNodeSchema.equals(complexProductPojoSchema));
+		
+		
+		
+		
+		JsonSchema productSetSchema = SchemaFactory.v4SchemaFrom(ProductSet.class);
+//		System.out.println(om.writeValueAsString(productSetSchema));
+		
+		// Test new implementation using ObjectNode representation
+		JsonNode prodSetNodeSchema = SchemaFactory.v4NodeSchemaFrom(ProductSet.class);
+//		System.out.println(om.writeValueAsString(prodNodeSchema));
+		
+		JsonNode productSetPojoSchema = MAPPER.readTree(om.writeValueAsString(productSetSchema));
+		assertTrue(prodSetNodeSchema.equals(productSetPojoSchema));
+		
+		
 	}
 	
 	

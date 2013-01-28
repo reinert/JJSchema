@@ -53,7 +53,7 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
     		if (child.getMaxLength() != null && !child.getMaxLength().equals(parent.getMaxLength())) {
     			parent.setMaxLength(child.getMaxLength());
     		}
-    		if (parent.getMinimum() != null && !child.getMinimum().equals(parent.getMinimum())) {
+    		if (child.getMinimum() != null && !child.getMinimum().equals(parent.getMinimum())) {
     			parent.setMinimum(child.getMinimum());
     		}
     		if (child.getMinItems() != null && !child.getMinItems().equals(parent.getMinItems())) {

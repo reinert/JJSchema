@@ -138,7 +138,7 @@ public class HyperSchemaV4 extends JsonSchemaV4 {
 		if (path != null) {
 			hyperSchema = generateHyperSchemaFromResource(type);
 		} else {
-            JsonSchemaV4 jsonSchema = (JsonSchemaV4) Schema.v4SchemaFrom(type);
+            JsonSchemaV4 jsonSchema = (JsonSchemaV4) SchemaFactory.v4SchemaFrom(type);
 			if (jsonSchema != null) {
 				if (jsonSchema.getType().equals("array")) {
 					if (!Collection.class.isAssignableFrom(type)) {
@@ -305,7 +305,7 @@ public class HyperSchemaV4 extends JsonSchemaV4 {
 							schema.setType("object");
 						}
 						QueryParam q = (QueryParam) a;
-						schema.addProperty(q.value(), new HyperSchemaV4((JsonSchemaV4) Schema.v4SchemaFrom(paramTypes[i])));
+						schema.addProperty(q.value(), new HyperSchemaV4((JsonSchemaV4) SchemaFactory.v4SchemaFrom(paramTypes[i])));
 						prop = q.value();
 						hasParam = true;
 						isBodyParam = false;
@@ -318,7 +318,7 @@ public class HyperSchemaV4 extends JsonSchemaV4 {
 						}
 						FormParam q = (FormParam) a;
                                                 
-						schema.addProperty(q.value(), new HyperSchemaV4((JsonSchemaV4) Schema.v4SchemaFrom(paramTypes[i])));
+						schema.addProperty(q.value(), new HyperSchemaV4((JsonSchemaV4) SchemaFactory.v4SchemaFrom(paramTypes[i])));
 						prop = q.value();
 						hasParam = true;
 						isBodyParam = false;
