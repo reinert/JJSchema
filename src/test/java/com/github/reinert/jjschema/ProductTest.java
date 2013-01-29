@@ -46,7 +46,7 @@ public class ProductTest extends TestCase {
 		
 		// Test new implementation using ObjectNode representation
 		JsonNode complexProdNodeSchema = SchemaFactory.v4NodeSchemaFrom(ComplexProduct.class);
-		System.out.println(om.writeValueAsString(complexProdNodeSchema));
+//		System.out.println(om.writeValueAsString(complexProdNodeSchema));
 		
 		JsonNode complexProductPojoSchema = MAPPER.readTree(om.writeValueAsString(complexProductSchema));
 		assertTrue(complexProdNodeSchema.equals(complexProductPojoSchema));
@@ -59,7 +59,7 @@ public class ProductTest extends TestCase {
 		
 		// Test new implementation using ObjectNode representation
 		JsonNode prodSetNodeSchema = SchemaFactory.v4NodeSchemaFrom(ProductSet.class);
-//		System.out.println(om.writeValueAsString(prodNodeSchema));
+		System.out.println(om.writeValueAsString(prodSetNodeSchema));
 		
 		JsonNode productSetPojoSchema = MAPPER.readTree(om.writeValueAsString(productSetSchema));
 		assertTrue(prodSetNodeSchema.equals(productSetPojoSchema));
