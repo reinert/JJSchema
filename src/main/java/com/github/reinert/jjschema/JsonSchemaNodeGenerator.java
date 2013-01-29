@@ -3,6 +3,7 @@ package com.github.reinert.jjschema;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +35,7 @@ public abstract class JsonSchemaNodeGenerator {
 		String s = SimpleTypeMappings.forClass(type);
 	    if (s != null) {
 	        schema.put("type", s);
-	    } else if (Iterable.class.isAssignableFrom(type)) {
+	    } else if (Iterable.class.isAssignableFrom(type) || Collection.class.isAssignableFrom(type)) {
 	        checkCustomCollection(type, schema);
 	    } else if (type == Void.class || type == void.class) {
 	    	schema = null;
@@ -55,11 +56,11 @@ public abstract class JsonSchemaNodeGenerator {
 	}
 
 	private <T> void checkCustomCollection(Class<T> type, ObjectNode schema) {
-		if (!Collection.class.isAssignableFrom(type)) {
-		    // NOTE: Customized Iterable Class must declare the Collection object at first
-		    bindArraySchema(type, schema);
-		} else {
+		if (AbstractCollection.class.isAssignableFrom(type)) {
 			schema.put("type", "array");
+		} else {
+			// NOTE: Customized Iterable/Collection Wrapper Class must declare the intended Collection at first
+			bindArraySchema(type, schema);
 		}
 	}
 
