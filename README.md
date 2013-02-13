@@ -61,24 +61,24 @@ The output:
         "description":"A product from Acme's catalog",
         "required":["price","name","id"],
         "properties":{
-        "id":{
-           "type":"integer",
-           "description":"The unique identifier for a product"
-        },
-        "tags":{
-           "type":"array",
-           "items":{"type":"string"},
-           "minItems":1,
-           "uniqueItems":true
-        },
-        "price":{
-           "type":"number",
-           "minimum":0,
-           "exclusiveMinimum":true
-        },
-        "name":{
-           "type":"string",
-           "description":"Name of the product"
+            "id":{
+                "type":"integer",
+                "description":"The unique identifier for a product"
+            },
+            "tags":{
+                "type":"array",
+                "items":{"type":"string"},
+                "minItems":1,
+                "uniqueItems":true
+            },
+            "price":{
+                "type":"number",
+                "minimum":0,
+                "exclusiveMinimum":true
+            },
+            "name":{
+                "type":"string",
+                "description":"Name of the product"
+            }
         }
-      } 
     }
