@@ -1,7 +1,9 @@
-package com.github.reinert.jjschema;
+package com.github.reinert.jjschema.deprecated;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.github.reinert.jjschema.SchemaProperty;
 
 public class JsonSchemaPojoGeneratorV4 extends JsonSchemaPojoGenerator {
 

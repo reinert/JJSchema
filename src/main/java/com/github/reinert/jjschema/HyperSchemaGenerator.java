@@ -6,8 +6,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -23,20 +21,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.JsonParser.NumberType;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.reinert.jjschema.exception.InvalidLinkMethod;
 
-public class HyperSchemaNodeGenerator {
+public class HyperSchemaGenerator {
 
-	JsonSchemaNodeGenerator jsonSchemaGenerator;
+	JsonSchemaGenerator jsonSchemaGenerator;
 
-	protected HyperSchemaNodeGenerator(JsonSchemaNodeGenerator jsonSchemaGenerator) {
+	protected HyperSchemaGenerator(JsonSchemaGenerator jsonSchemaGenerator) {
 		this.jsonSchemaGenerator = jsonSchemaGenerator;
 	}
 	

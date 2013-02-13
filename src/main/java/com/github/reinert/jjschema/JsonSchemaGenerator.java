@@ -14,8 +14,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.reinert.jjschema.deprecated.JsonSchema;
 
-public abstract class JsonSchemaNodeGenerator {
+public abstract class JsonSchemaGenerator {
 
 	ObjectMapper mapper = new ObjectMapper();
 

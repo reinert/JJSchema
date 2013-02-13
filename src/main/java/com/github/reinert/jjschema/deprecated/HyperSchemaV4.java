@@ -1,4 +1,4 @@
-package com.github.reinert.jjschema;
+package com.github.reinert.jjschema.deprecated;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -24,6 +24,8 @@ import javax.ws.rs.core.Context;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.github.reinert.jjschema.Rel;
+import com.github.reinert.jjschema.SchemaFactory;
 import com.github.reinert.jjschema.exception.InvalidLinkMethod;
 
 @JsonInclude(Include.NON_DEFAULT)

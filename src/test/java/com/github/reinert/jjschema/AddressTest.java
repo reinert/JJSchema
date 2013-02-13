@@ -6,9 +6,9 @@ package com.github.reinert.jjschema;
 
 import junit.framework.TestCase;
 
-import com.github.reinert.jjschema.JsonSchema;
 import com.github.reinert.jjschema.SchemaFactory;
 import com.github.reinert.jjschema.SchemaProperty;
+import com.github.reinert.jjschema.deprecated.JsonSchema;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 
 /**

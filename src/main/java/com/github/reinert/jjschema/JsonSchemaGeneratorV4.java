@@ -3,7 +3,7 @@ package com.github.reinert.jjschema;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class JsonSchemaNodeGeneratorV4 extends JsonSchemaNodeGenerator {
+public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
 
 	@Override
 	protected void bind(ObjectNode schema, SchemaProperty props) {

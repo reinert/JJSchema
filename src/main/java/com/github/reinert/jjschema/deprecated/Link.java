@@ -1,4 +1,4 @@
-package com.github.reinert.jjschema;
+package com.github.reinert.jjschema.deprecated;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

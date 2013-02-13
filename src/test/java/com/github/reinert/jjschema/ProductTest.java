@@ -9,10 +9,10 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.github.reinert.jjschema.JsonSchema;
 import com.github.reinert.jjschema.SchemaFactory;
 import com.github.reinert.jjschema.SchemaProperty;
 import com.github.reinert.jjschema.SchemaRef;
+import com.github.reinert.jjschema.deprecated.JsonSchema;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 
 import junit.framework.TestCase;

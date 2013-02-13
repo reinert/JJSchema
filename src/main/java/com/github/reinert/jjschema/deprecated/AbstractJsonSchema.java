@@ -1,4 +1,4 @@
-package com.github.reinert.jjschema;
+package com.github.reinert.jjschema.deprecated;
 
 import java.util.HashMap;
 import java.util.Map;

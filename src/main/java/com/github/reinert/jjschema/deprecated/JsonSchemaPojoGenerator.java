@@ -1,4 +1,4 @@
-package com.github.reinert.jjschema;
+package com.github.reinert.jjschema.deprecated;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -6,6 +6,10 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.github.reinert.jjschema.Nullable;
+import com.github.reinert.jjschema.SchemaProperty;
+import com.github.reinert.jjschema.SimpleTypeMappings;
 
 public abstract class JsonSchemaPojoGenerator {
 
