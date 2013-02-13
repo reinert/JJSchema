@@ -48,15 +48,19 @@ Suppose the following bean styled class:
 
 Type the following code:
 
-    JsonSchema productSchema = Schema.v4SchemaFrom(Product.class);
-    System.out.println(productSchema.toString());
+    JsonNode productSchema = Schema.v4SchemaFrom(Product.class);
+    System.out.println(productSchema);
 
 
 The output:
 
     {
-      "required":["price","name","id"],
-      "properties":{
+        "type":"object",
+        "$schema":"http://json-schema.org/draft-04/schema#",
+        "title":"Product",
+        "description":"A product from Acme's catalog",
+        "required":["price","name","id"],
+        "properties":{
         "id":{
            "type":"integer",
            "description":"The unique identifier for a product"
@@ -76,9 +80,5 @@ The output:
            "type":"string",
            "description":"Name of the product"
         }
-      },
-      "type":"object",
-      "$schema":"http://json-schema.org/draft-04/schema#",
-      "title":"Product",
-      "description":"A product from Acme's catalog"
+      } 
     }
