@@ -2,8 +2,9 @@ package com.github.reinert.jjschema;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.reinert.jjschema.HyperSchemaV4;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.reinert.jjschema.model.User;
 import com.github.reinert.jjschema.resource.UserResource;
 
@@ -11,13 +12,15 @@ import junit.framework.TestCase;
 
 public class UserResourceTest extends TestCase {
 	
-	ObjectMapper om = new ObjectMapper();
+	ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
 	
 	public void testHyperSchema() throws JsonProcessingException {
-		HyperSchemaV4 userSchema = HyperSchemaV4.generateHyperSchema(User.class);
+		JsonNode userSchema = SchemaFactory.v4HyperSchemaFrom(User.class);
 		System.out.println(om.writeValueAsString(userSchema));
 		
-		HyperSchemaV4 userHyperSchema = HyperSchemaV4.generateHyperSchema(UserResource.class);
+		System.out.println();
+		
+		JsonNode userHyperSchema = SchemaFactory.v4HyperSchemaFrom(UserResource.class);
 		System.out.println(om.writeValueAsString(userHyperSchema));
 	}
 

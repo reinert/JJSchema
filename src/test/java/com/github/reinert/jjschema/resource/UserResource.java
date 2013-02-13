@@ -24,7 +24,7 @@ import com.github.reinert.jjschema.model.Users;
 public class UserResource {
 	
 	@GET
-    public Users getAll(@QueryParam("minAge") boolean funcionarios) {
+    public Users getAll(@QueryParam("minAge") int min, @QueryParam("maxAge") int max) {
     	Users users = null;
     	return users;
     }
@@ -46,7 +46,7 @@ public class UserResource {
     @GET
     @Path("/{id}/admin")
     @Rel("admin")
-    public Users getAdminUsers(@PathParam("id") Short id) {
+    public Users getAdminUsers(@PathParam("id") Short id, @QueryParam("minAge") int min, @QueryParam("maxAge") int max) {
     	Users users = null;
     	return users;
     }
@@ -58,17 +58,17 @@ public class UserResource {
     	return;
     }
     
-    @PUT
-    @Path("/{id}")
-    public void hasBodyParam(@PathParam("id") Short id, @Media(type="image/png", binaryEncoding="base64") Byte[] img) {
-    	return;
-    }
-    
-    @POST
-    @Path("/{id}")
-    public void hasParam(@PathParam("id") Short id, @FormParam("img") @Media(type="image/png", binaryEncoding="base64") Byte[] img) {
-    	return;
-    }
+//    @PUT
+//    @Path("/{id}")
+//    public void hasBodyParam(@PathParam("id") Short id, @Media(type="image/png", binaryEncoding="base64") Byte[] img) {
+//    	return;
+//    }
+//    
+//    @POST
+//    @Path("/{id}")
+//    public void hasParam(@PathParam("id") Short id, @FormParam("img") @Media(type="image/png", binaryEncoding="base64") Byte[] img) {
+//    	return;
+//    }
     
 //    @POST
 //    @Path("/{id}")

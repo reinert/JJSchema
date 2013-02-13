@@ -28,11 +28,11 @@ public class ProductTest extends TestCase {
 	 * @throws IOException 
      */
 	public void testProductSchema() throws UnavailableVersion, IOException {
-		JsonSchema productSchema = SchemaFactory.v4SchemaFrom(Product.class);
+		JsonSchema productSchema = SchemaFactory.v4PojoSchemaFrom(Product.class);
 //		System.out.println(om.writeValueAsString(productSchema));
 		
 		// Test new implementation using ObjectNode representation
-		JsonNode prodNodeSchema = SchemaFactory.v4NodeSchemaFrom(Product.class);
+		JsonNode prodNodeSchema = SchemaFactory.v4SchemaFrom(Product.class);
 //		System.out.println(om.writeValueAsString(prodNodeSchema));
 		
 		JsonNode productPojoSchema = MAPPER.readTree(om.writeValueAsString(productSchema));
@@ -41,11 +41,11 @@ public class ProductTest extends TestCase {
 		
 		
 
-		JsonSchema complexProductSchema = SchemaFactory.v4SchemaFrom(ComplexProduct.class);
+		JsonSchema complexProductSchema = SchemaFactory.v4PojoSchemaFrom(ComplexProduct.class);
 //		System.out.println(om.writeValueAsString(complexProductSchema));
 		
 		// Test new implementation using ObjectNode representation
-		JsonNode complexProdNodeSchema = SchemaFactory.v4NodeSchemaFrom(ComplexProduct.class);
+		JsonNode complexProdNodeSchema = SchemaFactory.v4SchemaFrom(ComplexProduct.class);
 //		System.out.println(om.writeValueAsString(complexProdNodeSchema));
 		
 		JsonNode complexProductPojoSchema = MAPPER.readTree(om.writeValueAsString(complexProductSchema));
@@ -54,11 +54,11 @@ public class ProductTest extends TestCase {
 		
 		
 		
-		JsonSchema productSetSchema = SchemaFactory.v4SchemaFrom(ProductSet.class);
+		JsonSchema productSetSchema = SchemaFactory.v4PojoSchemaFrom(ProductSet.class);
 //		System.out.println(om.writeValueAsString(productSetSchema));
 		
 		// Test new implementation using ObjectNode representation
-		JsonNode prodSetNodeSchema = SchemaFactory.v4NodeSchemaFrom(ProductSet.class);
+		JsonNode prodSetNodeSchema = SchemaFactory.v4SchemaFrom(ProductSet.class);
 		System.out.println(om.writeValueAsString(prodSetNodeSchema));
 		
 		JsonNode productSetPojoSchema = MAPPER.readTree(om.writeValueAsString(productSetSchema));

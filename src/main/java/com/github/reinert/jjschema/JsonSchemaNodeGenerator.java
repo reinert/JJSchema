@@ -45,7 +45,7 @@ public abstract class JsonSchemaNodeGenerator {
 		return schema;
 	}
 	
-	private <T> void checkCustomObject(Class<T> type, ObjectNode schema) {
+	protected <T> void checkCustomObject(Class<T> type, ObjectNode schema) {
 		schema.put("type", "object");
 	    // fill root object properties
 	    bindRoot(type, schema);
@@ -149,37 +149,46 @@ public abstract class JsonSchemaNodeGenerator {
 		Class<? super T> superclass = type.getSuperclass();
 		if (superclass != Object.class && superclass != JsonSchema.class) {
 			ObjectNode parentSchema = generateSchema(superclass);
-			schema = mergeSchema(parentSchema, schema);
+			schema = mergeSchema(parentSchema, schema, false);
 		}
 	}
 	
-	protected ObjectNode mergeSchema(ObjectNode parent, ObjectNode child) {
+	protected ObjectNode mergeSchema(ObjectNode parent, ObjectNode child, boolean overwriteProperties) {
 		Iterator<String> namesIterator = child.fieldNames();
-		while (namesIterator.hasNext()) {
-			String propertyName = namesIterator.next();
-			if (!propertyName.equals("properties")) {
+		
+		if (overwriteProperties) {
+			while (namesIterator.hasNext()) {
+				String propertyName = namesIterator.next();
 				overwriteProperty(parent, child, propertyName);
+			}
+		} else {
+			while (namesIterator.hasNext()) {
+				String propertyName = namesIterator.next();
+				if (!propertyName.equals("properties")) {
+					overwriteProperty(parent, child, propertyName);
+				}
+			}
+			
+			ObjectNode properties = (ObjectNode) child.get("properties");
+			if (properties != null) {
+				if (parent.get("properties") == null) {
+					parent.putObject("properties");
+				}
+
+				Iterator<Entry<String, JsonNode>> it = properties.fields();
+				while (it.hasNext()) {
+					Entry<String, JsonNode> entry = it.next();
+					String pName = entry.getKey();
+					ObjectNode pSchema = (ObjectNode) entry.getValue();
+					ObjectNode actualSchema = (ObjectNode) parent.get("properties").get(pName);
+					if (actualSchema != null) {
+						mergeSchema(pSchema, actualSchema, false);
+					}
+					((ObjectNode) parent.get("properties")).put(pName, pSchema);
+				}
 			}
 		}
 		
-		ObjectNode properties = (ObjectNode) child.get("properties");
-		if (properties != null) {
-			if (parent.get("properties") == null) {
-				parent.putObject("properties");
-			}
-
-			Iterator<Entry<String, JsonNode>> it = properties.fields();
-			while (it.hasNext()) {
-				Entry<String, JsonNode> entry = it.next();
-				String pName = entry.getKey();
-				ObjectNode pSchema = (ObjectNode) entry.getValue();
-				ObjectNode actualSchema = (ObjectNode) parent.get("properties").get(pName);
-				if (actualSchema != null) {
-					mergeSchema(pSchema, actualSchema);
-				}
-				((ObjectNode) parent.get("properties")).put(pName, pSchema);
-			}
-		}
 		return parent;
     }
 

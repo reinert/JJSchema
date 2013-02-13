@@ -3,7 +3,7 @@ package com.github.reinert.jjschema;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
+public class JsonSchemaPojoGeneratorV4 extends JsonSchemaPojoGenerator {
 
 	@Override
 	protected AbstractJsonSchema createInstance() {

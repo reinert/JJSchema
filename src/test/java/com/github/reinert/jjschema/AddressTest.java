@@ -29,7 +29,7 @@ public class AddressTest extends TestCase {
         
 //        String expected = "{\"description\":\"An Address following the convention of http://microformats.org/wiki/hcard\",\"type\":\"object\",\"properties\":{\"post-office-box\":{\"type\":\"string\"},\"extended-address\":{\"type\":\"string\"},\"street-address\":{\"type\":\"string\"},\"locality\":{\"type\":\"string\",\"required\":true},\"region\":{\"type\":\"string\",\"required\":true},\"postal-code\":{\"type\":\"string\"},\"country-name\":{\"type\":\"string\",\"required\":true}}}";
 
-        JsonSchema s = SchemaFactory.v4SchemaFrom(Address.class);
+        JsonSchema s = SchemaFactory.v4PojoSchemaFrom(Address.class);
         // verifica se o proprio objeto tem schema
         assertEquals("An Address following the convention of http://microformats.org/wiki/hcard", s.getDescription());
         assertEquals("object", s.getType());

@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class JsonSchemaGenerator {
+public abstract class JsonSchemaPojoGenerator {
 
 	abstract protected AbstractJsonSchema createInstance();
 	abstract protected void bind(AbstractJsonSchema schema, SchemaProperty props);
