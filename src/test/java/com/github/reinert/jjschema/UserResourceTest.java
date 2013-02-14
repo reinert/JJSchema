@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.reinert.jjschema.model.User;
-import com.github.reinert.jjschema.resource.UserResource;
+import com.github.reinert.jjschema.rest.UserResource;
 
 import junit.framework.TestCase;
 

@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Product set",
+    "type": "array",
+    "items": {
+        "title": "Product",
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "The unique identifier for a product",
+                "type": "integer"
+            },
+            "name": {
+                "type": "string",
+                "description": "Name of the product"
+            },
+            "price": {
+                "type": "number",
+                "minimum": 0,
+                "exclusiveMinimum": true
+            },
+            "tags": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+            },
+            "dimensions": {
+                "type": "object",
+                "properties": {
+                    "height": {"type": "number"},
+                    "length": {"type": "number"},
+                    "width": {"type": "number"}
+                    
+                },
+                "required": ["height", "length", "width"]
+            },
+            "warehouseLocation": {
+                "type": "object",
+                "description": "Coordinates of the warehouse with the product",
+                "$ref": "http://json-schema.org/geo",
+                "properties": {
+                    "latitude": { "type": "number" },
+                    "longitude": { "type": "number" }
+                }
+            }
+        },
+        "required": ["id", "price", "name"]
+    }
+}

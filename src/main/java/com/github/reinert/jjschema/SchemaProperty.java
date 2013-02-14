@@ -21,5 +21,9 @@ public @interface SchemaProperty {
 	boolean required() default false;
 	String[] enums() default {};
 	int minItems() default 0;
+	long maxItems() default -1l;
 	boolean uniqueItems() default false;
+	int multipleOf() default 0;
+	int minLength() default 0;
+	long maxLength() default -1l;
 }

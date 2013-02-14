@@ -41,25 +41,28 @@ public abstract class JsonSchemaGenerator {
 	    } else if (type == Void.class || type == void.class) {
 	    	schema = null;
 	    } else {
-	    	checkCustomObject(type, schema);
+	    	schema = checkCustomObject(type, schema);
 	    }
 		return schema;
 	}
 	
-	protected <T> void checkCustomObject(Class<T> type, ObjectNode schema) {
+	protected <T> ObjectNode checkCustomObject(Class<T> type, ObjectNode schema) {
 		schema.put("type", "object");
 	    // fill root object properties
 	    bindRoot(type, schema);
 	    // Generate the class properties' schemas
 	    bindProperties(type, schema);
 	    // Merge with parent class
-	    mergeWithParent(type, schema);
+	    schema = mergeWithParent(type, schema);
+	    
+	    return schema;
 	}
 
 	private <T> void checkCustomCollection(Class<T> type, ObjectNode schema) {
 		if (AbstractCollection.class.isAssignableFrom(type)) {
 			schema.put("type", "array");
 		} else {
+			bindRoot(type, schema);
 			// NOTE: Customized Iterable/Collection Wrapper Class must declare the intended Collection at first
 			bindArraySchema(type, schema);
 		}
@@ -146,12 +149,13 @@ public abstract class JsonSchemaGenerator {
 		return name;
 	}
 
-	protected <T> void mergeWithParent(Class<T> type, ObjectNode schema) {
+	protected <T> ObjectNode mergeWithParent(Class<T> type, ObjectNode schema) {
 		Class<? super T> superclass = type.getSuperclass();
 		if (superclass != Object.class && superclass != JsonSchema.class) {
 			ObjectNode parentSchema = generateSchema(superclass);
 			schema = mergeSchema(parentSchema, schema, false);
 		}
+		return schema;
 	}
 	
 	protected ObjectNode mergeSchema(ObjectNode parent, ObjectNode child, boolean overwriteProperties) {
@@ -162,7 +166,9 @@ public abstract class JsonSchemaGenerator {
 				String propertyName = namesIterator.next();
 				overwriteProperty(parent, child, propertyName);
 			}
+			
 		} else {
+			
 			while (namesIterator.hasNext()) {
 				String propertyName = namesIterator.next();
 				if (!propertyName.equals("properties")) {

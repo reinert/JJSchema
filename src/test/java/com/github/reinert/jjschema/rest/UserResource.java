@@ -1,4 +1,4 @@
-package com.github.reinert.jjschema.resource;
+package com.github.reinert.jjschema.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;

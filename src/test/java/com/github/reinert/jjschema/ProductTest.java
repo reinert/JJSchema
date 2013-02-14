@@ -9,10 +9,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.github.reinert.jjschema.SchemaFactory;
-import com.github.reinert.jjschema.SchemaProperty;
-import com.github.reinert.jjschema.SchemaRef;
-import com.github.reinert.jjschema.deprecated.JsonSchema;
+import com.github.fge.jsonschema.util.JsonLoader;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 
 import junit.framework.TestCase;
@@ -20,7 +17,6 @@ import junit.framework.TestCase;
 public class ProductTest extends TestCase {
 
 	ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
-	static final ObjectMapper MAPPER = new ObjectMapper();
 	
 	/**
      * Test the scheme generate following a scheme source, avaliable at
@@ -28,42 +24,75 @@ public class ProductTest extends TestCase {
 	 * @throws IOException 
      */
 	public void testProductSchema() throws UnavailableVersion, IOException {
-		JsonSchema productSchema = SchemaFactory.v4PojoSchemaFrom(Product.class);
-//		System.out.println(om.writeValueAsString(productSchema));
-		
 		// Test new implementation using ObjectNode representation
-		JsonNode prodNodeSchema = SchemaFactory.v4SchemaFrom(Product.class);
-//		System.out.println(om.writeValueAsString(prodNodeSchema));
+		JsonNode productSchema = SchemaFactory.v4SchemaFrom(Product.class);
+		//System.out.println(om.writeValueAsString(productSchema));
+		JsonNode productSchemaRes = JsonLoader.fromResource("/res/product_schema.json");
 		
-		JsonNode productPojoSchema = MAPPER.readTree(om.writeValueAsString(productSchema));
-		assertTrue(prodNodeSchema.equals(productPojoSchema));
-		
+		assertEquals(productSchemaRes.get("properties"), productSchema.get("properties"));
+		assertEquals(productSchemaRes.get("$schema"), productSchema.get("$schema"));
+		assertEquals(productSchemaRes.get("title"), productSchema.get("title"));
+		assertEquals(productSchemaRes.get("description"), productSchema.get("description"));
+		assertEquals(productSchemaRes.get("type"), productSchema.get("type"));
+		// An ArrayNode must be in the same order to match equals
+		assertEquals(productSchemaRes.get("required"), productSchema.get("required"));
+		assertEquals(productSchemaRes, productSchema);
 		
 		
 
-		JsonSchema complexProductSchema = SchemaFactory.v4PojoSchemaFrom(ComplexProduct.class);
-//		System.out.println(om.writeValueAsString(complexProductSchema));
+//		JsonSchema complexProductSchema = SchemaFactory.v4PojoSchemaFrom(ComplexProduct.class);
+////		System.out.println(om.writeValueAsString(complexProductSchema));
+//		
+//		// Test new implementation using ObjectNode representation
+//		JsonNode complexProdNodeSchema = SchemaFactory.v4SchemaFrom(ComplexProduct.class);
+////		System.out.println(om.writeValueAsString(complexProdNodeSchema));
+//		
+//		JsonNode complexProductPojoSchema = MAPPER.readTree(om.writeValueAsString(complexProductSchema));
+//		assertTrue(complexProdNodeSchema.equals(complexProductPojoSchema));
+//		
+//		
+//		
+//		
+//		JsonSchema productSetSchema = SchemaFactory.v4PojoSchemaFrom(ProductSet.class);
+////		System.out.println(om.writeValueAsString(productSetSchema));
+//		
+//		// Test new implementation using ObjectNode representation
+//		JsonNode prodSetNodeSchema = SchemaFactory.v4SchemaFrom(ProductSet.class);
+////		System.out.println(om.writeValueAsString(prodSetNodeSchema));
+//		
+//		JsonNode productSetPojoSchema = MAPPER.readTree(om.writeValueAsString(productSetSchema));
+//		assertTrue(prodSetNodeSchema.equals(productSetPojoSchema));
+//		
+		JsonNode productSetSchema = SchemaFactory.v4SchemaFrom(ProductSet.class);
+		//System.out.println(om.writeValueAsString(productSetSchema));
+		JsonNode productSetSchemaRes = JsonLoader.fromResource("/res/products_set_schema.json");
 		
-		// Test new implementation using ObjectNode representation
-		JsonNode complexProdNodeSchema = SchemaFactory.v4SchemaFrom(ComplexProduct.class);
-//		System.out.println(om.writeValueAsString(complexProdNodeSchema));
+		//assertEquals(productSetSchemaRes.get("properties"), productSetSchema.get("properties"));
+		assertEquals(productSetSchemaRes.get("$schema"), productSetSchema.get("$schema"));
+		assertEquals(productSetSchemaRes.get("title"), productSetSchema.get("title"));
+		//assertEquals(productSetSchemaRes.get("description"), productSetSchema.get("description"));
+		assertEquals(productSetSchemaRes.get("type"), productSetSchema.get("type"));
+		// An ArrayNode must be in the same order to match equals
+		JsonNode pSetResItems = productSetSchemaRes.get("items");
+		JsonNode pSetItems = productSetSchema.get("items");
 		
-		JsonNode complexProductPojoSchema = MAPPER.readTree(om.writeValueAsString(complexProductSchema));
-		assertTrue(complexProdNodeSchema.equals(complexProductPojoSchema));
+		assertEquals(pSetResItems.get("title"), pSetItems.get("title"));
+		assertEquals(pSetResItems.get("type"), pSetItems.get("type"));
+		assertEquals(pSetResItems.get("required"), pSetItems.get("required"));
 		
+		JsonNode pSetResItemsProps = pSetResItems.get("properties");
+		JsonNode pSetItemsProps = pSetItems.get("properties");
+		assertEquals(pSetResItemsProps.get("dimensions"), pSetItemsProps.get("dimensions"));
+		assertEquals(pSetResItemsProps.get("warehouseLocation"), pSetItemsProps.get("warehouseLocation"));
+		assertEquals(pSetResItemsProps.get("id"), pSetItemsProps.get("id"));
+		assertEquals(pSetResItemsProps.get("price"), pSetItemsProps.get("price"));
+		assertEquals(pSetResItemsProps.get("name"), pSetItemsProps.get("name"));
+		assertEquals(pSetResItemsProps.get("tags"), pSetItemsProps.get("tags"));
+		assertEquals(pSetResItemsProps, pSetItemsProps);
 		
+		assertEquals(pSetResItems, pSetItems);
 		
-		
-		JsonSchema productSetSchema = SchemaFactory.v4PojoSchemaFrom(ProductSet.class);
-//		System.out.println(om.writeValueAsString(productSetSchema));
-		
-		// Test new implementation using ObjectNode representation
-		JsonNode prodSetNodeSchema = SchemaFactory.v4SchemaFrom(ProductSet.class);
-		System.out.println(om.writeValueAsString(prodSetNodeSchema));
-		
-		JsonNode productSetPojoSchema = MAPPER.readTree(om.writeValueAsString(productSetSchema));
-		assertTrue(prodSetNodeSchema.equals(productSetPojoSchema));
-		
+		assertEquals(productSetSchemaRes, productSetSchema);
 		
 	}
 	
@@ -135,7 +164,7 @@ public class ProductTest extends TestCase {
 		@SchemaProperty(required=true)
 		private double width;
 		@SchemaProperty(required=true)
-		private double heigth;
+		private double height;
 		
 		public double getLength() {
 			return length;
@@ -149,11 +178,11 @@ public class ProductTest extends TestCase {
 		public void setWidth(double width) {
 			this.width = width;
 		}
-		public double getHeigth() {
-			return heigth;
+		public double getHeight() {
+			return height;
 		}
-		public void setHeigth(double heigth) {
-			this.heigth = heigth;
+		public void setHeight(double height) {
+			this.height = height;
 		}
 		
 	}
@@ -178,6 +207,7 @@ public class ProductTest extends TestCase {
 		}
 	}
 	
+	@SchemaProperty($schema=SchemaRef.V4, title="Product set")
 	static class ProductSet implements Iterable<ComplexProduct> {
 		
 		private Set<ComplexProduct> products;
