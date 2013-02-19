@@ -24,6 +24,23 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <!-- Uncomment once GPG is setup -->
+            <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
         </plugins>
     </build>
     <dependencies>
@@ -63,4 +80,20 @@
     <organization>
         <name>Reinert, Danilo</name>
     </organization>
+    <licenses>
+        <license>
+            <name>LGPLv3 or later</name>
+            <url>http://www.gnu.org/licenses/lgpl.html</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>git@github.com:reinert/JJSchema</url>
+        <connection>scm:git:git@github.com:reinert/JJSchema</connection>
+        <developerConnection>scm:git:git@github.com:reinert/JJSchema</developerConnection>
+    </scm>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 </project>
