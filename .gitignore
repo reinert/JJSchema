@@ -164,3 +164,10 @@ pip-log.txt
 
 *.class
 target/
+
+
+#############
+## IDEA
+#############
+
+.idea
