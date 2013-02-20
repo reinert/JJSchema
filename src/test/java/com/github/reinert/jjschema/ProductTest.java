@@ -45,7 +45,7 @@ public class ProductTest extends TestCase {
 		// Test new implementation using ObjectNode representation
 		JsonNode productSchema = SchemaFactory.v4SchemaFrom(Product.class);
 		//System.out.println(om.writeValueAsString(productSchema));
-		JsonNode productSchemaRes = JsonLoader.fromResource("/res/product_schema.json");
+		JsonNode productSchemaRes = JsonLoader.fromResource("/product_schema.json");
 		
 		assertEquals(productSchemaRes.get("properties"), productSchema.get("properties"));
 		assertEquals(productSchemaRes.get("$schema"), productSchema.get("$schema"));
@@ -83,7 +83,7 @@ public class ProductTest extends TestCase {
 //		
 		JsonNode productSetSchema = SchemaFactory.v4SchemaFrom(ProductSet.class);
 		//System.out.println(om.writeValueAsString(productSetSchema));
-		JsonNode productSetSchemaRes = JsonLoader.fromResource("/res/products_set_schema.json");
+		JsonNode productSetSchemaRes = JsonLoader.fromResource("/products_set_schema.json");
 		
 		//assertEquals(productSetSchemaRes.get("properties"), productSetSchema.get("properties"));
 		assertEquals(productSetSchemaRes.get("$schema"), productSetSchema.get("$schema"));

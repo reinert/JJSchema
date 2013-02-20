@@ -28,8 +28,6 @@ import junit.framework.TestCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.reinert.jjschema.SchemaFactory;
-import com.github.reinert.jjschema.SchemaProperty;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 
 /**
@@ -52,7 +50,7 @@ public class SimpleExampleTest extends TestCase {
      */
     public void testGenerateSchema() throws UnavailableVersion, JsonProcessingException, IOException {
         
-    	final InputStream in = SimpleExampleTest.class.getResourceAsStream("/res/simple_example.json");
+    	final InputStream in = SimpleExampleTest.class.getResourceAsStream("/simple_example.json");
     	if (in == null)
             throw new IOException("resource not found");
     	JsonNode fromResource = MAPPER.readTree(in);
