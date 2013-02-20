@@ -96,6 +96,7 @@ public class ProductTest extends TestCase {
 		
 		assertEquals(pSetResItems.get("title"), pSetItems.get("title"));
 		assertEquals(pSetResItems.get("type"), pSetItems.get("type"));
+        assertEquals(pSetResItems.get("description"), pSetItems.get("description"));
 		assertEquals(pSetResItems.get("required"), pSetItems.get("required"));
 		
 		JsonNode pSetResItemsProps = pSetResItems.get("properties");
@@ -108,19 +109,19 @@ public class ProductTest extends TestCase {
 		assertEquals(pSetResItemsProps.get("tags"), pSetItemsProps.get("tags"));
 		assertEquals(pSetResItemsProps, pSetItemsProps);
 		
-		Iterator<Entry<String, JsonNode>> it = pSetResItems.fields();
+		Iterator<Entry<String, JsonNode>> it = pSetItems.fields();
 		while (it.hasNext()) {
 			Entry<String, JsonNode> entry = it.next();
 			String propName = entry.getKey();
 			JsonNode node = entry.getValue();
 			System.out.println(propName);
-			assertEquals(node, pSetItems.get(propName));
+			assertEquals(node, pSetResItems.get(propName));
 		}
 		
 		System.out.println("items");
-		//assertEquals(pSetResItems, pSetItems);
+		assertEquals(pSetResItems, pSetItems);
 		
-		//assertEquals(productSetSchemaRes, productSetSchema);
+		assertEquals(productSetSchemaRes, productSetSchema);
 		
 	}
 	

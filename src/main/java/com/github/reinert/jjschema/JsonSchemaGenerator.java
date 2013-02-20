@@ -90,7 +90,9 @@ public abstract class JsonSchemaGenerator {
 		Field field = type.getDeclaredFields()[0];
 		ParameterizedType genericType = (ParameterizedType) field.getGenericType();
 		Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
-		schema.put("items", generateSchema(genericClass));
+        ObjectNode itemsSchema = generateSchema(genericClass);
+        itemsSchema.remove("$schema");
+        schema.put("items", itemsSchema);
 	}
 	
 	private void bindArraySchema(Method method, ObjectNode schema) {

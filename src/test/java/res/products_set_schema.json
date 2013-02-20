@@ -4,6 +4,7 @@
     "type": "array",
     "items": {
         "title": "Product",
+        "description": "A product from Acme's catalog",
         "type": "object",
         "properties": {
             "id": {
