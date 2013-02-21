@@ -31,7 +31,6 @@ import com.github.fge.jsonschema.util.JsonLoader;
 import com.github.reinert.jjschema.JsonSchemaGenerator;
 import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import com.github.reinert.jjschema.SchemaProperty;
-import com.github.reinert.jjschema.SchemaUri;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 
 import junit.framework.TestCase;
@@ -209,7 +208,7 @@ public class ProductTest extends TestCase {
 		}
 	}
 	
-	@SchemaProperty($schema= SchemaUri.DRAFTV4, title="Product set")
+	@SchemaProperty(title="Product set")
 	static class ProductSet implements Iterable<ComplexProduct> {
 		
 		private Set<ComplexProduct> products;
