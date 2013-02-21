@@ -15,33 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.reinert.jjschema.deprecated;
+package com.github.reinert.jjschema;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import java.util.ArrayList;
+public class SchemaUri {
 
-@JsonInclude(Include.NON_DEFAULT)
-public class JsonSchemaV4 extends AbstractJsonSchema implements JsonSchema {
+	public static final String V4 = "http://json-schema.org/draft-04/schema#";
 
-    private ArrayList<String> mRequired;
-    
-    public JsonSchemaV4() {
-	}
-
-    public ArrayList<String> getRequired() {
-        return mRequired;
-    }
-
-	protected void setRequired(ArrayList<String> required) {
-		mRequired = required;
-	}
-
-	public void addRequired(String field) {
-        if (mRequired == null) {
-            mRequired = new ArrayList<String>();
-        }
-        mRequired.add(field);
-    }
-    
 }

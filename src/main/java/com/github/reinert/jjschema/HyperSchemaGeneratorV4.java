@@ -43,11 +43,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.reinert.jjschema.exception.InvalidLinkMethod;
 
-public class HyperSchemaGenerator {
+public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
 
 	JsonSchemaGenerator jsonSchemaGenerator;
 
-	protected HyperSchemaGenerator(JsonSchemaGenerator jsonSchemaGenerator) {
+	protected HyperSchemaGeneratorV4(JsonSchemaGenerator jsonSchemaGenerator) {
 		this.jsonSchemaGenerator = jsonSchemaGenerator;
 	}
 	
@@ -105,7 +105,7 @@ public class HyperSchemaGenerator {
 		link.put("rel", rel);
 		
 		// TODO: by default use a Prototype containing only the $id or $ref for the TargetSchema
-		ObjectNode tgtSchema = generateHyperSchema(method.getReturnType());
+		ObjectNode tgtSchema = generateSchema(method.getReturnType());
 		if (tgtSchema != null)
 			link.put("targetSchema", tgtSchema);
 		
@@ -202,7 +202,7 @@ public class HyperSchemaGenerator {
 				}
 				if (isBodyParam) {
 					hasBodyParam = true;
-					schema = generateHyperSchema(paramTypes[i]);
+					schema = generateSchema(paramTypes[i]);
 					if (media != null) {
 						schema.put("mediaType", media.type());
 						schema.put("binaryEncoding", media.binaryEncoding());
@@ -300,14 +300,15 @@ public class HyperSchemaGenerator {
 		}
 		return jsonSchema;
 	}
-	
-	protected <T> ObjectNode generateHyperSchema(Class<T> type) {
+
+    @Override
+	public <T> ObjectNode generateSchema(Class<T> type) {
 		ObjectNode hyperSchema = null;
 		Annotation path = type.getAnnotation(Path.class);
 		if (path != null) {
 			hyperSchema = generateHyperSchemaFromResource(type);
 		} else {
-            ObjectNode jsonSchema = (ObjectNode) SchemaFactory.v4SchemaFrom(type);
+            ObjectNode jsonSchema = (ObjectNode) SchemaGeneratorBuilder.v4SchemaFrom(type);
 			if (jsonSchema != null) {
 				if (jsonSchema.get("type").asText().equals("array")) {
 					if (!Collection.class.isAssignableFrom(type)) {
@@ -331,4 +332,8 @@ public class HyperSchemaGenerator {
 		return hyperSchema;
 	}
 
+    @Override
+    protected void bind(ObjectNode schema, SchemaProperty props) {
+        jsonSchemaGenerator.bind(schema, props);
+    }
 }

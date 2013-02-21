@@ -22,7 +22,7 @@ import com.github.reinert.jjschema.deprecated.JsonSchema;
 import com.github.reinert.jjschema.deprecated.JsonSchemaPojoGenerator;
 import com.github.reinert.jjschema.deprecated.JsonSchemaPojoGeneratorV4;
 
-public class SchemaFactory {
+public class SchemaGeneratorBuilder {
 
 	private static JsonSchemaPojoGenerator genV4 = new JsonSchemaPojoGeneratorV4();
 	private static JsonSchemaGenerator nodeGenV4 = new JsonSchemaGeneratorV4();
