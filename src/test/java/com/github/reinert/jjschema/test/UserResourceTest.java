@@ -15,29 +15,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.reinert.jjschema;
+package com.github.reinert.jjschema.test;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.github.reinert.jjschema.model.User;
-import com.github.reinert.jjschema.rest.UserResource;
+import com.github.reinert.jjschema.JsonSchemaGenerator;
+import com.github.reinert.jjschema.SchemaGeneratorBuilder;
+import com.github.reinert.jjschema.test.model.User;
+import com.github.reinert.jjschema.test.rest.UserResource;
 
 import junit.framework.TestCase;
 
 public class UserResourceTest extends TestCase {
 	
 	ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
+    JsonSchemaGenerator v4hyperGenerator = SchemaGeneratorBuilder.draftV4HyperSchema().setAutoPutSchemaVersion(false).build();
 	
 	public void testHyperSchema() throws JsonProcessingException {
-		JsonNode userSchema = SchemaFactory.v4HyperSchemaFrom(User.class);
+		JsonNode userSchema = v4hyperGenerator.generateSchema(User.class);
 		System.out.println(om.writeValueAsString(userSchema));
 		
 		System.out.println();
 		
-		JsonNode userHyperSchema = SchemaFactory.v4HyperSchemaFrom(UserResource.class);
+		JsonNode userHyperSchema = v4hyperGenerator.generateSchema(UserResource.class);
 		System.out.println(om.writeValueAsString(userHyperSchema));
 	}
 

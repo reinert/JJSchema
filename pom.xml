@@ -4,7 +4,7 @@
 
     <groupId>com.github.reinert</groupId>
     <artifactId>jjschema</artifactId>
-    <version>0.1</version>
+    <version>0.3</version>
     <packaging>jar</packaging>
 
     <name>JJSchema</name>
@@ -74,6 +74,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>13.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.fge</groupId>
+            <artifactId>json-schema-core</artifactId>
+            <version>0.99.5</version>
         </dependency>
     </dependencies>
     <organization>

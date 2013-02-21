@@ -19,6 +19,6 @@ package com.github.reinert.jjschema;
 
 public class SchemaUri {
 
-	public static final String V4 = "http://json-schema.org/draft-04/schema#";
+	public static final String DRAFTV4 = "http://json-schema.org/draft-04/schema#";
 
 }

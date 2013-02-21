@@ -19,13 +19,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.github.reinert.jjschema;
+package com.github.reinert.jjschema.test;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import junit.framework.TestCase;
 
-import com.github.reinert.jjschema.SchemaFactory;
+import com.github.reinert.jjschema.JsonSchemaGenerator;
+import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import com.github.reinert.jjschema.SchemaProperty;
-import com.github.reinert.jjschema.deprecated.JsonSchema;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 
 /**
@@ -33,6 +34,8 @@ import com.github.reinert.jjschema.exception.UnavailableVersion;
  * @author heatbr
  */
 public class AddressTest extends TestCase {
+
+    JsonSchemaGenerator v4generator = SchemaGeneratorBuilder.draftV4Schema().setAutoPutSchemaVersion(false).build();
 
     public AddressTest(String testName) {
         super(testName);
@@ -46,10 +49,10 @@ public class AddressTest extends TestCase {
         
 //        String expected = "{\"description\":\"An Address following the convention of http://microformats.org/wiki/hcard\",\"type\":\"object\",\"properties\":{\"post-office-box\":{\"type\":\"string\"},\"extended-address\":{\"type\":\"string\"},\"street-address\":{\"type\":\"string\"},\"locality\":{\"type\":\"string\",\"required\":true},\"region\":{\"type\":\"string\",\"required\":true},\"postal-code\":{\"type\":\"string\"},\"country-name\":{\"type\":\"string\",\"required\":true}}}";
 
-        JsonSchema s = SchemaFactory.v4PojoSchemaFrom(Address.class);
+        JsonNode s = v4generator.generateSchema(Address.class);
         // verifica se o proprio objeto tem schema
-        assertEquals("An Address following the convention of http://microformats.org/wiki/hcard", s.getDescription());
-        assertEquals("object", s.getType());
+        assertEquals("An Address following the convention of http://microformats.org/wiki/hcard", s.get("description").asText());
+        assertEquals("object", s.get("type").asText());
 
         //compara a saida com modelo exemplo do site
         //assertEquals(expected, s.toString());

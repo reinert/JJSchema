@@ -45,7 +45,7 @@ import com.github.reinert.jjschema.exception.InvalidLinkMethod;
 
 public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
 
-	JsonSchemaGenerator jsonSchemaGenerator;
+	final JsonSchemaGenerator jsonSchemaGenerator;
 
 	protected HyperSchemaGeneratorV4(JsonSchemaGenerator jsonSchemaGenerator) {
 		this.jsonSchemaGenerator = jsonSchemaGenerator;
@@ -308,7 +308,7 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
 		if (path != null) {
 			hyperSchema = generateHyperSchemaFromResource(type);
 		} else {
-            ObjectNode jsonSchema = (ObjectNode) SchemaGeneratorBuilder.v4SchemaFrom(type);
+            ObjectNode jsonSchema = (ObjectNode) jsonSchemaGenerator.generateSchema(type);
 			if (jsonSchema != null) {
 				if (jsonSchema.get("type").asText().equals("array")) {
 					if (!Collection.class.isAssignableFrom(type)) {

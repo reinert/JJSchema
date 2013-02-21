@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.reinert.jjschema.rest;
+package com.github.reinert.jjschema.test.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -30,8 +30,8 @@ import javax.ws.rs.core.MediaType;
 
 
 import com.github.reinert.jjschema.Rel;
-import com.github.reinert.jjschema.model.User;
-import com.github.reinert.jjschema.model.Users;
+import com.github.reinert.jjschema.test.model.User;
+import com.github.reinert.jjschema.test.model.Users;
 
 @Path("/users")
 @Consumes( { MediaType.APPLICATION_JSON })

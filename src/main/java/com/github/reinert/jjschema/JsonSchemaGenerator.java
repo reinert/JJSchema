@@ -31,19 +31,30 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.reinert.jjschema.deprecated.JsonSchema;
 
 public abstract class JsonSchemaGenerator {
 
-	ObjectMapper mapper = new ObjectMapper();
+	final ObjectMapper mapper = new ObjectMapper();
+    boolean autoPutVersion = true;
 
-	abstract protected void bind(ObjectNode schema, SchemaProperty props);
+    protected JsonSchemaGenerator(){}
+
+    abstract protected void bind(ObjectNode schema, SchemaProperty props);
 	
 	protected ObjectNode createInstance() {
 		return mapper.createObjectNode();
 	}
-	
-	public <T> ObjectNode generateSchema(Class<T> type) {
+
+    public boolean isAutoPutVersion() {
+        return autoPutVersion;
+    }
+
+    public JsonSchemaGenerator setAutoPutVersion(boolean autoPutVersion) {
+        this.autoPutVersion = autoPutVersion;
+        return this;
+    }
+
+    public <T> ObjectNode generateSchema(Class<T> type) {
 		ObjectNode schema = createInstance();
         schema = checkType(type, schema);
         return schema;
@@ -170,7 +181,7 @@ public abstract class JsonSchemaGenerator {
 
 	protected <T> ObjectNode mergeWithParent(Class<T> type, ObjectNode schema) {
 		Class<? super T> superclass = type.getSuperclass();
-		if (superclass != Object.class && superclass != JsonSchema.class) {
+		if (superclass != Object.class) {
 			ObjectNode parentSchema = generateSchema(superclass);
 			schema = mergeSchema(parentSchema, schema, false);
 		}

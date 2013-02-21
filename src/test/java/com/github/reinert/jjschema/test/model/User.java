@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.reinert.jjschema.model;
+package com.github.reinert.jjschema.test.model;
 
 import com.github.reinert.jjschema.Media;
 import com.github.reinert.jjschema.Nullable;

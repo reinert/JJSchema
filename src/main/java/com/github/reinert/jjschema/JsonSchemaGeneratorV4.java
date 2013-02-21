@@ -19,6 +19,7 @@ package com.github.reinert.jjschema;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.fge.jsonschema.SchemaVersion;
 
 public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
 
@@ -27,9 +28,14 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
     	if (!props.$ref().isEmpty()) {
         	schema.put("$ref", props.$ref());
         }
-    	if (!props.$schema().isEmpty()) {
-        	schema.put("$schema", props.$schema());
-        }
+
+        // The schema version must be given by the generator
+    	//if (!props.$schema().isEmpty()) {
+        //	schema.put("$schema", props.$schema());
+        //}
+        if (autoPutVersion)
+            schema.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
+
         if (!props.id().isEmpty()) {
             schema.put("id", props.id());
         }

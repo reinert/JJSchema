@@ -19,7 +19,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.github.reinert.jjschema;
+package com.github.reinert.jjschema.test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +28,9 @@ import junit.framework.TestCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.reinert.jjschema.JsonSchemaGenerator;
+import com.github.reinert.jjschema.SchemaGeneratorBuilder;
+import com.github.reinert.jjschema.SchemaProperty;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 
 /**
@@ -37,6 +40,7 @@ import com.github.reinert.jjschema.exception.UnavailableVersion;
 public class SimpleExampleTest extends TestCase {
 
 	static ObjectMapper MAPPER = new ObjectMapper();
+    JsonSchemaGenerator v4generator = SchemaGeneratorBuilder.draftV4Schema().setAutoPutSchemaVersion(false).build();
 	
     public SimpleExampleTest(String testName) {
         super(testName);
@@ -54,7 +58,7 @@ public class SimpleExampleTest extends TestCase {
     	if (in == null)
             throw new IOException("resource not found");
     	JsonNode fromResource = MAPPER.readTree(in);
-    	JsonNode fromJavaType = SchemaFactory.v4SchemaFrom(SimpleExample.class);
+    	JsonNode fromJavaType = v4generator.generateSchema(SimpleExample.class);
     	
     	assertEquals(fromResource, fromJavaType);
     }
