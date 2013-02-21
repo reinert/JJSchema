@@ -26,7 +26,6 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.TYPE })
 public @interface SchemaProperty {
 	String $ref() default "";
-	String $schema() default "";
 	String id() default "";
 	String title() default "";
 	String description() default "";

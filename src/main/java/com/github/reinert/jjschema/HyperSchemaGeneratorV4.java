@@ -329,6 +329,9 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
 				}
 			}
 		}
+		
+		//TODO: When available by SchemaVersion, put the $schema attribute as the correct HyperSchema ref.
+		
 		return hyperSchema;
 	}
 
