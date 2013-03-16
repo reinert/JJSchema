@@ -21,15 +21,12 @@
  */
 package com.github.reinert.jjschema.test;
 
-import java.util.List;
-
 import junit.framework.TestCase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.reinert.jjschema.JsonSchemaGenerator;
-import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import com.github.reinert.jjschema.SchemaProperty;
 

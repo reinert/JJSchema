@@ -24,6 +24,7 @@ import java.util.Map;
 
 /**
  * Mapping of builtin Java types to their matching JSON Schema primitive type
+ * @author fge
  */
 public enum SimpleTypeMappings
 {

@@ -21,6 +21,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.SchemaVersion;
 
+
+/**
+* Implements the JSON Schema generation according to draft v4
+* @author reinert
+*/
 public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
 
 	@Override

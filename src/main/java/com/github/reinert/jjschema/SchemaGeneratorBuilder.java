@@ -19,9 +19,8 @@ package com.github.reinert.jjschema;
 
 
 /**
- * A SchemaGenerator builder for creating SchemaGenerators considering some options. 
- * @author Danilo
- *
+ * A SchemaGenerator builder for creating SchemaGenerators considering some options.
+ * @author reinert
  */
 public class SchemaGeneratorBuilder {
 
