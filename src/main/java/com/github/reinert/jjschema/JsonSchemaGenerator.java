@@ -133,8 +133,9 @@ public abstract class JsonSchemaGenerator {
         
         Nullable nullable = field != null ? field.getAnnotation(Nullable.class) : method.getAnnotation(Nullable.class);
         if (nullable != null) {
+        	String oldType = schema.get("type").asText();
         	ArrayNode typeArray = schema.putArray("type");
-        	typeArray.add("object");
+        	typeArray.add(oldType);
         	typeArray.add("null");
         }
             
