@@ -21,8 +21,6 @@
  */
 package com.github.reinert.jjschema.test;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -33,8 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.reinert.jjschema.JsonSchemaGenerator;
 import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaGeneratorBuilder;
-import com.github.reinert.jjschema.SchemaProperty;
-import com.github.reinert.jjschema.exception.UnavailableVersion;
 
 /**
  *

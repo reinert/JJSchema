@@ -42,12 +42,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.reinert.jjschema.exception.InvalidLinkMethod;
-import com.github.reinert.jjschema.test.UserResourceTest;
+import com.github.reinert.jjschema.test.JavaRESTfulTest;
 
 /**
  * A Hyper-Schema generator from JSR311 specification (Java RESTful) annotated classes.
  * It generates an hyper-schema with correct links, targets, mediaType, and other properties.
- * Please consider looking at {@link UserResourceTest} for an example of how to use it.
+ * Please consider looking at {@link JavaRESTfulTest} for an example of how to use it.
  * @author Danilo
  *
  */

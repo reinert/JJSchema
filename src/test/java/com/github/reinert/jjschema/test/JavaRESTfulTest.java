@@ -29,19 +29,19 @@ import com.github.reinert.jjschema.test.rest.UserResource;
 
 import junit.framework.TestCase;
 
-public class UserResourceTest extends TestCase {
+public class JavaRESTfulTest extends TestCase {
 	
 	ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
     JsonSchemaGenerator v4hyperGenerator = SchemaGeneratorBuilder.draftV4HyperSchema().setAutoPutSchemaVersion(false).build();
 	
 	public void testHyperSchema() throws JsonProcessingException {
-		JsonNode userSchema = v4hyperGenerator.generateSchema(User.class);
-		System.out.println(om.writeValueAsString(userSchema));
+		JsonNode userHyperSchema = v4hyperGenerator.generateSchema(User.class);
+		//System.out.println(om.writeValueAsString(userSchema));
+		assertEquals("image/jpg", userHyperSchema.get("properties").get("photo").get("mediaType").asText());
+		assertEquals("base64", userHyperSchema.get("properties").get("photo").get("binaryEncoding").asText());
 		
-		System.out.println();
-		
-		JsonNode userHyperSchema = v4hyperGenerator.generateSchema(UserResource.class);
-		System.out.println(om.writeValueAsString(userHyperSchema));
+		JsonNode userResourceHyperSchema = v4hyperGenerator.generateSchema(UserResource.class);
+		System.out.println(om.writeValueAsString(userResourceHyperSchema));
 	}
 
 }
