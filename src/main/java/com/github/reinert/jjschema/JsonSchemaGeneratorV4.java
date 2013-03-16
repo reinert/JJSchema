@@ -28,11 +28,9 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
     	if (!props.$ref().isEmpty()) {
         	schema.put("$ref", props.$ref());
         }
-
         if (autoPutVersion) {
             schema.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
         }
-
         if (!props.id().isEmpty()) {
             schema.put("id", props.id());
         }

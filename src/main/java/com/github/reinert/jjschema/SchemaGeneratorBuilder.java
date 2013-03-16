@@ -17,6 +17,12 @@
 
 package com.github.reinert.jjschema;
 
+
+/**
+ * A SchemaGenerator builder for creating SchemaGenerators considering some options. 
+ * @author Danilo
+ *
+ */
 public class SchemaGeneratorBuilder {
 
     public static ConfigurationStep draftV4Schema() {
