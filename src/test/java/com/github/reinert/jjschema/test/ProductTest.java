@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -38,179 +37,166 @@ import junit.framework.TestCase;
 public class ProductTest extends TestCase {
 
 	ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
-    JsonSchemaGenerator v4generator = SchemaGeneratorBuilder.draftV4Schema().build();
-	
+	JsonSchemaGenerator v4generator = SchemaGeneratorBuilder.draftV4Schema()
+			.build();
+
 	/**
-     * Test the scheme generate following a scheme source, avaliable at
-     * http://json-schema.org/example1.html the output should match the example.
-	 * @throws IOException 
-     */
+	 * Test the scheme generate following a scheme source, avaliable at
+	 * http://json-schema.org/example1.html the output should match the example.
+	 * 
+	 * @throws IOException
+	 */
 	public void testProductSchema() throws UnavailableVersion, IOException {
-		// Test new implementation using ObjectNode representation
 		JsonNode productSchema = v4generator.generateSchema(Product.class);
-		//System.out.println(om.writeValueAsString(productSchema));
-		JsonNode productSchemaRes = JsonLoader.fromResource("/product_schema.json");
-		
-		assertEquals(productSchemaRes.get("properties"), productSchema.get("properties"));
-		assertEquals(productSchemaRes.get("$schema"), productSchema.get("$schema"));
-		assertEquals(productSchemaRes.get("title"), productSchema.get("title"));
-		assertEquals(productSchemaRes.get("description"), productSchema.get("description"));
-		assertEquals(productSchemaRes.get("type"), productSchema.get("type"));
-		// An ArrayNode must be in the same order to match equals
-		assertEquals(productSchemaRes.get("required"), productSchema.get("required"));
+		// System.out.println(om.writeValueAsString(productSchema));
+		JsonNode productSchemaRes = JsonLoader
+				.fromResource("/product_schema.json");
 		assertEquals(productSchemaRes, productSchema);
 
-		JsonNode productSetSchema = v4generator.generateSchema(ProductSet.class);
-		//System.out.println(om.writeValueAsString(productSetSchema));
-		JsonNode productSetSchemaRes = JsonLoader.fromResource("/products_set_schema.json");
-		
-		//assertEquals(productSetSchemaRes.get("properties"), productSetSchema.get("properties"));
-		assertEquals(productSetSchemaRes.get("$schema"), productSetSchema.get("$schema"));
-		assertEquals(productSetSchemaRes.get("title"), productSetSchema.get("title"));
-		//assertEquals(productSetSchemaRes.get("description"), productSetSchema.get("description"));
-		assertEquals(productSetSchemaRes.get("type"), productSetSchema.get("type"));
-
-		// An ArrayNode must be in the same order to match equals
-		JsonNode pSetResItems = productSetSchemaRes.get("items");
-		JsonNode pSetItems = productSetSchema.get("items");
-        Iterator<Entry<String, JsonNode>> it = pSetItems.fields();
-        while (it.hasNext()) {
-            Entry<String, JsonNode> entry = it.next();
-            String propName = entry.getKey();
-            JsonNode node = entry.getValue();
-            //System.out.println(propName);
-            assertEquals(node, pSetResItems.get(propName));
-        }
-
-		JsonNode pSetResItemsProps = pSetResItems.get("properties");
-		JsonNode pSetItemsProps = pSetItems.get("properties");
-		assertEquals(pSetResItemsProps.get("dimensions"), pSetItemsProps.get("dimensions"));
-		assertEquals(pSetResItemsProps.get("warehouseLocation"), pSetItemsProps.get("warehouseLocation"));
-		assertEquals(pSetResItemsProps.get("id"), pSetItemsProps.get("id"));
-		assertEquals(pSetResItemsProps.get("price"), pSetItemsProps.get("price"));
-		assertEquals(pSetResItemsProps.get("name"), pSetItemsProps.get("name"));
-		assertEquals(pSetResItemsProps.get("tags"), pSetItemsProps.get("tags"));
-		assertEquals(pSetResItemsProps, pSetItemsProps);
-
-		assertEquals(pSetResItems, pSetItems);
-		
+		// NOTE that my implementation of ProductSet uses the ComplexProduct
+		// class that inherits from Product class. That's an example of
+		// inheritance support of JJSchema.
+		JsonNode productSetSchema = v4generator
+				.generateSchema(ProductSet.class);
+		// System.out.println(om.writeValueAsString(productSetSchema));
+		JsonNode productSetSchemaRes = JsonLoader
+				.fromResource("/products_set_schema.json");
 		assertEquals(productSetSchemaRes, productSetSchema);
 	}
-	
-	
-	@SchemaProperty(title="Product", description="A product from Acme's catalog")
+
+	@SchemaProperty(title = "Product", description = "A product from Acme's catalog")
 	static class Product {
 
-		@SchemaProperty(required=true, description="The unique identifier for a product")
+		@SchemaProperty(required = true, description = "The unique identifier for a product")
 		private long id;
-		@SchemaProperty(required=true, description="Name of the product")
+		@SchemaProperty(required = true, description = "Name of the product")
 		private String name;
-		@SchemaProperty(required=true, minimum=0, exclusiveMinimum=true)
+		@SchemaProperty(required = true, minimum = 0, exclusiveMinimum = true)
 		private BigDecimal price;
-		@SchemaProperty(minItems=1,uniqueItems=true)
+		@SchemaProperty(minItems = 1, uniqueItems = true)
 		private List<String> tags;
-		
+
 		public long getId() {
 			return id;
 		}
+
 		public void setId(long id) {
 			this.id = id;
 		}
+
 		public String getName() {
 			return name;
 		}
+
 		public void setName(String name) {
 			this.name = name;
 		}
+
 		public BigDecimal getPrice() {
 			return price;
 		}
+
 		public void setPrice(BigDecimal price) {
 			this.price = price;
 		}
+
 		public List<String> getTags() {
 			return tags;
 		}
+
 		public void setTags(List<String> tags) {
 			this.tags = tags;
 		}
-		
+
 	}
-	
+
 	static class ComplexProduct extends Product {
-		
+
 		private Dimension dimensions;
-		@SchemaProperty(description="Coordinates of the warehouse with the product")
+		@SchemaProperty(description = "Coordinates of the warehouse with the product")
 		private Geo warehouseLocation;
 
 		public Dimension getDimensions() {
 			return dimensions;
 		}
+
 		public void setDimensions(Dimension dimensions) {
 			this.dimensions = dimensions;
 		}
+
 		public Geo getWarehouseLocation() {
 			return warehouseLocation;
 		}
+
 		public void setWarehouseLocation(Geo warehouseLocation) {
 			this.warehouseLocation = warehouseLocation;
 		}
-		
+
 	}
-	
+
 	static class Dimension {
-		
-		@SchemaProperty(required=true)
+
+		@SchemaProperty(required = true)
 		private double length;
-		@SchemaProperty(required=true)
+		@SchemaProperty(required = true)
 		private double width;
-		@SchemaProperty(required=true)
+		@SchemaProperty(required = true)
 		private double height;
-		
+
 		public double getLength() {
 			return length;
 		}
+
 		public void setLength(double length) {
 			this.length = length;
 		}
+
 		public double getWidth() {
 			return width;
 		}
+
 		public void setWidth(double width) {
 			this.width = width;
 		}
+
 		public double getHeight() {
 			return height;
 		}
+
 		public void setHeight(double height) {
 			this.height = height;
 		}
-		
+
 	}
-	
-	@SchemaProperty($ref="http://json-schema.org/geo", description="A geographical coordinate")
+
+	@SchemaProperty($ref = "http://json-schema.org/geo", description = "A geographical coordinate")
 	static class Geo {
-		
+
 		private BigDecimal latitude;
 		private BigDecimal longitude;
-		
+
 		public BigDecimal getLatitude() {
 			return latitude;
 		}
+
 		public void setLatitude(BigDecimal latitude) {
 			this.latitude = latitude;
 		}
+
 		public BigDecimal getLongitude() {
 			return longitude;
 		}
+
 		public void setLongitude(BigDecimal longitude) {
 			this.longitude = longitude;
 		}
 	}
-	
-	@SchemaProperty(title="Product set")
+
+	@SchemaProperty(title = "Product set")
 	static class ProductSet implements Iterable<ComplexProduct> {
-		
+
+		// NOTE: all custom collection types must declare the wrapped collection
+		// as the first field.
 		private Set<ComplexProduct> products;
 
 		public ProductSet(Set<ComplexProduct> products) {
@@ -220,9 +206,8 @@ public class ProductTest extends TestCase {
 		@Override
 		public Iterator<ComplexProduct> iterator() {
 			return products.iterator();
-		} 
-		
+		}
+
 	}
-	
 
 }
