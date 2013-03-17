@@ -14,19 +14,19 @@ Lastest Release
     </dependency>
 
 Simple HOW TO
---------------
+----------------
 
-Suppose the following bean styled class:
+Suppose the following Class:
 
-    @SchemaProperty($schema=SchemaRef.V4, title="Product", description="A product from Acme's catalog")
+    @Attributes($schema=SchemaRef.V4, title="Product", description="A product from Acme's catalog")
     static class Product {
-    	@SchemaProperty(required=true, description="The unique identifier for a product")
+    	@Attributes(required=true, description="The unique identifier for a product")
     	private long id;
-    	@SchemaProperty(required=true, description="Name of the product")
+    	@Attributes(required=true, description="Name of the product")
     	private String name;
-    	@SchemaProperty(required=true, minimum=0, exclusiveMinimum=true)
+    	@Attributes(required=true, minimum=0, exclusiveMinimum=true)
     	private BigDecimal price;
-    	@SchemaProperty(minItems=1,uniqueItems=true)
+    	@Attributes(minItems=1,uniqueItems=true)
     	private List<String> tags;
     	
     	public long getId() {
@@ -57,7 +57,8 @@ Suppose the following bean styled class:
 
 Type the following code:
 
-    JsonNode productSchema = Schema.v4SchemaFrom(Product.class);
+    JsonSchemaGenerator v4generator = SchemaGeneratorBuilder.draftV4Schema().build();
+    JsonNode productSchema = v4generator.generateSchema(Product.class);
     System.out.println(productSchema);
 
 
