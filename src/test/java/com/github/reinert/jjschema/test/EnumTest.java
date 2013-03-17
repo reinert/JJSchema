@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.JsonSchemaGenerator;
+import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import junit.framework.TestCase;
 
@@ -70,7 +71,7 @@ public class EnumTest extends TestCase {
         generated = MAPPER.readTree(schema.get("properties").get("floatingResultCode").get("enum").toString());
         assertEquals(expected, generated);
 
-        expected = MAPPER.createArrayNode().add("NOT_FOUND").add("UNAUTHORIZED");
+        expected = MAPPER.createArrayNode().add("NOT_FOUND").add("UNAUTHORIZED").add("null");
         assertEquals(expected, schema.get("properties").get("result").get("enum"));
     }
 
@@ -86,6 +87,8 @@ public class EnumTest extends TestCase {
             return numVal;
         }
 
+        // JJSchema uses the toString method of enum to parse the accepted values
+        // If the returned value is a numeric string, then it correctly parses as a number
         @Override
         public String toString() {
             return String.valueOf(numVal);
@@ -104,6 +107,8 @@ public class EnumTest extends TestCase {
             return numVal;
         }
 
+        // JJSchema uses the toString method of enum to parse the accepted values
+        // If the returned value is a numeric string, then it correctly parses as a number
         @Override
         public String toString() {
             return String.valueOf(numVal);
@@ -111,6 +116,7 @@ public class EnumTest extends TestCase {
     }
 
     public enum SimpleEnum {
+        // For string values, there's no need to override toString
         NOT_FOUND, UNAUTHORIZED
     }
 
@@ -120,6 +126,8 @@ public class EnumTest extends TestCase {
         private String method;
         private IntegerEnum resultCode;
         private FloatingEnum floatingResultCode;
+        // Notice that JJSchema correctly adds "null" as an acceptable value in this case
+        @Nullable
         private SimpleEnum result;
 
         public String getMethod() {
