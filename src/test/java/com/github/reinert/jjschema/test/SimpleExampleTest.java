@@ -23,6 +23,8 @@ package com.github.reinert.jjschema.test;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import com.github.reinert.jjschema.Attributes;
 import junit.framework.TestCase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,7 +32,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.reinert.jjschema.JsonSchemaGenerator;
 import com.github.reinert.jjschema.SchemaGeneratorBuilder;
-import com.github.reinert.jjschema.SchemaProperty;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 
 /**
@@ -63,13 +64,13 @@ public class SimpleExampleTest extends TestCase {
     	assertEquals(fromResource, fromJavaType);
     }
     
-    @SchemaProperty(title = "Example Schema")
+    @Attributes(title = "Example Schema")
     static class SimpleExample {
-    	@SchemaProperty(required = true)
+    	@Attributes(required = true)
         private String firstName;
-        @SchemaProperty(required = true)
+        @Attributes(required = true)
         private String lastName;
-        @SchemaProperty(description="Age in years", minimum=0)
+        @Attributes(description="Age in years", minimum=0)
         private int age;
 		public String getFirstName() {
 			return firstName;

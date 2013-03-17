@@ -29,7 +29,7 @@ import com.github.fge.jsonschema.SchemaVersion;
 public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
 
 	@Override
-	protected void bind(ObjectNode schema, SchemaProperty props) {
+	protected void processSchemaProperty(ObjectNode schema, Attributes props) {
     	if (!props.$ref().isEmpty()) {
         	schema.put("$ref", props.$ref());
         }

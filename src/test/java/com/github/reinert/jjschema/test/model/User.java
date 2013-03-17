@@ -17,24 +17,24 @@
 
 package com.github.reinert.jjschema.test.model;
 
+import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.Media;
 import com.github.reinert.jjschema.Nullable;
-import com.github.reinert.jjschema.SchemaProperty;
 
 
 public class User {
 
-	@SchemaProperty(required=true, title="ID", minimum=100000, maximum=999999)
+	@Attributes(required=true, title="ID", minimum=100000, maximum=999999)
 	private short id;
 	
-	@SchemaProperty(required=true, description="User's name")
+	@Attributes(required=true, description="User's name")
 	private String name;
 	
-	@SchemaProperty(description="User's sex", enums={"M","F"})
+	@Attributes(description="User's sex", enums={"M","F"})
 	@Nullable
 	private char sex;
 	
-	@SchemaProperty(description="User's personal photo")
+	@Attributes(description="User's personal photo")
 	@Media(type="image/jpg", binaryEncoding="base64")
 	@Nullable
 	private Byte[] photo;

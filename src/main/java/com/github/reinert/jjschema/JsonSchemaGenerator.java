@@ -20,6 +20,7 @@ package com.github.reinert.jjschema;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.math.BigDecimal;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,14 +46,14 @@ public abstract class JsonSchemaGenerator {
 	}
 
 	/**
-	 * Reads {@link SchemaProperty} annotation and put its values into the
+	 * Reads {@link Attributes} annotation and put its values into the
 	 * generating schema. Usually, some verification is done for not putting the
 	 * default values.
 	 * 
 	 * @param schema
 	 * @param props
 	 */
-	abstract protected void bind(ObjectNode schema, SchemaProperty props);
+	abstract protected void processSchemaProperty(ObjectNode schema, Attributes props);
 
 	protected ObjectNode createInstance() {
 		return mapper.createObjectNode();
@@ -82,7 +83,7 @@ public abstract class JsonSchemaGenerator {
 
 	public <T> ObjectNode generateSchema(Class<T> type) {
 		ObjectNode schema = createInstance();
-		schema = checkType(type, schema);
+		schema = checkAndProcessType(type, schema);
 		return schema;
 	}
 
@@ -95,7 +96,7 @@ public abstract class JsonSchemaGenerator {
 	 * @param schema
 	 * @return the full schema represented as an ObjectNode.
 	 */
-	protected <T> ObjectNode checkType(Class<T> type, ObjectNode schema) {
+	protected <T> ObjectNode checkAndProcessType(Class<T> type, ObjectNode schema) {
 		String s = SimpleTypeMappings.forClass(type);
 		// If it is a simple type, then just put the type
 		if (s != null) {
@@ -104,16 +105,19 @@ public abstract class JsonSchemaGenerator {
 		// If it is a Collection or Iterable the generate the schema as an array
 		else if (Iterable.class.isAssignableFrom(type)
 				|| Collection.class.isAssignableFrom(type)) {
-			checkCustomCollection(type, schema);
+			checkAndProcessCollection(type, schema);
 		}
 		// If it is void then return null
 		else if (type == Void.class || type == void.class) {
 			schema = null;
 		}
+        else if (type.isEnum()) {
+            processEnum(type, schema);
+        }
 		// If none of the above possibilities were true, then it is a custom
 		// object
 		else {
-			schema = checkCustomObject(type, schema);
+			schema = processCustomType(type, schema);
 		}
 		return schema;
 	}
@@ -125,12 +129,12 @@ public abstract class JsonSchemaGenerator {
 	 * @param schema
 	 * @return the full schema of custom java types
 	 */
-	protected <T> ObjectNode checkCustomObject(Class<T> type, ObjectNode schema) {
+	protected <T> ObjectNode processCustomType(Class<T> type, ObjectNode schema) {
 		schema.put("type", "object");
 		// fill root object properties
-		bindRoot(type, schema);
-		// Generate the schemas of this type's properties
-		bindProperties(type, schema);
+		processRootAttributes(type, schema);
+		// Generate the schemas of type's properties
+		processProperties(type, schema);
 		// Merge the actual type's schema with a parent type's schema (if it
 		// exists!)
 		schema = mergeWithParent(type, schema);
@@ -144,7 +148,7 @@ public abstract class JsonSchemaGenerator {
 	 * @param type
 	 * @param schema
 	 */
-	private <T> void checkCustomCollection(Class<T> type, ObjectNode schema) {
+	private <T> void checkAndProcessCollection(Class<T> type, ObjectNode schema) {
 		// If the type extends from AbstracctCollection, then it is considered
 		// as a simple array type
 		if (AbstractCollection.class.isAssignableFrom(type)) {
@@ -152,14 +156,14 @@ public abstract class JsonSchemaGenerator {
 		}
 		// Otherwise it is processed as a custom array type
 		else {
-			bindRoot(type, schema);
+			processRootAttributes(type, schema);
 			// NOTE: Customized Iterable/Collection Wrapper Class must declare
 			// the intended Collection as the first field
-			bindArraySchema(type, schema);
+			processCustomCollection(type, schema);
 		}
 	}
 
-	private <T> void bindArraySchema(Class<T> type, ObjectNode schema) {
+	private <T> void processCustomCollection(Class<T> type, ObjectNode schema) {
 		schema.put("type", "array");
 		Field field = type.getDeclaredFields()[0];
 		ParameterizedType genericType = (ParameterizedType) field
@@ -170,7 +174,31 @@ public abstract class JsonSchemaGenerator {
 		schema.put("items", itemsSchema);
 	}
 
-	private void bindArraySchema(Method method, ObjectNode schema) {
+    private <T> void processEnum(Class<T> type, ObjectNode schema) {
+        ArrayNode enumArray = schema.putArray("enum");
+        for (T constant : type.getEnumConstants()) {
+            String value = constant.toString();
+            // Check if value is numeric
+            try {
+                // First verifies if it is an integer
+                Long integer = Long.parseLong(value);
+                enumArray.add(integer);
+            }
+            // If not then verifies if it is an floating point number
+            catch (NumberFormatException e) {
+                try {
+                    BigDecimal number = new BigDecimal(value);
+                    enumArray.add(number);
+                }
+                // Otherwise add as String
+                catch (NumberFormatException e1) {
+                    enumArray.add(value);
+                }
+            }
+        }
+    }
+
+	private void processPropertyCollection(Method method, ObjectNode schema) {
 		schema.put("type", "array");
 		ParameterizedType genericType = (ParameterizedType) method
 				.getGenericReturnType();
@@ -182,43 +210,47 @@ public abstract class JsonSchemaGenerator {
 		ObjectNode schema = createInstance();
 
 		if (Collection.class.isAssignableFrom(method.getReturnType())) {
-			bindArraySchema(method, schema);
+			processPropertyCollection(method, schema);
 		} else {
 			schema = generateSchema(method.getReturnType());
 		}
 
-		// Check the field annotations if the get method references a field or
-		// the
-		// method annotations on the other hand and bind them to the JsonSchema
-		// object
-		SchemaProperty sProp = field != null ? field
-				.getAnnotation(SchemaProperty.class) : method
-				.getAnnotation(SchemaProperty.class);
-		if (sProp != null) {
-			bind(schema, sProp);
+		// Check the field annotations if the get method references a field or the
+		// method annotations on the other hand and processSchemaProperty them to
+		// the JsonSchema object
+		Attributes attrs = field != null ? field
+				.getAnnotation(Attributes.class) : method
+				.getAnnotation(Attributes.class);
+		if (attrs != null) {
+			processSchemaProperty(schema, attrs);
 			// The declaration of $schema is only necessary at the root object
 			schema.remove("$schema");
 		}
 
+        // Check if the Nullable annotation is present, and if so, add 'null' to type attr
 		Nullable nullable = field != null ? field.getAnnotation(Nullable.class)
 				: method.getAnnotation(Nullable.class);
 		if (nullable != null) {
-			String oldType = schema.get("type").asText();
-			ArrayNode typeArray = schema.putArray("type");
-			typeArray.add(oldType);
-			typeArray.add("null");
+            if (method.getReturnType().isEnum()) {
+                ((ArrayNode)schema.get("enum")).add("null");
+            } else {
+                String oldType = schema.get("type").asText();
+                ArrayNode typeArray = schema.putArray("type");
+                typeArray.add(oldType);
+                typeArray.add("null");
+            }
 		}
 
 		return schema;
 	}
 
-	protected <T> void bindRoot(Class<T> type, ObjectNode schema) {
-		SchemaProperty sProp = type.getAnnotation(SchemaProperty.class);
+	protected <T> void processRootAttributes(Class<T> type, ObjectNode schema) {
+		Attributes sProp = type.getAnnotation(Attributes.class);
 		if (sProp != null)
-			bind(schema, sProp);
+			processSchemaProperty(schema, sProp);
 	}
 
-	protected <T> void bindProperties(Class<T> type, ObjectNode schema) {
+	protected <T> void processProperties(Class<T> type, ObjectNode schema) {
 		HashMap<Method, Field> props = findProperties(type);
 		for (Map.Entry<Method, Field> entry : props.entrySet()) {
 			Field field = entry.getValue();
@@ -327,13 +359,6 @@ public abstract class JsonSchemaGenerator {
 			parent.put(propertyName, child.get(propertyName));
 		}
 	}
-
-	// protected void copyPropertyIfNotExists(ObjectNode parent, ObjectNode
-	// child, String propertyName) {
-	// if (!parent.has(propertyName)) {
-	// parent.put(propertyName, child.get(propertyName));
-	// }
-	// }
 
 	/**
 	 * Utility method to find properties from a Java Type following Beans Convention.
