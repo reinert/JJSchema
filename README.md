@@ -7,11 +7,11 @@ Currently, it is based on v4 draft.
 Lastest Release
 ----------------
 
-<dependency>
-  <groupId>com.github.reinert</groupId>
-  <artifactId>jjschema</artifactId>
-  <version>0.6</version>
-</dependency>
+    <dependency>
+      <groupId>com.github.reinert</groupId>
+      <artifactId>jjschema</artifactId>
+      <version>0.6</version>
+    </dependency>
 
 Simple HOW TO
 --------------
