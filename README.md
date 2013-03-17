@@ -3,9 +3,18 @@ JJSchema
 
 A Java JSON Schema and Hyper-Schema generator.
 Currently, it is based on v4 draft.
-It is a fresh project and I expect more contributors joining it.
 
-How to use:
+Lastest Release
+----------------
+
+<dependency>
+  <groupId>com.github.reinert</groupId>
+  <artifactId>jjschema</artifactId>
+  <version>0.6</version>
+</dependency>
+
+Simple HOW TO
+--------------
 
 Suppose the following bean styled class:
 
