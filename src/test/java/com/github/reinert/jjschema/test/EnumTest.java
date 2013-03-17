@@ -70,12 +70,12 @@ public class EnumTest extends TestCase {
         generated = MAPPER.readTree(schema.get("properties").get("floatingResultCode").get("enum").toString());
         assertEquals(expected, generated);
 
-        expected = MAPPER.createArrayNode().add("NOT_FOUND").add("BAD_REQUEST");
+        expected = MAPPER.createArrayNode().add("NOT_FOUND").add("UNAUTHORIZED");
         assertEquals(expected, schema.get("properties").get("result").get("enum"));
     }
 
     public enum IntegerEnum {
-        NOT_FOUND(404), BAD_REQUEST(401);
+        NOT_FOUND(404), UNAUTHORIZED(401);
         private int numVal;
 
         IntegerEnum(int numVal) {
@@ -93,7 +93,7 @@ public class EnumTest extends TestCase {
     }
 
     public enum FloatingEnum {
-        NOT_FOUND(4.04), BAD_REQUEST(4.01);
+        NOT_FOUND(4.04), UNAUTHORIZED(4.01);
         private double numVal;
 
         FloatingEnum(double numVal) {
@@ -111,7 +111,7 @@ public class EnumTest extends TestCase {
     }
 
     public enum SimpleEnum {
-        NOT_FOUND, BAD_REQUEST
+        NOT_FOUND, UNAUTHORIZED
     }
 
     static class Hyperthing {
