@@ -65,8 +65,8 @@ Type the following code:
 The output:
 
     {
-        "type":"object",
         "$schema":"http://json-schema.org/draft-04/schema#",
+        "type":"object",
         "title":"Product",
         "description":"A product from Acme's catalog",
         "required":["price","name","id"],
