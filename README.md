@@ -18,7 +18,7 @@ Simple HOW TO
 
 Suppose the following Class:
 
-    @Attributes($schema=SchemaRef.V4, title="Product", description="A product from Acme's catalog")
+    @Attributes(title="Product", description="A product from Acme's catalog")
     static class Product {
     	@Attributes(required=true, description="The unique identifier for a product")
     	private long id;
