@@ -38,8 +38,28 @@ public abstract class JsonSchemaGenerator {
 
     final ObjectMapper mapper = new ObjectMapper();
     boolean autoPutVersion = true;
+    
+    private Set<ManagedReference> processedReferences;
 
-    protected JsonSchemaGenerator() {
+    Set<ManagedReference> getProcessedReferences() {
+		if (processedReferences == null)
+			processedReferences = new LinkedHashSet<ManagedReference>();
+    	return processedReferences;
+	}
+    
+    <T> void pushManagedReference(Class<T> type, String name) {
+    	getProcessedReferences().add(new ManagedReference(type, name));
+    }
+    
+    <T> boolean isManagedReferencePiled(Class<T> type, String name) {
+    	return getProcessedReferences().contains(new ManagedReference(type, name));
+    }
+    
+    <T> boolean pullManagedReference(Class<T> type, String name) {
+    	return getProcessedReferences().remove(new ManagedReference(type, name));
+    }
+
+	protected JsonSchemaGenerator() {
     }
 
     /**
