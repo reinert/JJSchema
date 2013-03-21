@@ -2,13 +2,13 @@ package com.github.reinert.jjschema;
 
 class ManagedReference {
 
-	final Class<?> managedType;
+	final Class<?> type;
 	//Class<?> backType;
 	final String name;
 	//boolean processed;
 
-	public ManagedReference(Class<?> managedType, String name) {
-		this.managedType = managedType;
+	public ManagedReference(Class<?> type, String name) {
+		this.type = type;
 		this.name = name;
 	}
 	
@@ -17,7 +17,7 @@ class ManagedReference {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((managedType == null) ? 0 : managedType.getName().hashCode());
+				+ ((type == null) ? 0 : type.getName().hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -31,10 +31,10 @@ class ManagedReference {
 		if (getClass() != obj.getClass())
 			return false;
 		ManagedReference other = (ManagedReference) obj;
-		if (managedType == null) {
-			if (other.managedType != null)
+		if (type == null) {
+			if (other.type != null)
 				return false;
-		} else if (!managedType.getName().equals(other.managedType.getName()))
+		} else if (!type.getName().equals(other.type.getName()))
 			return false;
 		if (name == null) {
 			if (other.name != null)

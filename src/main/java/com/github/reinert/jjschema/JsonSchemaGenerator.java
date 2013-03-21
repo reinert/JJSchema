@@ -17,11 +17,14 @@
 
 package com.github.reinert.jjschema;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -38,26 +41,36 @@ public abstract class JsonSchemaGenerator {
 
     final ObjectMapper mapper = new ObjectMapper();
     boolean autoPutVersion = true;
-    
     private Set<ManagedReference> processedReferences;
 
     Set<ManagedReference> getProcessedReferences() {
 		if (processedReferences == null)
-			processedReferences = new LinkedHashSet<ManagedReference>();
+			processedReferences = new HashSet<ManagedReference>();
     	return processedReferences;
 	}
     
-    <T> void pushManagedReference(Class<T> type, String name) {
-    	getProcessedReferences().add(new ManagedReference(type, name));
+    <T> void pushManagedReference(ManagedReference managedReference) {
+    	getProcessedReferences().add(managedReference);
     }
     
-    <T> boolean isManagedReferencePiled(Class<T> type, String name) {
-    	return getProcessedReferences().contains(new ManagedReference(type, name));
+    <T> boolean isManagedReferencePiled(ManagedReference managedReference) {
+    	return getProcessedReferences().contains(managedReference);
     }
     
-    <T> boolean pullManagedReference(Class<T> type, String name) {
-    	return getProcessedReferences().remove(new ManagedReference(type, name));
+    <T> boolean pullManagedReference(ManagedReference managedReference) {
+    	return getProcessedReferences().remove(managedReference);
     }
+    
+//    void resetProcessedReferences() {
+//    	processedReferences = null;
+//    }
+//    
+//    /**
+//     * Reset all utility fields used for generating schemas when asked by the user
+//     */
+//    void reset() {
+//    	resetProcessedReferences();
+//    }
 
 	protected JsonSchemaGenerator() {
     }
@@ -130,8 +143,7 @@ public abstract class JsonSchemaGenerator {
         } else if (type.isEnum()) {
             processEnum(type, schema);
         }
-        // If none of the above possibilities were true, then it is a custom
-        // object
+        // If none of the above possibilities were true, then it is a custom object
         else {
             schema = processCustomType(type, schema);
         }
@@ -225,18 +237,55 @@ public abstract class JsonSchemaGenerator {
     protected ObjectNode generatePropertySchema(Method method, Field field) {
         ObjectNode schema = createInstance();
 
-        if (Collection.class.isAssignableFrom(method.getReturnType())) {
+        Class<?> returnType = method.getReturnType();
+        AccessibleObject propertyReflection = 
+        		(AccessibleObject) field != null ? field : method;
+        
+        JsonManagedReference refAnn = propertyReflection.getAnnotation(JsonManagedReference.class);
+        if (refAnn != null) {
+        	ManagedReference managedReference = null;
+        	if (Collection.class.isAssignableFrom(returnType)) {
+	        	ParameterizedType genericType = (ParameterizedType) method
+	                    .getGenericReturnType();
+	            Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+	            managedReference = new ManagedReference(genericClass, refAnn.value());
+        	} else {
+        		managedReference = new ManagedReference(returnType, refAnn.value());
+        	}
+        	if (!isManagedReferencePiled(managedReference)) {
+        		pushManagedReference(managedReference);
+        	} else {
+        		pullManagedReference(managedReference);
+        		return null;
+        	}
+        }
+        
+		if (Collection.class.isAssignableFrom(returnType)) {
             processPropertyCollection(method, schema);
         } else {
-            schema = generateSchema(method.getReturnType());
+        	
+        	// BackReference verification is done here because it can't be set upon Collections
+        	// TODO CHECK IF IT IS NOT NEEDED TO CHECK BACK REFERENCE !!
+        	/*
+        	JsonBackReference backRefAnn = propertyReflection.getAnnotation(JsonBackReference.class);
+            if (backRefAnn != null) {
+            	ManagedReference managedReference = new ManagedReference(returnType, backRefAnn.value());
+            	if (!isManagedReferencePiled(managedReference)) {
+            		pushManagedReference(managedReference);
+            	} else {
+            		pullManagedReference(managedReference);
+            		return null;
+            	}
+            }
+            */
+        	
+            schema = generateSchema(returnType);
         }
 
-        // Check the field annotations if the get method references a field or the
-        // method annotations on the other hand and processSchemaProperty them to
+        // Check the field annotations, if the get method references a field, or the
+        // method annotations on the other hand, and processSchemaProperty them to
         // the JsonSchema object
-        Attributes attrs = field != null ? field
-                .getAnnotation(Attributes.class) : method
-                .getAnnotation(Attributes.class);
+        Attributes attrs = propertyReflection.getAnnotation(Attributes.class);
         if (attrs != null) {
             processSchemaProperty(schema, attrs);
             // The declaration of $schema is only necessary at the root object
@@ -244,10 +293,9 @@ public abstract class JsonSchemaGenerator {
         }
 
         // Check if the Nullable annotation is present, and if so, add 'null' to type attr
-        Nullable nullable = field != null ? field.getAnnotation(Nullable.class)
-                : method.getAnnotation(Nullable.class);
+        Nullable nullable = propertyReflection.getAnnotation(Nullable.class);
         if (nullable != null) {
-            if (method.getReturnType().isEnum()) {
+            if (returnType.isEnum()) {
                 ((ArrayNode) schema.get("enum")).add("null");
             } else {
                 String oldType = schema.get("type").asText();
@@ -272,7 +320,9 @@ public abstract class JsonSchemaGenerator {
             Field field = entry.getValue();
             Method method = entry.getKey();
             ObjectNode prop = generatePropertySchema(method, field);
-            addPropertyToSchema(schema, field, method, prop);
+            if (prop != null) {
+            	addPropertyToSchema(schema, field, method, prop);
+            }
         }
     }
 
