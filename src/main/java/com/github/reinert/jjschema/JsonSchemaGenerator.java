@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.impl.ManagedReferenceProperty;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -41,24 +42,43 @@ public abstract class JsonSchemaGenerator {
 
     final ObjectMapper mapper = new ObjectMapper();
     boolean autoPutVersion = true;
-    private Set<ManagedReference> processedReferences;
+    private Set<ManagedReference> fowardReferences;
+    private Set<ManagedReference> backReferences;
 
-    Set<ManagedReference> getProcessedReferences() {
-		if (processedReferences == null)
-			processedReferences = new HashSet<ManagedReference>();
-    	return processedReferences;
+    Set<ManagedReference> getFowardReferences() {
+		if (fowardReferences == null)
+			fowardReferences = new LinkedHashSet<ManagedReference>();
+    	return fowardReferences;
 	}
     
-    <T> void pushManagedReference(ManagedReference managedReference) {
-    	getProcessedReferences().add(managedReference);
+    <T> void pushFowardReference(ManagedReference fowardReference) {
+    	getFowardReferences().add(fowardReference);
     }
     
-    <T> boolean isManagedReferencePiled(ManagedReference managedReference) {
-    	return getProcessedReferences().contains(managedReference);
+    <T> boolean isFowardReferencePiled(ManagedReference fowardReference) {
+    	return getFowardReferences().contains(fowardReference);
     }
     
-    <T> boolean pullManagedReference(ManagedReference managedReference) {
-    	return getProcessedReferences().remove(managedReference);
+    <T> boolean pullFowardReference(ManagedReference fowardReference) {
+    	return getFowardReferences().remove(fowardReference);
+    }
+    
+    Set<ManagedReference> getBackwardReferences() {
+		if (backReferences == null)
+			backReferences = new LinkedHashSet<ManagedReference>();
+    	return backReferences;
+	}
+    
+    <T> void pushBackwardReference(ManagedReference backReference) {
+    	getBackwardReferences().add(backReference);
+    }
+    
+    <T> boolean isBackwardReferencePiled(ManagedReference backReference) {
+    	return getBackwardReferences().contains(backReference);
+    }
+    
+    <T> boolean pullBackwardReference(ManagedReference backReference) {
+    	return getBackwardReferences().remove(backReference);
     }
     
 //    void resetProcessedReferences() {
@@ -234,7 +254,7 @@ public abstract class JsonSchemaGenerator {
         schema.put("items", generateSchema(genericClass));
     }
 
-    protected ObjectNode generatePropertySchema(Method method, Field field) {
+    protected <T> ObjectNode generatePropertySchema(Class<T> type, Method method, Field field) {
         ObjectNode schema = createInstance();
 
         Class<?> returnType = method.getReturnType();
@@ -243,42 +263,60 @@ public abstract class JsonSchemaGenerator {
         
         JsonManagedReference refAnn = propertyReflection.getAnnotation(JsonManagedReference.class);
         if (refAnn != null) {
-        	ManagedReference managedReference = null;
+        	ManagedReference fowardReference = null;
+        	Class<?> genericClass = null;
+        	Class<?> collectionClass = null;
         	if (Collection.class.isAssignableFrom(returnType)) {
 	        	ParameterizedType genericType = (ParameterizedType) method
 	                    .getGenericReturnType();
-	            Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
-	            managedReference = new ManagedReference(genericClass, refAnn.value());
+	            genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+	            collectionClass = returnType;
         	} else {
-        		managedReference = new ManagedReference(returnType, refAnn.value());
+        		genericClass = returnType;
         	}
-        	if (!isManagedReferencePiled(managedReference)) {
-        		pushManagedReference(managedReference);
-        	} else {
-        		pullManagedReference(managedReference);
+        	fowardReference = new ManagedReference(type, refAnn.value(), genericClass);
+        	
+        	if (!isFowardReferencePiled(fowardReference)) {
+        		pushFowardReference(fowardReference);
+        	} 
+        	else 
+//        	if (isBackwardReferencePiled(fowardReference)) 
+        	{
+        		boolean a = pullFowardReference(fowardReference);
+        		boolean b = pullBackwardReference(fowardReference);
         		return null;
         	}
         }
         
+        JsonBackReference backRefAnn = propertyReflection.getAnnotation(JsonBackReference.class);
+        if (backRefAnn != null) {
+        	ManagedReference backReference = null;
+        	Class<?> genericClass = null;
+        	Class<?> collectionClass = null;
+        	if (Collection.class.isAssignableFrom(returnType)) {
+	        	ParameterizedType genericType = (ParameterizedType) method
+	                    .getGenericReturnType();
+	            genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+	            collectionClass = returnType;
+        	} else {
+        		genericClass = returnType;
+        	}
+        	backReference = new ManagedReference(genericClass, backRefAnn.value(), type);
+        	
+        	if (isFowardReferencePiled(backReference) && 
+        			!isBackwardReferencePiled(backReference)) {
+        		pushBackwardReference(backReference);
+        	} else {
+//        		pullFowardReference(backReference);
+//        		pullBackwardReference(backReference);
+        		return null;
+        	}
+        }
+        
+        
 		if (Collection.class.isAssignableFrom(returnType)) {
             processPropertyCollection(method, schema);
         } else {
-        	
-        	// BackReference verification is done here because it can't be set upon Collections
-        	// TODO CHECK IF IT IS NOT NEEDED TO CHECK BACK REFERENCE !!
-        	/*
-        	JsonBackReference backRefAnn = propertyReflection.getAnnotation(JsonBackReference.class);
-            if (backRefAnn != null) {
-            	ManagedReference managedReference = new ManagedReference(returnType, backRefAnn.value());
-            	if (!isManagedReferencePiled(managedReference)) {
-            		pushManagedReference(managedReference);
-            	} else {
-            		pullManagedReference(managedReference);
-            		return null;
-            	}
-            }
-            */
-        	
             schema = generateSchema(returnType);
         }
 
@@ -319,7 +357,7 @@ public abstract class JsonSchemaGenerator {
         for (Map.Entry<Method, Field> entry : props.entrySet()) {
             Field field = entry.getValue();
             Method method = entry.getKey();
-            ObjectNode prop = generatePropertySchema(method, field);
+            ObjectNode prop = generatePropertySchema(type, method, field);
             if (prop != null) {
             	addPropertyToSchema(schema, field, method, prop);
             }
