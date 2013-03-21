@@ -12,8 +12,8 @@ public class TaskList {
 	List<Task> taks;
 	@JsonBackReference
 	Person creator;
-	@JsonBackReference("assigned")
-	Collection<Person> assignedPersons;
+	//@JsonBackReference("assigned")
+//	Collection<Person> assignedPersons;
 
 	public List<Task> getTaks() {
 		return taks;
@@ -27,11 +27,11 @@ public class TaskList {
 	public void setCreator(Person creator) {
 		this.creator = creator;
 	}
-	public Collection<Person> getAssignedPersons() {
-		return assignedPersons;
-	}
-	public void setAssignedPersons(Collection<Person> assignedPersons) {
-		this.assignedPersons = assignedPersons;
-	}
+//	public Collection<Person> getAssignedPersons() {
+//		return assignedPersons;
+//	}
+//	public void setAssignedPersons(Collection<Person> assignedPersons) {
+//		this.assignedPersons = assignedPersons;
+//	}
 	
 }
