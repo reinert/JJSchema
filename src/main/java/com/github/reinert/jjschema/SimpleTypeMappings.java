@@ -24,10 +24,10 @@ import java.util.Map;
 
 /**
  * Mapping of builtin Java types to their matching JSON Schema primitive type
+ *
  * @author fge
  */
-public enum SimpleTypeMappings
-{
+public enum SimpleTypeMappings {
     // Integer types
     PRIMITIVE_BYTE(byte.class, "integer"),
     PRIMITIVE_SHORT(short.class, "integer"),
@@ -59,15 +59,14 @@ public enum SimpleTypeMappings
         // Class objects are all singletons, so we can use that
         MAPPINGS = new IdentityHashMap<Class<?>, String>();
 
-        for (final SimpleTypeMappings mapping: values())
+        for (final SimpleTypeMappings mapping : values())
             MAPPINGS.put(mapping.c, mapping.schemaType);
     }
 
     private final Class<?> c;
     private final String schemaType;
 
-    SimpleTypeMappings(final Class<?> c, final String schemaType)
-    {
+    SimpleTypeMappings(final Class<?> c, final String schemaType) {
         this.c = c;
         this.schemaType = schemaType;
     }
@@ -78,8 +77,7 @@ public enum SimpleTypeMappings
      * @param c the class
      * @return the primitive type if found, {@code null} otherwise
      */
-    public static String forClass(final Class<?> c)
-    {
+    public static String forClass(final Class<?> c) {
         return MAPPINGS.get(c);
     }
 }

@@ -15,69 +15,64 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.github.reinert.jjschema;
-
-import java.util.List;
-
-import junit.framework.TestCase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.reinert.jjschema.JsonSchemaGenerator;
-import com.github.reinert.jjschema.Nullable;
-import com.github.reinert.jjschema.SchemaGeneratorBuilder;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 /**
- *
  * @author reinert
  */
 public class NullableArrayTest extends TestCase {
 
-	static ObjectMapper MAPPER = new ObjectMapper();
+    static ObjectMapper MAPPER = new ObjectMapper();
     JsonSchemaGenerator v4generator = SchemaGeneratorBuilder.draftV4Schema().setAutoPutSchemaVersion(false).build();
-	
+
     public NullableArrayTest(String testName) {
         super(testName);
     }
 
     /**
      * Test if @Nullable works at Collection Types
-     * @throws JsonProcessingException 
+     *
+     * @throws JsonProcessingException
      */
     public void testGenerateSchema() {
-        
-    	JsonNode schema = v4generator.generateSchema(Something.class);
-    	System.out.println(schema);
-    	
-    	JsonNode expected = MAPPER.createArrayNode().add("array").add("null");
-    	
-    	assertEquals(expected, schema.get("properties").get("names").get("type"));
-    	
+
+        JsonNode schema = v4generator.generateSchema(Something.class);
+        System.out.println(schema);
+
+        JsonNode expected = MAPPER.createArrayNode().add("array").add("null");
+
+        assertEquals(expected, schema.get("properties").get("names").get("type"));
+
     }
-    
+
     static class Something {
 
-    	private int id;
-    	@Nullable
-    	private List<String> names;
-    	
-    	public int getId() {
-    		return id;
-    	}
-    	public void setId(int id) {
-    		this.id = id;
-    	}
-    	public List<String> getNames() {
-    		return names;
-    	}
-    	public void setNames(List<String> names) {
-    		this.names = names;
-    	}
-    	
+        private int id;
+        @Nullable
+        private List<String> names;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public List<String> getNames() {
+            return names;
+        }
+
+        public void setNames(List<String> names) {
+            this.names = names;
+        }
+
     }
 }

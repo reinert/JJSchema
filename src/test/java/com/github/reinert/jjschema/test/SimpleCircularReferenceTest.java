@@ -55,45 +55,53 @@ public class SimpleCircularReferenceTest extends TestCase {
     }
 
     static class Sale {
-    	int id;
-    	List<SaleItem> items;
+        int id;
+        List<SaleItem> items;
 
-    	public int getId() {
-			return id;
-		}
-		public void setId(int id) {
-			this.id = id;
-		}
-		public List<SaleItem> getItems() {
-			return items;
-		}
-		public void setItems(List<SaleItem> items) {
-			this.items = items;
-		}
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public List<SaleItem> getItems() {
+            return items;
+        }
+
+        public void setItems(List<SaleItem> items) {
+            this.items = items;
+        }
     }
-    
+
     static class SaleItem {
-    	int idSale;
-    	int seqNumber;
-    	Sale parent;
-		
-    	public int getIdSale() {
-			return idSale;
-		}
-		public void setIdSale(int idSale) {
-			this.idSale = idSale;
-		}
-		public int getSeqNumber() {
-			return seqNumber;
-		}
-		public void setSeqNumber(int seqNumber) {
-			this.seqNumber = seqNumber;
-		}
-		public Sale getParent() {
-			return parent;
-		}
-		public void setParent(Sale parent) {
-			this.parent = parent;
-		}
+        int idSale;
+        int seqNumber;
+        Sale parent;
+
+        public int getIdSale() {
+            return idSale;
+        }
+
+        public void setIdSale(int idSale) {
+            this.idSale = idSale;
+        }
+
+        public int getSeqNumber() {
+            return seqNumber;
+        }
+
+        public void setSeqNumber(int seqNumber) {
+            this.seqNumber = seqNumber;
+        }
+
+        public Sale getParent() {
+            return parent;
+        }
+
+        public void setParent(Sale parent) {
+            this.parent = parent;
+        }
     }
 }

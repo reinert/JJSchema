@@ -28,35 +28,34 @@ import java.util.List;
 /**
  * @author reinert
  */
-public class CircularReferenceSimpleTest extends TestCase {
+public class SchemaIgnoreTest extends TestCase {
 
     static ObjectMapper MAPPER = new ObjectMapper();
     JsonSchemaGenerator v4generator = SchemaGeneratorBuilder.draftV4Schema().setAutoPutSchemaVersion(false).build();
 
-    public CircularReferenceSimpleTest(String testName) {
+    public SchemaIgnoreTest(String testName) {
         super(testName);
     }
 
     /**
-     * Test if @JsonManagedReference and @JsonBackReference works at a Simple Circular Reference case
+     * Test if @SchemaIgnore works correctly
      */
     public void testGenerateSchema() {
 
         JsonNode schema = v4generator.generateSchema(Sale.class);
-//        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
-
-        assertEquals(0, v4generator.getFowardReferences().size());
-        assertEquals(0, v4generator.getBackwardReferences().size());
+        //System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+        JsonNode properties = schema.get("properties");
+        assertEquals(1, properties.size());
 
         schema = v4generator.generateSchema(SaleItem.class);
-//        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
-
-        assertEquals(0, v4generator.getFowardReferences().size());
-        assertEquals(0, v4generator.getBackwardReferences().size());
+        //System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+        properties = schema.get("properties");
+        assertEquals(2, properties.size());
     }
 
     static class Sale {
         int id;
+        @SchemaIgnore
         @JsonManagedReference
         List<SaleItem> saleItems;
 
@@ -80,6 +79,7 @@ public class CircularReferenceSimpleTest extends TestCase {
     static class SaleItem {
         int idSale;
         int seqNumber;
+        @SchemaIgnore
         @JsonBackReference
         Sale parent;
 

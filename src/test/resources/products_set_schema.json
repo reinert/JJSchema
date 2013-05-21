@@ -31,10 +31,16 @@
             "dimensions": {
                 "type": "object",
                 "properties": {
-                    "height": {"type": "number"},
-                    "length": {"type": "number"},
-                    "width": {"type": "number"}
-                    
+                    "height": {
+                        "type": "number"
+                    },
+                    "length": {
+                        "type": "number"
+                    },
+                    "width": {
+                        "type": "number"
+                    }
+
                 },
                 "required": ["height", "length", "width"]
             },
@@ -43,8 +49,12 @@
                 "description": "Coordinates of the warehouse with the product",
                 "$ref": "http://json-schema.org/geo",
                 "properties": {
-                    "latitude": { "type": "number" },
-                    "longitude": { "type": "number" }
+                    "latitude": {
+                        "type": "number"
+                    },
+                    "longitude": {
+                        "type": "number"
+                    }
                 }
             }
         },

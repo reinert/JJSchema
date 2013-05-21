@@ -22,14 +22,14 @@ import java.util.Iterator;
 
 public class Users implements Iterable<User> {
 
-	private Collection<User> mUsers;
-	
-	public Users(Collection<User> empresas) {
-		mUsers = empresas;
-	}
+    private Collection<User> mUsers;
 
-	public Iterator<User> iterator() {
-		return mUsers.iterator();
-	}
+    public Users(Collection<User> empresas) {
+        mUsers = empresas;
+    }
+
+    public Iterator<User> iterator() {
+        return mUsers.iterator();
+    }
 
 }
