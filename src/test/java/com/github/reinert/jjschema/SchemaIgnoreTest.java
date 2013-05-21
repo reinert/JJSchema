@@ -15,48 +15,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.github.reinert.jjschema.test;
+package com.github.reinert.jjschema;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.reinert.jjschema.JsonSchemaGenerator;
-import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import junit.framework.TestCase;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
  * @author reinert
  */
-public class SimpleCircularReferenceTest extends TestCase {
+public class SchemaIgnoreTest extends TestCase {
 
     static ObjectMapper MAPPER = new ObjectMapper();
     JsonSchemaGenerator v4generator = SchemaGeneratorBuilder.draftV4Schema().setAutoPutSchemaVersion(false).build();
 
-    public SimpleCircularReferenceTest(String testName) {
+    public SchemaIgnoreTest(String testName) {
         super(testName);
     }
 
     /**
-     * Test if @Nullable works at Collection Types
-     *
-     * @throws JsonProcessingException
+     * Test if @SchemaIgnore works correctly
      */
-    public void testGenerateSchema() throws IOException {
+    public void testGenerateSchema() {
 
         JsonNode schema = v4generator.generateSchema(Sale.class);
-        System.out.println(schema);
+        //System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+        JsonNode properties = schema.get("properties");
+        assertEquals(1, properties.size());
+
+        schema = v4generator.generateSchema(SaleItem.class);
+        //System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+        properties = schema.get("properties");
+        assertEquals(2, properties.size());
     }
 
     static class Sale {
         int id;
-        List<SaleItem> items;
+        @SchemaIgnore
+        @JsonManagedReference
+        List<SaleItem> saleItems;
 
         public int getId() {
             return id;
@@ -66,18 +67,20 @@ public class SimpleCircularReferenceTest extends TestCase {
             this.id = id;
         }
 
-        public List<SaleItem> getItems() {
-            return items;
+        public List<SaleItem> getSaleItems() {
+            return saleItems;
         }
 
-        public void setItems(List<SaleItem> items) {
-            this.items = items;
+        public void setSaleItems(List<SaleItem> saleItems) {
+            this.saleItems = saleItems;
         }
     }
 
     static class SaleItem {
         int idSale;
         int seqNumber;
+        @SchemaIgnore
+        @JsonBackReference
         Sale parent;
 
         public int getIdSale() {

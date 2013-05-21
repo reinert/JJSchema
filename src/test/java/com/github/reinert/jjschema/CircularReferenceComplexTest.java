@@ -15,22 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.github.reinert.jjschema;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.github.reinert.jjschema.JsonSchemaGenerator;
-import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import com.github.reinert.jjschema.model.Person;
 import com.github.reinert.jjschema.model.Task;
 import com.github.reinert.jjschema.model.TaskList;
-
 import junit.framework.TestCase;
 
 import java.io.IOException;
@@ -48,28 +40,29 @@ public class CircularReferenceComplexTest extends TestCase {
     }
 
     /**
-     * Test if @Nullable works at Collection Types
+     * Test if @JsonManagedReference and @JsonBackReference works at a Complex Circular Reference case.
+     * This feature is not stable yet.
      *
-     * @throws JsonProcessingException
+     * @throws IOException
      */
     public void testGenerateSchema() throws IOException {
 
         JsonNode taskSchema = v4generator.generateSchema(Task.class);
         System.out.println(WRITER.writeValueAsString(taskSchema));
-        
-        assertEquals(0, v4generator.getFowardReferences().size());
+
+        assertEquals(0, v4generator.getForwardReferences().size());
         assertEquals(0, v4generator.getBackwardReferences().size());
-        
+
         JsonNode personSchema = v4generator.generateSchema(Person.class);
         System.out.println(WRITER.writeValueAsString(personSchema));
-        
-        assertEquals(0, v4generator.getFowardReferences().size());
+
+        assertEquals(0, v4generator.getForwardReferences().size());
         assertEquals(0, v4generator.getBackwardReferences().size());
-        
+
         JsonNode taskListSchema = v4generator.generateSchema(TaskList.class);
         System.out.println(WRITER.writeValueAsString(taskListSchema));
-        
-        assertEquals(0, v4generator.getFowardReferences().size());
+
+        assertEquals(0, v4generator.getForwardReferences().size());
         assertEquals(0, v4generator.getBackwardReferences().size());
     }
 

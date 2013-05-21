@@ -15,21 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.reinert.jjschema.test.model;
+package com.github.reinert.jjschema;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class Users implements Iterable<User> {
-
-    private Collection<User> mUsers;
-
-    public Users(Collection<User> empresas) {
-        mUsers = empresas;
-    }
-
-    public Iterator<User> iterator() {
-        return mUsers.iterator();
-    }
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.FIELD})
+public @interface SchemaIgnore {
 }

@@ -23,15 +23,16 @@ import com.github.fge.jsonschema.SchemaVersion;
 
 
 /**
-* Implements the JSON Schema generation according to draft v4
-* @author reinert
-*/
+ * Implements the JSON Schema generation according to draft v4
+ *
+ * @author reinert
+ */
 public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
 
-	@Override
-	protected void processSchemaProperty(ObjectNode schema, Attributes props) {
-    	if (!props.$ref().isEmpty()) {
-        	schema.put("$ref", props.$ref());
+    @Override
+    protected void processSchemaProperty(ObjectNode schema, Attributes props) {
+        if (!props.$ref().isEmpty()) {
+            schema.put("$ref", props.$ref());
         }
         if (autoPutVersion) {
             schema.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
@@ -52,41 +53,41 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
             schema.put("title", props.title());
         }
         if (props.maximum() > -1) {
-        	schema.put("maximum", props.maximum());
+            schema.put("maximum", props.maximum());
         }
         if (props.exclusiveMaximum()) {
-        	schema.put("exclusiveMaximum", true);
+            schema.put("exclusiveMaximum", true);
         }
         if (props.minimum() > -1) {
-        	schema.put("minimum", props.minimum());
+            schema.put("minimum", props.minimum());
         }
         if (props.exclusiveMinimum()) {
-        	schema.put("exclusiveMinimum", true);
+            schema.put("exclusiveMinimum", true);
         }
         if (props.enums().length > 0) {
-        	ArrayNode enumArray = schema.putArray("enum");
-        	String[] enums = props.enums();
-        	for (String v : enums) {
-				enumArray.add(v);
-			}
+            ArrayNode enumArray = schema.putArray("enum");
+            String[] enums = props.enums();
+            for (String v : enums) {
+                enumArray.add(v);
+            }
         }
         if (props.uniqueItems()) {
-        	schema.put("uniqueItems", true);
+            schema.put("uniqueItems", true);
         }
         if (props.minItems() > 0) {
-        	schema.put("minItems", props.minItems());
+            schema.put("minItems", props.minItems());
         }
         if (props.maxItems() > -1) {
-        	schema.put("maxItems", props.maxItems());
+            schema.put("maxItems", props.maxItems());
         }
         if (props.multipleOf() > 0) {
-        	schema.put("multipleOf", props.multipleOf());
+            schema.put("multipleOf", props.multipleOf());
         }
         if (props.minLength() > 0) {
-        	schema.put("minLength", props.minItems());
+            schema.put("minLength", props.minItems());
         }
         if (props.maxLength() > -1) {
-        	schema.put("maxLength", props.maxItems());
+            schema.put("maxLength", props.maxItems());
         }
     }
 

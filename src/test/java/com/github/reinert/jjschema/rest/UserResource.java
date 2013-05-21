@@ -17,62 +17,53 @@
 
 package com.github.reinert.jjschema.rest;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
-
 import com.github.reinert.jjschema.Rel;
 import com.github.reinert.jjschema.model.User;
 import com.github.reinert.jjschema.model.Users;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+
 @Path("/users")
-@Consumes( { MediaType.APPLICATION_JSON })
-@Produces( { MediaType.APPLICATION_JSON })
+@Consumes({MediaType.APPLICATION_JSON})
+@Produces({MediaType.APPLICATION_JSON})
 public class UserResource {
-	
-	@GET
+
+    @GET
     public Users getAll(@QueryParam("minAge") int min, @QueryParam("maxAge") int max) {
-    	Users users = null;
-    	return users;
+        Users users = null;
+        return users;
     }
-    
-	@POST
-	@Rel("create")
+
+    @POST
+    @Rel("create")
     public Short createUser(User user) {
-        return (short)0;
+        return (short) 0;
     }
-	
+
     @GET
     @Path("/{id}")
     @Rel("user")
     public User getUser(@PathParam("id") Short id) {
-    	User user = null;
-    	return user;
+        User user = null;
+        return user;
     }
-    
+
     @GET
     @Path("/{id}/admin")
     @Rel("admin")
     public Users getAdminUsers(@PathParam("id") Short id, @QueryParam("minAge") int min, @QueryParam("maxAge") int max) {
-    	Users users = null;
-    	return users;
+        Users users = null;
+        return users;
     }
-    
+
     @PUT
     @Path("/{id}")
     @Rel("update")
     public void updateUser(@PathParam("id") Short id, User user) {
-    	return;
+        return;
     }
-    
+
 //    @PUT
 //    @Path("/{id}")
 //    public void hasBodyParam(@PathParam("id") Short id, @Media(type="image/png", binaryEncoding="base64") Byte[] img) {
@@ -84,18 +75,18 @@ public class UserResource {
 //    public void hasParam(@PathParam("id") Short id, @FormParam("img") @Media(type="image/png", binaryEncoding="base64") Byte[] img) {
 //    	return;
 //    }
-    
+
 //    @POST
 //    @Path("/{id}")
 //    public void hasParamAndBodyParam(@PathParam("id") Short id, @Media(type="image/png", binaryEncoding="base64") Byte[] img2, @FormParam("img") @Media(type="image/png", binaryEncoding="base64") Byte[] img) {
 //    	return;
 //    }
-    
+
     @DELETE
     @Path("/{id}")
     @Rel("delete")
     public void deleteUser(@PathParam("id") Short id) {
-    	return;
+        return;
     }
 
 }

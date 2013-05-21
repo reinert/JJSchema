@@ -24,51 +24,51 @@ import com.github.reinert.jjschema.Nullable;
 
 public class User {
 
-	@Attributes(required=true, title="ID", minimum=100000, maximum=999999)
-	private short id;
-	
-	@Attributes(required=true, description="User's name")
-	private String name;
-	
-	@Attributes(description="User's sex", enums={"M","F"})
-	@Nullable
-	private char sex;
-	
-	@Attributes(description="User's personal photo")
-	@Media(type="image/jpg", binaryEncoding="base64")
-	@Nullable
-	private Byte[] photo;
+    @Attributes(required = true, title = "ID", minimum = 100000, maximum = 999999)
+    private short id;
 
-	public short getId() {
-		return id;
-	}
+    @Attributes(required = true, description = "User's name")
+    private String name;
 
-	public void setId(short id) {
-		this.id = id;
-	}
+    @Attributes(description = "User's sex", enums = {"M", "F"})
+    @Nullable
+    private char sex;
 
-	public String getName() {
-		return name;
-	}
+    @Attributes(description = "User's personal photo")
+    @Media(type = "image/jpg", binaryEncoding = "base64")
+    @Nullable
+    private Byte[] photo;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public short getId() {
+        return id;
+    }
 
-	public char getSex() {
-		return sex;
-	}
+    public void setId(short id) {
+        this.id = id;
+    }
 
-	public void setSex(char sex) {
-		this.sex = sex;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Byte[] getPhoto() {
-		return photo;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setPhoto(Byte[] photo) {
-		this.photo = photo;
-	}
+    public char getSex() {
+        return sex;
+    }
+
+    public void setSex(char sex) {
+        this.sex = sex;
+    }
+
+    public Byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Byte[] photo) {
+        this.photo = photo;
+    }
 
 }

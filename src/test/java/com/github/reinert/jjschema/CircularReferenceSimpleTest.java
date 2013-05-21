@@ -15,23 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.github.reinert.jjschema;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.reinert.jjschema.JsonSchemaGenerator;
-import com.github.reinert.jjschema.ManagedReference;
-import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import junit.framework.TestCase;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -47,67 +38,73 @@ public class CircularReferenceSimpleTest extends TestCase {
     }
 
     /**
-     * Test if @Nullable works at Collection Types
-     *
-     * @throws JsonProcessingException
+     * Test if @JsonManagedReference and @JsonBackReference works at a Simple Circular Reference case
      */
-    public void testGenerateSchema() throws IOException {
+    public void testGenerateSchema() {
 
         JsonNode schema = v4generator.generateSchema(Sale.class);
 //        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
-        
-        assertEquals(0, v4generator.getFowardReferences().size());
+
+        assertEquals(0, v4generator.getForwardReferences().size());
         assertEquals(0, v4generator.getBackwardReferences().size());
-        
+
         schema = v4generator.generateSchema(SaleItem.class);
-        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
-        
-        assertEquals(0, v4generator.getFowardReferences().size());
+//        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+
+        assertEquals(0, v4generator.getForwardReferences().size());
         assertEquals(0, v4generator.getBackwardReferences().size());
     }
 
     static class Sale {
-    	int id;
-    	@JsonManagedReference
-    	List<SaleItem> saleItems;
+        int id;
+        @JsonManagedReference
+        List<SaleItem> saleItems;
 
-    	public int getId() {
-			return id;
-		}
-		public void setId(int id) {
-			this.id = id;
-		}
-		public List<SaleItem> getSaleItems() {
-			return saleItems;
-		}
-		public void setSaleItems(List<SaleItem> saleItems) {
-			this.saleItems = saleItems;
-		}
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public List<SaleItem> getSaleItems() {
+            return saleItems;
+        }
+
+        public void setSaleItems(List<SaleItem> saleItems) {
+            this.saleItems = saleItems;
+        }
     }
-    
+
     static class SaleItem {
-    	int idSale;
-    	int seqNumber;
-    	@JsonBackReference
-    	Sale parent;
-		
-    	public int getIdSale() {
-			return idSale;
-		}
-		public void setIdSale(int idSale) {
-			this.idSale = idSale;
-		}
-		public int getSeqNumber() {
-			return seqNumber;
-		}
-		public void setSeqNumber(int seqNumber) {
-			this.seqNumber = seqNumber;
-		}
-		public Sale getParent() {
-			return parent;
-		}
-		public void setParent(Sale parent) {
-			this.parent = parent;
-		}
+        int idSale;
+        int seqNumber;
+        @JsonBackReference
+        Sale parent;
+
+        public int getIdSale() {
+            return idSale;
+        }
+
+        public void setIdSale(int idSale) {
+            this.idSale = idSale;
+        }
+
+        public int getSeqNumber() {
+            return seqNumber;
+        }
+
+        public void setSeqNumber(int seqNumber) {
+            this.seqNumber = seqNumber;
+        }
+
+        public Sale getParent() {
+            return parent;
+        }
+
+        public void setParent(Sale parent) {
+            this.parent = parent;
+        }
     }
 }

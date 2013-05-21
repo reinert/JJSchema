@@ -23,27 +23,44 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
-* Annotation for the attributes of JSON Schema
-* @author reinert
-*/
+ * Annotation for the attributes of JSON Schema
+ *
+ * @author reinert
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.TYPE })
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE})
 public @interface Attributes {
-	String $ref() default "";
-	String id() default "";
-	String title() default "";
-	String description() default "";
-	long maximum() default -1l;
-	boolean exclusiveMaximum() default false;
-	int minimum() default -1;
-	boolean exclusiveMinimum() default false;
-	String pattern() default "";
-	boolean required() default false;
-	String[] enums() default {};
-	int minItems() default 0;
-	long maxItems() default -1l;
-	boolean uniqueItems() default false;
-	int multipleOf() default 0;
-	int minLength() default 0;
-	long maxLength() default -1l;
+    String $ref() default "";
+
+    String id() default "";
+
+    String title() default "";
+
+    String description() default "";
+
+    long maximum() default -1l;
+
+    boolean exclusiveMaximum() default false;
+
+    int minimum() default -1;
+
+    boolean exclusiveMinimum() default false;
+
+    String pattern() default "";
+
+    boolean required() default false;
+
+    String[] enums() default {};
+
+    int minItems() default 0;
+
+    long maxItems() default -1l;
+
+    boolean uniqueItems() default false;
+
+    int multipleOf() default 0;
+
+    int minLength() default 0;
+
+    long maxLength() default -1l;
 }

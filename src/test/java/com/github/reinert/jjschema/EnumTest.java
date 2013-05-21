@@ -15,19 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.github.reinert.jjschema;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.reinert.jjschema.Attributes;
-import com.github.reinert.jjschema.JsonSchemaGenerator;
-import com.github.reinert.jjschema.Nullable;
-import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import junit.framework.TestCase;
 
 import java.io.IOException;
