@@ -1,6 +1,6 @@
 package com.github.reinert.jjschema;
 
-class ManagedReference {
+public class ManagedReference {
 
     Class<?> collectionType;
     final Class<?> type;

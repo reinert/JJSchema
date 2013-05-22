@@ -91,6 +91,10 @@ public abstract class JsonSchemaGenerator {
 //    	resetProcessedReferences();
 //    }
 
+    protected ObjectNode createRefSchema(String ref) {
+        return createInstance().put("$ref", ref);
+    }
+
     protected JsonSchemaGenerator() {
     }
 
@@ -159,7 +163,9 @@ public abstract class JsonSchemaGenerator {
         // If it is void then return null
         else if (type == Void.class || type == void.class) {
             schema = null;
-        } else if (type.isEnum()) {
+        }
+        // If it is an Enum than process like enum
+        else if (type.isEnum()) {
             processEnum(type, schema);
         }
         // If none of the above possibilities were true, then it is a custom object
@@ -303,7 +309,8 @@ public abstract class JsonSchemaGenerator {
             {
                 boolean a = pullFowardReference(fowardReference);
                 boolean b = pullBackwardReference(fowardReference);
-                return null;
+                //return null;
+                return createRefSchema("#");
             }
         }
 

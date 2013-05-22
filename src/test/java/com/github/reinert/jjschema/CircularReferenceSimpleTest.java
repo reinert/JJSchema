@@ -19,6 +19,7 @@ package com.github.reinert.jjschema;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
@@ -40,16 +41,16 @@ public class CircularReferenceSimpleTest extends TestCase {
     /**
      * Test if @JsonManagedReference and @JsonBackReference works at a Simple Circular Reference case
      */
-    public void testGenerateSchema() {
+    public void testGenerateSchema() throws JsonProcessingException {
 
         JsonNode schema = v4generator.generateSchema(Sale.class);
-//        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
 
         assertEquals(0, v4generator.getFowardReferences().size());
         assertEquals(0, v4generator.getBackwardReferences().size());
 
         schema = v4generator.generateSchema(SaleItem.class);
-//        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
 
         assertEquals(0, v4generator.getFowardReferences().size());
         assertEquals(0, v4generator.getBackwardReferences().size());

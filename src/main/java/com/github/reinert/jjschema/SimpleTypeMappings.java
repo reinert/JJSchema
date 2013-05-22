@@ -19,6 +19,7 @@ package com.github.reinert.jjschema;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.AbstractCollection;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -78,6 +79,8 @@ public enum SimpleTypeMappings {
      * @return the primitive type if found, {@code null} otherwise
      */
     public static String forClass(final Class<?> c) {
+        if (AbstractCollection.class.isAssignableFrom(c))
+            return "array";
         return MAPPINGS.get(c);
     }
 }
