@@ -12,7 +12,7 @@ import com.github.reinert.jjschema.Nullable;
 
 public abstract class SchemaWrapper {
     private final Class<?> type;
-    private final ObjectNode node = SchemaCreator.MAPPER.createObjectNode();
+    private final ObjectNode node = SchemaWrapperFactory.MAPPER.createObjectNode();
 
     public SchemaWrapper(Class<?> type) {
         this.type = type;
@@ -72,10 +72,6 @@ public abstract class SchemaWrapper {
     }
 
     public boolean isNullWrapper() {
-        return false;
-    }
-
-    public boolean isPropertyWrapper() {
         return false;
     }
 

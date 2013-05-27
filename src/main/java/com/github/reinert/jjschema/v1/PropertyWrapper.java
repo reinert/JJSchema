@@ -29,7 +29,6 @@ public class PropertyWrapper extends SchemaWrapper {
     final Field field;
     final Method method;
     String name;
-    String relativeId = "#";
     boolean required;
     ManagedReference managedReference;
     ReferenceType referenceType;
@@ -57,10 +56,8 @@ public class PropertyWrapper extends SchemaWrapper {
             propertyType = (Class<?>) genericType.getActualTypeArguments()[0];
 
             relativeId = propertiesStr + getName() + itemsStr;
-            addTokenToRelativeId(relativeId);
         } else {
             relativeId = propertiesStr + getName();
-            addTokenToRelativeId(relativeId);
         }
 
         processReference(propertyType);
@@ -137,10 +134,6 @@ public class PropertyWrapper extends SchemaWrapper {
         return managedReference != null;
     }
 
-    public String getRelativeId() {
-        return relativeId;
-    }
-
     @Override
     public JsonNode asJson() {
         return schemaWrapper.asJson();
@@ -207,17 +200,8 @@ public class PropertyWrapper extends SchemaWrapper {
     }
 
     @Override
-    public boolean isPropertyWrapper() {
-        return true;
-    }
-
-    @Override
     public <T extends SchemaWrapper> T cast() {
         return schemaWrapper.cast();
-    }
-
-    protected void addTokenToRelativeId(String token) {
-        relativeId = relativeId + "/" + token;
     }
 
     protected void setRequired(boolean required) {

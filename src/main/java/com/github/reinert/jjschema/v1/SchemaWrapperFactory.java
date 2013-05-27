@@ -1,5 +1,6 @@
 package com.github.reinert.jjschema.v1;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.reinert.jjschema.ManagedReference;
 import com.github.reinert.jjschema.SimpleTypeMappings;
 
@@ -12,6 +13,8 @@ import java.util.Set;
  */
 
 public class SchemaWrapperFactory {
+
+    public static ObjectMapper MAPPER = new ObjectMapper();
 
     public static SchemaWrapper createWrapper(Class<?> type) {
         return createWrapper(type, null);

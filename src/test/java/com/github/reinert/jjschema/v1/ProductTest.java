@@ -36,6 +36,10 @@ import java.util.Set;
 public class ProductTest extends TestCase {
 
     ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
+    JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
+    {
+        schemaFactory.setAutoPutDollarSchema(true);
+    }
 
     /**
      * Test the scheme generate following a scheme source, avaliable at
@@ -44,7 +48,7 @@ public class ProductTest extends TestCase {
      * @throws java.io.IOException
      */
     public void testProductSchema() throws UnavailableVersion, IOException {
-        JsonNode productSchema = SchemaWrapperFactory.createWrapper(Product.class).putDollarSchema().asJson();
+        JsonNode productSchema = schemaFactory.createSchema(Product.class);
         //System.out.println(om.writeValueAsString(productSchema));
         JsonNode productSchemaRes = JsonLoader
                 .fromResource("/product_schema.json");

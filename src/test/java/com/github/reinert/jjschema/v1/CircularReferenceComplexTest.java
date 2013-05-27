@@ -35,6 +35,7 @@ import java.io.IOException;
 public class CircularReferenceComplexTest extends TestCase {
 
     static ObjectWriter WRITER = new ObjectMapper().writerWithDefaultPrettyPrinter();
+    JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
     public CircularReferenceComplexTest(String testName) {
         super(testName);
@@ -48,13 +49,13 @@ public class CircularReferenceComplexTest extends TestCase {
      */
     public void testGenerateSchema() throws IOException {
 
-        JsonNode taskSchema = SchemaWrapperFactory.createWrapper(Task.class).asJson();
+        JsonNode taskSchema = schemaFactory.createSchema(Task.class);
         System.out.println(WRITER.writeValueAsString(taskSchema));
 
-        JsonNode personSchema = SchemaWrapperFactory.createWrapper(Person.class).asJson();
+        JsonNode personSchema = schemaFactory.createSchema(Person.class);
         System.out.println(WRITER.writeValueAsString(personSchema));
 
-        JsonNode taskListSchema = SchemaWrapperFactory.createWrapper(TaskList.class).asJson();
+        JsonNode taskListSchema = schemaFactory.createSchema(TaskList.class);
         System.out.println(WRITER.writeValueAsString(taskListSchema));
     }
 

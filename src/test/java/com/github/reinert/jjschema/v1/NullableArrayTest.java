@@ -32,6 +32,7 @@ import java.util.List;
 public class NullableArrayTest extends TestCase {
 
     static ObjectMapper MAPPER = new ObjectMapper();
+    JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
     public NullableArrayTest(String testName) {
         super(testName);
@@ -44,7 +45,7 @@ public class NullableArrayTest extends TestCase {
      */
     public void testGenerateSchema() {
 
-        JsonNode schema = SchemaWrapperFactory.createWrapper(Something.class).asJson();
+        JsonNode schema = schemaFactory.createSchema(Something.class);
         System.out.println(schema);
 
         JsonNode expected = MAPPER.createArrayNode().add("array").add("null");

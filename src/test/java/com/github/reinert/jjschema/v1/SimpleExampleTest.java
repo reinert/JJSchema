@@ -35,6 +35,7 @@ import java.io.InputStream;
 public class SimpleExampleTest extends TestCase {
 
     static ObjectMapper MAPPER = new ObjectMapper();
+    JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
     public SimpleExampleTest(String testName) {
         super(testName);
@@ -53,7 +54,7 @@ public class SimpleExampleTest extends TestCase {
         if (in == null)
             throw new IOException("resource not found");
         JsonNode fromResource = MAPPER.readTree(in);
-        JsonNode fromJavaType = SchemaWrapperFactory.createWrapper(SimpleExample.class).asJson();
+        JsonNode fromJavaType = schemaFactory.createSchema(SimpleExample.class);
 
         assertEquals(fromResource, fromJavaType);
     }

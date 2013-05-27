@@ -33,6 +33,7 @@ import java.io.IOException;
 public class EnumTest extends TestCase {
 
     static ObjectMapper MAPPER = new ObjectMapper();
+    JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
     public EnumTest(String testName) {
         super(testName);
@@ -45,7 +46,7 @@ public class EnumTest extends TestCase {
      */
     public void testGenerateSchema() throws IOException {
 
-        JsonNode schema = SchemaWrapperFactory.createWrapper(Hyperthing.class).asJson();
+        JsonNode schema = schemaFactory.createSchema(Hyperthing.class);
         System.out.println(schema);
 
         JsonNode expected = MAPPER.createArrayNode().add("GET").add("POST").add("PUT").add("DELETE");

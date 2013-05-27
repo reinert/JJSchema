@@ -35,6 +35,7 @@ import java.util.List;
 public class CircularReferenceSimpleTest extends TestCase {
 
     static ObjectMapper MAPPER = new ObjectMapper();
+    JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
     public CircularReferenceSimpleTest(String testName) {
         super(testName);
@@ -45,13 +46,13 @@ public class CircularReferenceSimpleTest extends TestCase {
      */
     public void testGenerateSchema() throws JsonProcessingException {
 
-        JsonNode schema = SchemaWrapperFactory.createWrapper(Sale.class).asJson();
+        JsonNode schema = schemaFactory.createSchema(Sale.class);
         System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
 
 //        assertEquals(0, v4generator.getFowardReferences().size());
 //        assertEquals(0, v4generator.getBackwardReferences().size());
 
-        schema = SchemaWrapperFactory.createWrapper(SaleItem.class).asJson();
+        schema = schemaFactory.createSchema(SaleItem.class);
         System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
 
 //        assertEquals(0, v4generator.getFowardReferences().size());
