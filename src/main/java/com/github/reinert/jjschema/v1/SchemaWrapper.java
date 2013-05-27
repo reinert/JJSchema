@@ -1,24 +1,22 @@
 package com.github.reinert.jjschema.v1;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.fge.jsonschema.SchemaVersion;
+import com.github.reinert.jjschema.Nullable;
 
 /**
  * @author Danilo Reinert
  */
 
 public abstract class SchemaWrapper {
-    final Class<?> type;
-    final ObjectNode node = SchemaCreator.MAPPER.createObjectNode();
+    private final Class<?> type;
+    private final ObjectNode node = SchemaCreator.MAPPER.createObjectNode();
 
     public SchemaWrapper(Class<?> type) {
         this.type = type;
-        String v = extractType(type);
-        if (v != null)
-            node.put("type", v);
     }
-
-    protected abstract String extractType(Class<?> type);
 
     public JsonNode asJson() {
         return node;
@@ -26,6 +24,11 @@ public abstract class SchemaWrapper {
 
     public String getDollarSchema() {
         return getNodeTextValue(node.get("$schema"));
+    }
+
+    public SchemaWrapper putDollarSchema() {
+        node.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
+        return this;
     }
 
     public String getId() {
@@ -60,11 +63,46 @@ public abstract class SchemaWrapper {
         return false;
     }
 
+    public boolean isArrayWrapper() {
+        return false;
+    }
+
+    public boolean isEmptyWrapper() {
+        return false;
+    }
+
+    public boolean isNullWrapper() {
+        return false;
+    }
+
+    public boolean isPropertyWrapper() {
+        return false;
+    }
+
     public <T extends SchemaWrapper> T cast() {
         return (T) this;
     }
 
+    protected ObjectNode getNode() {
+        return node;
+    }
+
+    // TODO: Shouldn't I check the Nullable annotation only on fields or methods?
+    protected void processNullable() {
+        final Nullable nullable = type.getAnnotation(Nullable.class);
+        if (nullable != null) {
+            String oldType = node.get("type").asText();
+            ArrayNode typeArray = node.putArray("type");
+            typeArray.add(oldType);
+            typeArray.add("null");
+        }
+    }
+
     protected String getNodeTextValue(JsonNode node) {
         return node == null ? null : node.textValue();
+    }
+
+    protected void setType(String type) {
+        node.put("type", type);
     }
 }

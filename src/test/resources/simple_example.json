@@ -1,6 +1,6 @@
 {
-    "title": "Example Schema",
     "type": "object",
+    "title": "Example Schema",
     "properties": {
         "firstName": {
             "type": "string"

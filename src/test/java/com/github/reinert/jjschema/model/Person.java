@@ -10,8 +10,8 @@ public class Person {
     int age;
     @JsonManagedReference
     Collection<TaskList> createdTasks;
-//	@JsonManagedReference("assigned")
-//	Collection<TaskList> assignedTasks;
+	@JsonManagedReference("assigned")
+	Collection<TaskList> assignedTasks;
 
     public String getName() {
         return name;
@@ -36,11 +36,11 @@ public class Person {
     public void setCreatedTasks(Collection<TaskList> createdTasks) {
         this.createdTasks = createdTasks;
     }
-//	public Collection<TaskList> getAssignedTasks() {
-//		return assignedTasks;
-//	}
-//	public void setAssignedTasks(Collection<TaskList> assignedTasks) {
-//		this.assignedTasks = assignedTasks;
-//	}
+	public Collection<TaskList> getAssignedTasks() {
+		return assignedTasks;
+	}
+	public void setAssignedTasks(Collection<TaskList> assignedTasks) {
+		this.assignedTasks = assignedTasks;
+	}
 
 }

@@ -83,4 +83,14 @@ public enum SimpleTypeMappings {
             return "array";
         return MAPPINGS.get(c);
     }
+
+    /**
+     * Informs which the given type is some Java default type
+     *
+     * @param c the class
+     * @return true if c is a Java default Ype, false otherwise
+     */
+    public static boolean isSimpleType(final Class<?> c) {
+        return forClass(c) != null;
+    }
 }

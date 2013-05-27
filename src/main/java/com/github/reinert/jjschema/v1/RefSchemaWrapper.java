@@ -21,12 +21,7 @@ public class RefSchemaWrapper extends SchemaWrapper {
         return true;
     }
 
-    @Override
-    protected String extractType(Class<?> type) {
-        return null;
-    }
-
     public void setRef(String ref) {
-        node.put("$ref", ref);
+        getNode().put("$ref", ref);
     }
 }

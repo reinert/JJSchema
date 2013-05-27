@@ -10,15 +10,12 @@ public class SimpleSchemaWrapper extends SchemaWrapper {
 
     public SimpleSchemaWrapper(Class<?> type) {
         super(type);
+        setType(SimpleTypeMappings.forClass(type));
+        processNullable();
     }
 
     @Override
     public boolean isSimpleWrapper() {
         return true;
-    }
-
-    @Override
-    protected String extractType(Class<?> type) {
-        return SimpleTypeMappings.forClass(type);
     }
 }

@@ -12,17 +12,17 @@ public class V4SchemaWrapper extends CustomSchemaWrapper {
 
     @Override
     public String getId() {
-        return getNodeTextValue(node.get("id"));
+        return getNodeTextValue(getNode().get("id"));
     }
 
     @Override
     public String getDollarSchema() {
-        return getNodeTextValue(node.get("$schema"));
+        return getNodeTextValue(getNode().get("$schema"));
     }
 
     @Override
     public String getRef() {
-        return getNodeTextValue(node.get("$ref"));
+        return getNodeTextValue(getNode().get("$ref"));
     }
 
 

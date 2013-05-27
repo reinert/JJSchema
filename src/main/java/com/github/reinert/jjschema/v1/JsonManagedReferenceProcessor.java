@@ -18,7 +18,7 @@ public class JsonManagedReferenceProcessor implements AnnotationProcessor {
             return false;
 
 
-//        Method propertyMethod = schemaContext.getPropertyMethod(propertyName);
+//        Method propertyMethod = schemaContext.getPropertyMethod(name);
 //        Class<?> returnType = propertyMethod.getReturnType();
 //        ManagedReference fowardReference = null;
 //        Class<?> genericClass = null;
