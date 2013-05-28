@@ -47,14 +47,8 @@ public class CircularReferenceSimpleTest extends TestCase {
         JsonNode schema = schemaFactory.createSchema(Sale.class);
         System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
 
-//        assertEquals(0, v4generator.getFowardReferences().size());
-//        assertEquals(0, v4generator.getBackwardReferences().size());
-
         schema = schemaFactory.createSchema(SaleItem.class);
         System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
-
-//        assertEquals(0, v4generator.getFowardReferences().size());
-//        assertEquals(0, v4generator.getBackwardReferences().size());
     }
 
     @Attributes(id = "#sale")

@@ -41,25 +41,25 @@ public abstract class JsonSchemaGenerator {
 
     final ObjectMapper mapper = new ObjectMapper();
     boolean autoPutVersion = true;
-    private Set<ManagedReference> fowardReferences;
+    private Set<ManagedReference> forwardReferences;
     private Set<ManagedReference> backReferences;
 
-    Set<ManagedReference> getFowardReferences() {
-        if (fowardReferences == null)
-            fowardReferences = new LinkedHashSet<ManagedReference>();
-        return fowardReferences;
+    Set<ManagedReference> getForwardReferences() {
+        if (forwardReferences == null)
+            forwardReferences = new LinkedHashSet<ManagedReference>();
+        return forwardReferences;
     }
 
     <T> void pushFowardReference(ManagedReference fowardReference) {
-        getFowardReferences().add(fowardReference);
+        getForwardReferences().add(fowardReference);
     }
 
     <T> boolean isFowardReferencePiled(ManagedReference fowardReference) {
-        return getFowardReferences().contains(fowardReference);
+        return getForwardReferences().contains(fowardReference);
     }
 
     <T> boolean pullFowardReference(ManagedReference fowardReference) {
-        return getFowardReferences().remove(fowardReference);
+        return getForwardReferences().remove(fowardReference);
     }
 
     Set<ManagedReference> getBackwardReferences() {

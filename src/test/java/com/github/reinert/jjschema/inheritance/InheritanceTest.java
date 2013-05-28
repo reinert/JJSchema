@@ -23,5 +23,8 @@ public class InheritanceTest extends TestCase {
     public void testGenerateSchema() throws JsonProcessingException {
         JsonNode generatedSchema = schemaFactory.createSchema(MusicItem.class);
         System.out.println(WRITER.writeValueAsString(generatedSchema));
+
+        generatedSchema = schemaFactory.createSchema(WarrantyItem.class);
+        System.out.println(WRITER.writeValueAsString(generatedSchema));
     }
 }
