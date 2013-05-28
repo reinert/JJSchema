@@ -20,8 +20,6 @@ package com.github.reinert.jjschema.v1;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.github.reinert.jjschema.JsonSchemaGenerator;
-import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import com.github.reinert.jjschema.model.Person;
 import com.github.reinert.jjschema.model.Task;
 import com.github.reinert.jjschema.model.TaskList;

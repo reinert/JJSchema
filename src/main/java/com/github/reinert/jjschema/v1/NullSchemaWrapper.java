@@ -1,7 +1,5 @@
 package com.github.reinert.jjschema.v1;
 
-import com.github.reinert.jjschema.SimpleTypeMappings;
-
 /**
  * @author Danilo Reinert
  */

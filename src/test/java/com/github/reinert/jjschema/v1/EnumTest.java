@@ -20,9 +20,7 @@ package com.github.reinert.jjschema.v1;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.reinert.jjschema.Attributes;
-import com.github.reinert.jjschema.JsonSchemaGenerator;
 import com.github.reinert.jjschema.Nullable;
-import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import junit.framework.TestCase;
 
 import java.io.IOException;
@@ -43,6 +41,7 @@ public class EnumTest extends TestCase {
      * Test if @Nullable works at Collection Types
      *
      * @throws com.fasterxml.jackson.core.JsonProcessingException
+     *
      */
     public void testGenerateSchema() throws IOException {
 

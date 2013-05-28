@@ -21,8 +21,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.reinert.jjschema.Attributes;
-import com.github.reinert.jjschema.JsonSchemaGenerator;
-import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 import junit.framework.TestCase;
 
@@ -47,6 +45,7 @@ public class SimpleTest extends TestCase {
      *
      * @throws java.io.IOException
      * @throws com.fasterxml.jackson.core.JsonProcessingException
+     *
      */
     public void testGenerateSchema() throws UnavailableVersion, JsonProcessingException, IOException {
 

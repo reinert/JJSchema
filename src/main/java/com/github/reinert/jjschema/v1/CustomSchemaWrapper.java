@@ -1,14 +1,10 @@
 package com.github.reinert.jjschema.v1;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.fge.jsonschema.SchemaVersion;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.ManagedReference;
-import com.github.reinert.jjschema.Nullable;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

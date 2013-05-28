@@ -22,8 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.fge.jsonschema.util.JsonLoader;
 import com.github.reinert.jjschema.Attributes;
-import com.github.reinert.jjschema.JsonSchemaGenerator;
-import com.github.reinert.jjschema.SchemaGeneratorBuilder;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 import junit.framework.TestCase;
 
@@ -37,6 +35,7 @@ public class ProductTest extends TestCase {
 
     ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
     JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
+
     {
         schemaFactory.setAutoPutDollarSchema(true);
     }

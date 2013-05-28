@@ -72,19 +72,25 @@ public class PropertyWrapper extends SchemaWrapper {
                 if (ownerSchemaWrapper.pushReference(getManagedReference())) {
                     String relativeId1 = ownerSchemaWrapper.getRelativeId();
                     if (relativeId1.endsWith(itemsStr)) {
-                        relativeId1 = relativeId1.substring(0, relativeId1.substring(0, relativeId1.length() - itemsStr.length()).lastIndexOf("/") - (propertiesStr.length()-1));
+                        relativeId1 = relativeId1.substring(0, relativeId1.substring(0, relativeId1.length() - itemsStr.length()).lastIndexOf("/") - (propertiesStr.length() - 1));
                     } else {
-                        relativeId1 = relativeId1.substring(0, relativeId1.lastIndexOf("/") - (propertiesStr.length()-1));
+                        relativeId1 = relativeId1.substring(0, relativeId1.lastIndexOf("/") - (propertiesStr.length() - 1));
                     }
                     schemaWrapper = new RefSchemaWrapper(propertyType, relativeId1);
-                }
-                else
+                } else
                     schemaWrapper = new EmptySchemaWrapper();
             }
             if (schemaWrapper.isRefWrapper() && collectionType != null)
                 this.schemaWrapper = SchemaWrapperFactory.createArrayRefWrapper((RefSchemaWrapper) schemaWrapper);
             else
                 this.schemaWrapper = schemaWrapper;
+        } else if (ownerSchemaWrapper.getJavaType() == propertyType) {
+            SchemaWrapper schemaWrapper = new RefSchemaWrapper(propertyType, ownerSchemaWrapper.getRelativeId());
+            if (collectionType != null) {
+                this.schemaWrapper = SchemaWrapperFactory.createArrayRefWrapper((RefSchemaWrapper) schemaWrapper);
+            } else {
+                this.schemaWrapper = schemaWrapper;
+            }
         } else {
             if (getReferenceType() == ReferenceType.FORWARD) {
                 ownerSchemaWrapper.pullReference(getManagedReference());

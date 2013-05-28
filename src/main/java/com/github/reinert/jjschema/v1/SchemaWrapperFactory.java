@@ -5,7 +5,6 @@ import com.github.reinert.jjschema.ManagedReference;
 import com.github.reinert.jjschema.SimpleTypeMappings;
 
 import java.util.AbstractCollection;
-import java.util.Collection;
 import java.util.Set;
 
 /**

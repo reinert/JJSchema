@@ -1,10 +1,6 @@
 package com.github.reinert.jjschema.v1;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.github.fge.jsonschema.SchemaVersion;
-import com.github.reinert.jjschema.Attributes;
-import com.github.reinert.jjschema.SimpleTypeMappings;
 
 import java.util.Collection;
 
