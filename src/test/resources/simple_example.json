@@ -14,5 +14,5 @@
             "minimum": 0
         }
     },
-    "required": ["lastName", "firstName"]
+    "required": ["firstName", "lastName"]
 }
