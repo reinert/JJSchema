@@ -15,12 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.reinert.jjschema;
+package com.github.reinert.jjschema.v1;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.reinert.jjschema.JsonSchemaGenerator;
+import com.github.reinert.jjschema.SchemaGeneratorBuilder;
+import com.github.reinert.jjschema.SchemaIgnore;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -31,7 +34,7 @@ import java.util.List;
 public class SchemaIgnoreTest extends TestCase {
 
     static ObjectMapper MAPPER = new ObjectMapper();
-    JsonSchemaGenerator v4generator = SchemaGeneratorBuilder.draftV4Schema().setAutoPutSchemaVersion(false).build();
+    JsonSchemaFactory v4generator = new JsonSchemaV4Factory();
 
     public SchemaIgnoreTest(String testName) {
         super(testName);
@@ -42,12 +45,12 @@ public class SchemaIgnoreTest extends TestCase {
      */
     public void testGenerateSchema() {
 
-        JsonNode schema = v4generator.generateSchema(Sale.class);
+        JsonNode schema = v4generator.createSchema(Sale.class);
         //System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
         JsonNode properties = schema.get("properties");
         assertEquals(1, properties.size());
 
-        schema = v4generator.generateSchema(SaleItem.class);
+        schema = v4generator.createSchema(SaleItem.class);
         //System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
         properties = schema.get("properties");
         assertEquals(2, properties.size());

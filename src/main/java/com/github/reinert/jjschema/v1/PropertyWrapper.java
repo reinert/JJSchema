@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.ManagedReference;
 import com.github.reinert.jjschema.Nullable;
+import com.github.reinert.jjschema.SchemaIgnore;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -43,6 +44,8 @@ public class PropertyWrapper extends SchemaWrapper {
         this.field = field;
         this.method = method;
 
+
+
         String relativeId;
 
         Class<?> propertyType = method.getReturnType();
@@ -62,7 +65,9 @@ public class PropertyWrapper extends SchemaWrapper {
 
         processReference(propertyType);
 
-        if (getReferenceType() == ReferenceType.BACKWARD) {
+        if (getAccessibleObject().getAnnotation(SchemaIgnore.class) != null) {
+            this.schemaWrapper = new EmptySchemaWrapper();
+        } else if (getReferenceType() == ReferenceType.BACKWARD) {
             SchemaWrapper schemaWrapper;
             String id = processId(method.getReturnType());
             if (id != null) {
