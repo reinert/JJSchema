@@ -68,6 +68,7 @@ For version 0.6:
 For version 1.0 (not released yet)
 ```java
     JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
+    schemaFactory.setAutoPutDollarSchema(true);
     JsonNode productSchema = schemaFactory.createSchema(Product.class);
     System.out.println(productSchema);
 ```
