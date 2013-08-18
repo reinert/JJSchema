@@ -277,10 +277,10 @@ public class PropertyWrapper extends SchemaWrapper {
                 node.put("multipleOf", attributes.multipleOf());
             }
             if (attributes.minLength() > 0) {
-                node.put("minLength", attributes.minItems());
+                node.put("minLength", attributes.minLength());
             }
             if (attributes.maxLength() > -1) {
-                node.put("maxLength", attributes.maxItems());
+                node.put("maxLength", attributes.maxLength());
             }
             if (attributes.required()) {
                 setRequired(true);
