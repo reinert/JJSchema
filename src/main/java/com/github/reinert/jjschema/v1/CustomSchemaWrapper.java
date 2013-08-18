@@ -122,6 +122,12 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
     private HashMap<Method, Field> findProperties() {
         Field[] fields = getJavaType().getDeclaredFields();
         Method[] methods = getJavaType().getMethods();
+        // Ordering the properties
+        Arrays.sort(methods, new Comparator<Method>() {
+          public int compare(Method m1, Method m2) {
+            return m1.getName().compareTo(m2.getName());
+          }});
+
         LinkedHashMap<Method, Field> props = new LinkedHashMap<Method, Field>();
         // get valid properties (get method and respective field (if exists))
         for (Method method : methods) {

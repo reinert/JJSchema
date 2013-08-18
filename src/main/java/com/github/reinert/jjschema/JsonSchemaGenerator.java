@@ -482,7 +482,13 @@ public abstract class JsonSchemaGenerator {
     private <T> HashMap<Method, Field> findProperties(Class<T> type) {
         Field[] fields = type.getDeclaredFields();
         Method[] methods = type.getMethods();
-        HashMap<Method, Field> props = new HashMap<Method, Field>();
+        // Ordering the properties
+        Arrays.sort(methods, new Comparator<Method>() {
+          public int compare(Method m1, Method m2) {
+            return m1.getName().compareTo(m2.getName());
+          }});
+
+        LinkedHashMap<Method, Field> props = new LinkedHashMap<Method, Field>();
         // get valid properties (get method and respective field (if exists))
         for (Method method : methods) {
             Class<?> declaringClass = method.getDeclaringClass();
