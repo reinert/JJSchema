@@ -482,7 +482,14 @@ public abstract class JsonSchemaGenerator {
     private <T> HashMap<Method, Field> findProperties(Class<T> type) {
         Field[] fields = type.getDeclaredFields();
         Method[] methods = type.getMethods();
-        HashMap<Method, Field> props = new HashMap<Method, Field>();
+        // Ordering the properties
+        Arrays.sort(methods, new Comparator<Method>() {
+            public int compare(Method m1, Method m2) {
+                return m1.getName().compareTo(m2.getName());
+            }
+        });
+
+        LinkedHashMap<Method, Field> props = new LinkedHashMap<Method, Field>();
         // get valid properties (get method and respective field (if exists))
         for (Method method : methods) {
             Class<?> declaringClass = method.getDeclaringClass();
@@ -491,11 +498,10 @@ public abstract class JsonSchemaGenerator {
                 continue;
             }
 
-            String methodName = method.getName();
-            if (methodName.startsWith("get")) {
+            if (isGetter(method)) {
                 boolean hasField = false;
                 for (Field field : fields) {
-                    String name = methodName.substring(3);
+                    String name = getNameFromGetter(method);
                     if (field.getName().equalsIgnoreCase(name)) {
                         props.put(method, field);
                         hasField = true;
@@ -515,4 +521,25 @@ public abstract class JsonSchemaGenerator {
                 + (string.length() > 1 ? string.substring(1) : "");
     }
 
+    private boolean isGetter(final Method method) {
+        return method.getName().startsWith("get") || method.getName().startsWith("is");
+    }
+
+    private String getNameFromGetter(final Method getter) {
+        String[] getterPrefixes = {"get", "is"};
+        String methodName = getter.getName();
+        String fieldName = null;
+        for (String prefix : getterPrefixes) {
+            if (methodName.startsWith(prefix)) {
+                fieldName = methodName.substring(prefix.length());
+            }
+        }
+
+        if (fieldName == null) {
+            return null;
+        }
+
+        fieldName = fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
+        return fieldName;
+    }
 }

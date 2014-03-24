@@ -122,6 +122,13 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
     private HashMap<Method, Field> findProperties() {
         Field[] fields = getJavaType().getDeclaredFields();
         Method[] methods = getJavaType().getMethods();
+        // Ordering the properties
+        Arrays.sort(methods, new Comparator<Method>() {
+            public int compare(Method m1, Method m2) {
+                return m1.getName().compareTo(m2.getName());
+            }
+        });
+
         LinkedHashMap<Method, Field> props = new LinkedHashMap<Method, Field>();
         // get valid properties (get method and respective field (if exists))
         for (Method method : methods) {
@@ -131,11 +138,10 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
                 continue;
             }
 
-            String methodName = method.getName();
-            if (methodName.startsWith("get")) {
+            if (isGetter(method)) {
                 boolean hasField = false;
                 for (Field field : fields) {
-                    String name = methodName.substring(3);
+                    String name = getNameFromGetter(method);
                     if (field.getName().equalsIgnoreCase(name)) {
                         props.put(method, field);
                         hasField = true;
@@ -148,6 +154,28 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             }
         }
         return props;
+    }
+
+    private boolean isGetter(final Method method) {
+        return method.getName().startsWith("get") || method.getName().startsWith("is");
+    }
+
+    private String getNameFromGetter(final Method getter) {
+        String[] getterPrefixes = {"get", "is"};
+        String methodName = getter.getName();
+        String fieldName = null;
+        for (String prefix : getterPrefixes) {
+            if (methodName.startsWith(prefix)) {
+                fieldName = methodName.substring(prefix.length());
+            }
+        }
+
+        if (fieldName == null) {
+            return null;
+        }
+
+        fieldName = fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
+        return fieldName;
     }
 
     protected void setRequired(boolean required) {
