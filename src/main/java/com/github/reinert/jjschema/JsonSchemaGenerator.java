@@ -409,7 +409,7 @@ public abstract class JsonSchemaGenerator {
      */
     protected <T> ObjectNode mergeWithParent(Class<T> type, ObjectNode schema) {
         Class<? super T> superclass = type.getSuperclass();
-        if (superclass != Object.class) {
+        if (superclass != null && superclass != Object.class) {
             ObjectNode parentSchema = generateSchema(superclass);
             schema = mergeSchema(parentSchema, schema, false);
         }
