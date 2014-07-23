@@ -85,10 +85,10 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
             schema.put("multipleOf", props.multipleOf());
         }
         if (props.minLength() > 0) {
-            schema.put("minLength", props.minItems());
+            schema.put("minLength", props.minLength());
         }
         if (props.maxLength() > -1) {
-            schema.put("maxLength", props.maxItems());
+            schema.put("maxLength", props.maxLength());
         }
     }
 
