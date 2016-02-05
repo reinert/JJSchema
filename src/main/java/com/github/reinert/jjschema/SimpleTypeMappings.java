@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import java.util.AbstractCollection;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Mapping of builtin Java types to their matching JSON Schema primitive type
@@ -53,7 +54,8 @@ public enum SimpleTypeMappings {
     PRIMITIVE_CHAR(char.class, "string"),
     CHAR(Character.class, "string"),
     CHARSEQUENCE(CharSequence.class, "string"),
-    STRING(String.class, "string");
+    STRING(String.class, "string"),
+    UUID(UUID.class, "string");
 
     private static final Map<Class<?>, String> MAPPINGS;
 

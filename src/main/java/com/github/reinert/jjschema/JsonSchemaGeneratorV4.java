@@ -50,6 +50,9 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
         if (!props.pattern().isEmpty()) {
             schema.put("pattern", props.pattern());
         }
+        if (!props.format().isEmpty()) {
+            schema.put("format", props.format());
+        }
         if (!props.title().isEmpty()) {
             schema.put("title", props.title());
         }
