@@ -49,6 +49,8 @@ public @interface Attributes {
 
     String pattern() default "";
 
+    String format() default "";
+
     boolean required() default false;
 
     String[] enums() default {};
