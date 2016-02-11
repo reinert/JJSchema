@@ -66,4 +66,6 @@ public @interface Attributes {
     int minLength() default 0;
 
     long maxLength() default -1l;
+    
+    boolean readonly() default false;
 }
