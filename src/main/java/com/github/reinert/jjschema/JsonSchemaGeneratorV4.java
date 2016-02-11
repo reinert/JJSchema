@@ -93,6 +93,9 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
         if (props.maxLength() > -1) {
             schema.put("maxLength", props.maxLength());
         }
+        if (props.readonly()) {
+            schema.put("readonly", true);
+        }
     }
 
 }

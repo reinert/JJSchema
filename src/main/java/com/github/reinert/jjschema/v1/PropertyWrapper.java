@@ -308,6 +308,9 @@ public class PropertyWrapper extends SchemaWrapper {
             if (attributes.required()) {
                 setRequired(true);
             }
+            if (attributes.readonly()) {
+                node.put("readonly", true);
+            }
         }
     }
 
