@@ -25,6 +25,8 @@ package com.github.reinert.jjschema;
  * @author reinert
  */
 public class SchemaGeneratorBuilder {
+    
+    private SchemaGeneratorBuilder() {}
 
     public static ConfigurationStep draftV4Schema() {
         return new ConfigurationStep(new JsonSchemaGeneratorV4());
