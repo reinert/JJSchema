@@ -107,7 +107,7 @@ public abstract class JsonSchemaGenerator {
      * @param schema
      * @param props
      */
-    abstract protected void processSchemaProperty(ObjectNode schema, Attributes props);
+    protected abstract void processSchemaProperty(ObjectNode schema, Attributes props);
 
     protected ObjectNode createInstance() {
         return mapper.createObjectNode();

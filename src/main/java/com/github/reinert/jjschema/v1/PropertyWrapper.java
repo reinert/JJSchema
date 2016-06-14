@@ -86,10 +86,10 @@ public class PropertyWrapper extends SchemaWrapper {
         if (getAccessibleObject().getAnnotation(SchemaIgnore.class) != null) {
             this.schemaWrapper = new EmptySchemaWrapper();
         } else if (getReferenceType() == ReferenceType.BACKWARD) {
-            SchemaWrapper schemaWrapper;
+            SchemaWrapper schemaWrapperLocal;
             String id = processId(method.getReturnType());
             if (id != null) {
-                schemaWrapper = new RefSchemaWrapper(propertyType, id);
+                schemaWrapperLocal = new RefSchemaWrapper(propertyType, id);
                 ownerSchemaWrapper.pushReference(getManagedReference());
             } else {
                 if (ownerSchemaWrapper.pushReference(getManagedReference())) {
@@ -99,20 +99,20 @@ public class PropertyWrapper extends SchemaWrapper {
                     } else {
                         relativeId1 = relativeId1.substring(0, relativeId1.lastIndexOf("/") - (propertiesStr.length() - 1));
                     }
-                    schemaWrapper = new RefSchemaWrapper(propertyType, relativeId1);
+                    schemaWrapperLocal = new RefSchemaWrapper(propertyType, relativeId1);
                 } else
-                    schemaWrapper = new EmptySchemaWrapper();
+                    schemaWrapperLocal = new EmptySchemaWrapper();
             }
-            if (schemaWrapper.isRefWrapper() && collectionType != null)
-                this.schemaWrapper = SchemaWrapperFactory.createArrayRefWrapper((RefSchemaWrapper) schemaWrapper);
+            if (schemaWrapperLocal.isRefWrapper() && collectionType != null)
+                this.schemaWrapper = SchemaWrapperFactory.createArrayRefWrapper((RefSchemaWrapper) schemaWrapperLocal);
             else
-                this.schemaWrapper = schemaWrapper;
+                this.schemaWrapper = schemaWrapperLocal;
         } else if (ownerSchemaWrapper.getJavaType() == propertyType) {
-            SchemaWrapper schemaWrapper = new RefSchemaWrapper(propertyType, ownerSchemaWrapper.getRelativeId());
+            SchemaWrapper schemaWrapperLocal = new RefSchemaWrapper(propertyType, ownerSchemaWrapper.getRelativeId());
             if (collectionType != null) {
-                this.schemaWrapper = SchemaWrapperFactory.createArrayRefWrapper((RefSchemaWrapper) schemaWrapper);
+                this.schemaWrapper = SchemaWrapperFactory.createArrayRefWrapper((RefSchemaWrapper) schemaWrapperLocal);
             } else {
-                this.schemaWrapper = schemaWrapper;
+                this.schemaWrapper = schemaWrapperLocal;
             }
         } else {
             if (getReferenceType() == ReferenceType.FORWARD) {

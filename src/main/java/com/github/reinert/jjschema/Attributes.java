@@ -39,7 +39,7 @@ public @interface Attributes {
 
     String description() default "";
 
-    long maximum() default -1l;
+    long maximum() default -1L;
 
     boolean exclusiveMaximum() default false;
 
@@ -57,7 +57,7 @@ public @interface Attributes {
 
     int minItems() default 0;
 
-    long maxItems() default -1l;
+    long maxItems() default -1L;
 
     boolean uniqueItems() default false;
 
@@ -65,7 +65,7 @@ public @interface Attributes {
 
     int minLength() default 0;
 
-    long maxLength() default -1l;
+    long maxLength() default -1L;
     
     boolean readonly() default false;
 }

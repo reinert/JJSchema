@@ -34,7 +34,7 @@ public class SchemaGeneratorBuilder {
         return new ConfigurationStep(new HyperSchemaGeneratorV4(new JsonSchemaGeneratorV4()));
     }
 
-    static public class ConfigurationStep {
+    public static class ConfigurationStep {
         final JsonSchemaGenerator generator;
 
         ConfigurationStep(JsonSchemaGenerator generator) {
