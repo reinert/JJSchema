@@ -392,9 +392,8 @@ public abstract class JsonSchemaGenerator {
     }
 
     private String getPropertyName(Field field, Method method) {
-        String name = (field == null) ? firstToLowCase(method.getName()
+        return (field == null) ? firstToLowCase(method.getName()
                 .replace("get", "")) : field.getName();
-        return name;
     }
 
     /**
