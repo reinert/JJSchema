@@ -438,7 +438,7 @@ public abstract class JsonSchemaGenerator {
 
             while (namesIterator.hasNext()) {
                 String propertyName = namesIterator.next();
-                if (!propertyName.equals("properties")) {
+                if (!"properties".equals(propertyName)) {
                     overwriteProperty(parent, child, propertyName);
                 }
             }
