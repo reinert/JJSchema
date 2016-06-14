@@ -41,6 +41,9 @@ import java.util.Iterator;
  */
 public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
 
+    private static final String BINARY_ENCODING = "binaryEncoding";
+    private static final String MEDIA_TYPE = "mediaType";
+    
     final JsonSchemaGenerator jsonSchemaGenerator;
 
     protected HyperSchemaGeneratorV4(JsonSchemaGenerator jsonSchemaGenerator) {
@@ -187,15 +190,15 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
                     hasBodyParam = true;
                     schema = generateSchema(paramTypes[i]);
                     if (media != null) {
-                        schema.put("mediaType", media.type());
-                        schema.put("binaryEncoding", media.binaryEncoding());
+                        schema.put(MEDIA_TYPE, media.type());
+                        schema.put(BINARY_ENCODING, media.binaryEncoding());
                     }
                 } else if (isParam) {
                     hasParam = true;
                     if (media != null) {
                         ObjectNode hs = (ObjectNode) schema.get(prop);
-                        hs.put("mediaType", media.type());
-                        hs.put("binaryEncoding", media.binaryEncoding());
+                        hs.put(MEDIA_TYPE, media.type());
+                        hs.put(BINARY_ENCODING, media.binaryEncoding());
                         schema.put(prop, hs);
                     }
                 }
@@ -229,7 +232,7 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
                 if (schema == null) {
                     schema = jsonSchemaGenerator.createInstance();
                 }
-                schema.put("mediaType", p.value()[0]);
+                schema.put(MEDIA_TYPE, p.value()[0]);
             }
         }
         if (!hasPath) {
@@ -265,8 +268,8 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
                 com.github.reinert.jjschema.Media media = field.getAnnotation(com.github.reinert.jjschema.Media.class);
                 if (media != null) {
                     ObjectNode hyperProp = (ObjectNode) properties.get(prop);
-                    hyperProp.put("mediaType", media.type());
-                    hyperProp.put("binaryEncoding", media.binaryEncoding());
+                    hyperProp.put(MEDIA_TYPE, media.type());
+                    hyperProp.put(BINARY_ENCODING, media.binaryEncoding());
                     if (hyperProp.get("type").isArray()) {
                         TextNode typeString = new TextNode("string");
                         ((ArrayNode) hyperProp.get("type")).set(0, typeString);
