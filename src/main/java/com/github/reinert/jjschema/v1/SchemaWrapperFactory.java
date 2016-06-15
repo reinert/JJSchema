@@ -31,7 +31,7 @@ import java.util.Set;
 
 public class SchemaWrapperFactory {
 
-    public static ObjectMapper MAPPER = new ObjectMapper();
+    public static final ObjectMapper MAPPER = new ObjectMapper();
     
     private SchemaWrapperFactory() {}
 
