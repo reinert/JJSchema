@@ -290,9 +290,9 @@ public abstract class JsonSchemaGenerator {
 
         JsonManagedReference refAnn = propertyReflection.getAnnotation(JsonManagedReference.class);
         if (refAnn != null) {
-            ManagedReference fowardReference = null;
-            Class<?> genericClass = null;
-            Class<?> collectionClass = null;
+            ManagedReference fowardReference;
+            Class<?> genericClass;
+            Class<?> collectionClass;
             if (Collection.class.isAssignableFrom(returnType)) {
                 ParameterizedType genericType = (ParameterizedType) method
                         .getGenericReturnType();
@@ -317,9 +317,9 @@ public abstract class JsonSchemaGenerator {
 
         JsonBackReference backRefAnn = propertyReflection.getAnnotation(JsonBackReference.class);
         if (backRefAnn != null) {
-            ManagedReference backReference = null;
-            Class<?> genericClass = null;
-            Class<?> collectionClass = null;
+            ManagedReference backReference;
+            Class<?> genericClass;
+            Class<?> collectionClass;
             if (Collection.class.isAssignableFrom(returnType)) {
                 ParameterizedType genericType = (ParameterizedType) method
                         .getGenericReturnType();
@@ -377,7 +377,7 @@ public abstract class JsonSchemaGenerator {
                                      Method method, ObjectNode prop) {
         String name = getPropertyName(field, method);
         if (prop.has("selfRequired")) {
-            ArrayNode requiredNode = null;
+            ArrayNode requiredNode;
             if (!schema.has("required")) {
                 requiredNode = schema.putArray("required");
             } else {
