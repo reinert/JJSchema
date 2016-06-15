@@ -44,6 +44,9 @@ public abstract class JsonSchemaGenerator {
     boolean autoPutVersion = true;
     private Set<ManagedReference> forwardReferences;
     private Set<ManagedReference> backReferences;
+    
+    protected JsonSchemaGenerator() {
+    }
 
     Set<ManagedReference> getForwardReferences() {
         if (forwardReferences == null)
@@ -96,8 +99,6 @@ public abstract class JsonSchemaGenerator {
         return createInstance().put("$ref", ref);
     }
 
-    protected JsonSchemaGenerator() {
-    }
 
     /**
      * Reads {@link Attributes} annotation and put its values into the
@@ -279,8 +280,7 @@ public abstract class JsonSchemaGenerator {
 
     protected <T> ObjectNode generatePropertySchema(Class<T> type, Method method, Field field) {
         Class<?> returnType = method.getReturnType();
-        AccessibleObject propertyReflection =
-                (AccessibleObject) field != null ? field : method;
+        AccessibleObject propertyReflection = field != null ? field : method;
 
         SchemaIgnore ignoreAnn = propertyReflection.getAnnotation(SchemaIgnore.class);
         if (ignoreAnn != null)

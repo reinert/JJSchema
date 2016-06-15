@@ -27,6 +27,7 @@ import com.google.common.collect.Lists;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * @author Danilo Reinert
@@ -130,8 +131,9 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 
     protected void processProperties() {
         HashMap<Method, Field> properties = findProperties();
-        for (Method method : properties.keySet()) {
-            PropertyWrapper propertyWrapper = new PropertyWrapper(this, managedReferences, method, properties.get(method));
+        for (Entry<Method, Field> prop : properties.entrySet()) {
+            PropertyWrapper propertyWrapper = new PropertyWrapper(this, managedReferences, 
+                    prop.getKey(), prop.getValue());
             if (!propertyWrapper.isEmptyWrapper())
                 addProperty(propertyWrapper);
         }
