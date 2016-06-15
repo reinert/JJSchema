@@ -40,6 +40,11 @@ import java.util.Map.Entry;
  */
 public abstract class JsonSchemaGenerator {
 
+    private static final String TAG_PROPERTIES = "properties";
+    private static final String TAG_REQUIRED = "required";
+    private static final String TAG_TYPE = "type";
+    private static final String TAG_ARRAY = "array";
+    
     final ObjectMapper mapper = new ObjectMapper();
     boolean autoPutVersion = true;
     private Set<ManagedReference> forwardReferences;
@@ -155,7 +160,7 @@ public abstract class JsonSchemaGenerator {
         String s = SimpleTypeMappings.forClass(type);
         // If it is a simple type, then just put the type
         if (s != null) {
-            schema.put("type", s);
+            schema.put(TAG_TYPE, s);
         }
         // If it is a Collection or Iterable the generate the schema as an array
         else if (Iterable.class.isAssignableFrom(type)
@@ -185,7 +190,7 @@ public abstract class JsonSchemaGenerator {
      * @return the full schema of custom java types
      */
     protected <T> ObjectNode processCustomType(Class<T> type, ObjectNode schema) {
-        schema.put("type", "object");
+        schema.put(TAG_TYPE, "object");
         // fill root object properties
         processRootAttributes(type, schema);
         // Generate the schemas of type's properties
@@ -206,7 +211,7 @@ public abstract class JsonSchemaGenerator {
         // If the type extends from AbstracctCollection, then it is considered
         // as a simple array type
         if (AbstractCollection.class.isAssignableFrom(type)) {
-            schema.put("type", "array");
+            schema.put(TAG_TYPE, TAG_ARRAY);
         }
         // Otherwise it is processed as a custom array type
         else {
@@ -218,7 +223,7 @@ public abstract class JsonSchemaGenerator {
     }
 
     private <T> void processCustomCollection(Class<T> type, ObjectNode schema) {
-        schema.put("type", "array");
+        schema.put(TAG_TYPE, TAG_ARRAY);
         Field field = type.getDeclaredFields()[0];
         ParameterizedType genericType = (ParameterizedType) field
                 .getGenericType();
@@ -253,7 +258,7 @@ public abstract class JsonSchemaGenerator {
     }
 
     private void processPropertyCollection(Method method, ObjectNode schema) {
-        schema.put("type", "array");
+        schema.put(TAG_TYPE, TAG_ARRAY);
         ParameterizedType genericType = (ParameterizedType) method
                 .getGenericReturnType();
         Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
@@ -363,8 +368,8 @@ public abstract class JsonSchemaGenerator {
             if (returnType.isEnum()) {
                 ((ArrayNode) schema.get("enum")).add("null");
             } else {
-                String oldType = schema.get("type").asText();
-                ArrayNode typeArray = schema.putArray("type");
+                String oldType = schema.get(TAG_TYPE).asText();
+                ArrayNode typeArray = schema.putArray(TAG_TYPE);
                 typeArray.add(oldType);
                 typeArray.add("null");
             }
@@ -378,17 +383,17 @@ public abstract class JsonSchemaGenerator {
         String name = getPropertyName(field, method);
         if (prop.has("selfRequired")) {
             ArrayNode requiredNode;
-            if (!schema.has("required")) {
-                requiredNode = schema.putArray("required");
+            if (!schema.has(TAG_REQUIRED)) {
+                requiredNode = schema.putArray(TAG_REQUIRED);
             } else {
-                requiredNode = (ArrayNode) schema.get("required");
+                requiredNode = (ArrayNode) schema.get(TAG_REQUIRED);
             }
             requiredNode.add(name);
             prop.remove("selfRequired");
         }
-        if (!schema.has("properties"))
-            schema.putObject("properties");
-        ((ObjectNode) schema.get("properties")).put(name, prop);
+        if (!schema.has(TAG_PROPERTIES))
+            schema.putObject(TAG_PROPERTIES);
+        ((ObjectNode) schema.get(TAG_PROPERTIES)).put(name, prop);
     }
 
     private String getPropertyName(Field field, Method method) {
@@ -438,15 +443,15 @@ public abstract class JsonSchemaGenerator {
 
             while (namesIterator.hasNext()) {
                 String propertyName = namesIterator.next();
-                if (!"properties".equals(propertyName)) {
+                if (!TAG_PROPERTIES.equals(propertyName)) {
                     overwriteProperty(parent, child, propertyName);
                 }
             }
 
-            ObjectNode properties = (ObjectNode) child.get("properties");
+            ObjectNode properties = (ObjectNode) child.get(TAG_PROPERTIES);
             if (properties != null) {
-                if (parent.get("properties") == null) {
-                    parent.putObject("properties");
+                if (parent.get(TAG_PROPERTIES) == null) {
+                    parent.putObject(TAG_PROPERTIES);
                 }
 
                 Iterator<Entry<String, JsonNode>> it = properties.fields();
@@ -455,11 +460,11 @@ public abstract class JsonSchemaGenerator {
                     String pName = entry.getKey();
                     ObjectNode pSchema = (ObjectNode) entry.getValue();
                     ObjectNode actualSchema = (ObjectNode) parent.get(
-                            "properties").get(pName);
+                            TAG_PROPERTIES).get(pName);
                     if (actualSchema != null) {
                         mergeSchema(pSchema, actualSchema, false);
                     }
-                    ((ObjectNode) parent.get("properties")).put(pName, pSchema);
+                    ((ObjectNode) parent.get(TAG_PROPERTIES)).put(pName, pSchema);
                 }
             }
         }

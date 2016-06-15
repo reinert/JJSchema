@@ -35,6 +35,9 @@ import java.util.Map.Entry;
 
 public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<PropertyWrapper> {
 
+    private static final String TAG_REQUIRED = "required";
+    private static final String TAG_PROPERTIES = "properties";
+    
     private final List<PropertyWrapper> propertyWrappers;
     private boolean required;
     private final Set<ManagedReference> managedReferences;
@@ -75,10 +78,10 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
     public void addProperty(PropertyWrapper propertyWrapper) {
         this.propertyWrappers.add(propertyWrapper);
 
-        if (!getNode().has("properties"))
-            getNode().putObject("properties");
+        if (!getNode().has(TAG_PROPERTIES))
+            getNode().putObject(TAG_PROPERTIES);
 
-        ((ObjectNode) getNode().get("properties")).put(propertyWrapper.getName(), propertyWrapper.asJson());
+        ((ObjectNode) getNode().get(TAG_PROPERTIES)).put(propertyWrapper.getName(), propertyWrapper.asJson());
 
         if (propertyWrapper.isRequired())
             addRequired(propertyWrapper.getName());
@@ -97,9 +100,9 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
     }
 
     public void addRequired(String name) {
-        if (!getNode().has("required"))
-            getNode().putArray("required");
-        ArrayNode requiredNode = (ArrayNode) getNode().get("required");
+        if (!getNode().has(TAG_REQUIRED))
+            getNode().putArray(TAG_REQUIRED);
+        ArrayNode requiredNode = (ArrayNode) getNode().get(TAG_REQUIRED);
         requiredNode.add(name);
     }
 
