@@ -241,7 +241,7 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
         for (Method method : type.getDeclaredMethods()) {
             try {
                 ObjectNode link = generateLink(method);
-                if (link.get("method").asText().equals("GET") && link.get("href").asText().equals("#")) {
+                if ("GET".equals(link.get("method").asText()) && "#".equals(link.get("href").asText())) {
                     jsonSchemaGenerator.mergeSchema(schema, (ObjectNode) link.get("targetSchema"), true);
                 } else {
                     links.add(link);
@@ -293,7 +293,7 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
         } else {
             ObjectNode jsonSchema = (ObjectNode) jsonSchemaGenerator.generateSchema(type);
             if (jsonSchema != null) {
-                if (jsonSchema.get("type").asText().equals("array")) {
+                if ("array".equals(jsonSchema.get("type").asText())) {
                     if (!Collection.class.isAssignableFrom(type)) {
                         ObjectNode items = (ObjectNode) jsonSchema.get("items");
                         // NOTE: Customized Iterable Class must declare the Collection object at first
