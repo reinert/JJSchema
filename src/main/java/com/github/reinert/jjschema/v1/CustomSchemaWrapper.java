@@ -35,8 +35,8 @@ import java.util.Map.Entry;
 
 public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<PropertyWrapper> {
 
-    private static final String TAG_REQUIRED = "required";
-    private static final String TAG_PROPERTIES = "properties";
+    public static final String TAG_REQUIRED = "required";
+    public static final String TAG_PROPERTIES = "properties";
     
     private final List<PropertyWrapper> propertyWrappers;
     private boolean required;

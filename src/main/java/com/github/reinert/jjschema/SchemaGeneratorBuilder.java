@@ -48,6 +48,21 @@ public class SchemaGeneratorBuilder {
             return this;
         }
 
+        public ConfigurationStep sortProperties(boolean sortProperties) {
+            generator.sortProperties = sortProperties;
+            return this;
+        }
+        
+        public ConfigurationStep processAnnotatedOnly(boolean processAnnotatedOnly) {
+            generator.processAnnotatedOnly = processAnnotatedOnly;
+            return this;
+        }
+        
+        public ConfigurationStep processFieldsOnly(boolean processFieldsOnly) {
+            generator.processFieldsOnly = processFieldsOnly;
+            return this;
+        }
+        
         public final JsonSchemaGenerator build() {
             return generator;
         }
