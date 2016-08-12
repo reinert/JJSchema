@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.reinert.jjschema.exception.InvalidLinkMethod;
+import com.github.reinert.jjschema.exception.TypeException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -50,7 +51,7 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
         this.jsonSchemaGenerator = jsonSchemaGenerator;
     }
 
-    private ObjectNode generateLink(Method method) throws InvalidLinkMethod {
+    private ObjectNode generateLink(Method method) throws InvalidLinkMethod, TypeException {
         String href = null, rel = null, httpMethod = null;
         boolean isLink = false;
 
@@ -213,7 +214,7 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
         return link;
     }
 
-    private <T> ObjectNode generateHyperSchemaFromResource(Class<T> type) {
+    private <T> ObjectNode generateHyperSchemaFromResource(Class<T> type) throws TypeException  {
         ObjectNode schema = null;
 
         Annotation[] ans = type.getAnnotations();
@@ -288,7 +289,7 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
     }
 
     @Override
-    public <T> ObjectNode generateSchema(Class<T> type) {
+    public <T> ObjectNode generateSchema(Class<T> type) throws TypeException {
         ObjectNode hyperSchema = null;
         Annotation path = type.getAnnotation(Path.class);
         if (path != null) {

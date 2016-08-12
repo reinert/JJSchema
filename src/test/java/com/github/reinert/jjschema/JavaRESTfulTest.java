@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.github.reinert.jjschema.exception.TypeException;
 import com.github.reinert.jjschema.model.User;
 import com.github.reinert.jjschema.rest.UserResource;
 import junit.framework.TestCase;
@@ -32,7 +33,7 @@ public class JavaRESTfulTest extends TestCase {
     ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
     JsonSchemaGenerator v4hyperGenerator = SchemaGeneratorBuilder.draftV4HyperSchema().setAutoPutSchemaVersion(false).build();
 
-    public void testHyperSchema() throws JsonProcessingException {
+    public void testHyperSchema() throws JsonProcessingException, TypeException  {
         JsonNode userHyperSchema = v4hyperGenerator.generateSchema(User.class);
         //System.out.println(om.writeValueAsString(userSchema));
         assertEquals("image/jpg", userHyperSchema.get("properties").get("photo").get("mediaType").asText());

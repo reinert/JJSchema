@@ -24,11 +24,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.reinert.jjschema.exception.TypeException;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.Map.Entry;
@@ -47,6 +49,9 @@ public abstract class JsonSchemaGenerator {
     
     final ObjectMapper mapper = new ObjectMapper();
     boolean autoPutVersion = true;
+    boolean sortProperties = true;
+    boolean processFieldsOnly = false;
+    boolean processAnnotatedOnly = false;
     private Set<ManagedReference> forwardReferences;
     private Set<ManagedReference> backReferences;
     
@@ -141,7 +146,7 @@ public abstract class JsonSchemaGenerator {
         return this;
     }
 
-    public <T> ObjectNode generateSchema(Class<T> type) {
+    public <T> ObjectNode generateSchema(Class<T> type) throws TypeException {
         ObjectNode schema = createInstance();
         schema = checkAndProcessType(type, schema);
         return schema;
@@ -156,7 +161,7 @@ public abstract class JsonSchemaGenerator {
      * @param schema
      * @return the full schema represented as an ObjectNode.
      */
-    protected <T> ObjectNode checkAndProcessType(Class<T> type, ObjectNode schema) {
+    protected <T> ObjectNode checkAndProcessType(Class<T> type, ObjectNode schema) throws TypeException {
         String s = SimpleTypeMappings.forClass(type);
         // If it is a simple type, then just put the type
         if (s != null) {
@@ -189,12 +194,18 @@ public abstract class JsonSchemaGenerator {
      * @param schema
      * @return the full schema of custom java types
      */
-    protected <T> ObjectNode processCustomType(Class<T> type, ObjectNode schema) {
+    protected <T> ObjectNode processCustomType(Class<T> type, ObjectNode schema) throws TypeException {
         schema.put(TAG_TYPE, "object");
         // fill root object properties
         processRootAttributes(type, schema);
-        // Generate the schemas of type's properties
-        processProperties(type, schema);
+
+        if (this.processFieldsOnly) {
+            // Process fields only
+            processFields(type,schema);
+        } else {
+            // Generate the schemas of type's properties
+            processProperties(type, schema);
+        }
         // Merge the actual type's schema with a parent type's schema (if it exists!)
         schema = mergeWithParent(type, schema);
 
@@ -207,7 +218,7 @@ public abstract class JsonSchemaGenerator {
      * @param type
      * @param schema
      */
-    private <T> void checkAndProcessCollection(Class<T> type, ObjectNode schema) {
+    private <T> void checkAndProcessCollection(Class<T> type, ObjectNode schema) throws TypeException {
         // If the type extends from AbstracctCollection, then it is considered
         // as a simple array type
         if (AbstractCollection.class.isAssignableFrom(type)) {
@@ -222,7 +233,7 @@ public abstract class JsonSchemaGenerator {
         }
     }
 
-    private <T> void processCustomCollection(Class<T> type, ObjectNode schema) {
+    private <T> void processCustomCollection(Class<T> type, ObjectNode schema) throws TypeException {
         schema.put(TAG_TYPE, TAG_ARRAY);
         Field field = type.getDeclaredFields()[0];
         ParameterizedType genericType = (ParameterizedType) field
@@ -257,11 +268,19 @@ public abstract class JsonSchemaGenerator {
         }
     }
 
-    private void processPropertyCollection(Method method, ObjectNode schema) {
+    private void processPropertyCollection(Method method, Field field, ObjectNode schema) throws TypeException {
         schema.put(TAG_TYPE, TAG_ARRAY);
-        ParameterizedType genericType = (ParameterizedType) method
-                .getGenericReturnType();
-        Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+        Class<?> genericClass = null;
+        if (method != null) {
+            Type methodType = method.getGenericReturnType();
+            if (!ParameterizedType.class.isAssignableFrom(methodType.getClass())) {
+                throw new TypeException("Collection property must be parameterized: " + method.getName());
+            }
+            ParameterizedType genericType = (ParameterizedType)methodType;
+            genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+        } else {
+            genericClass = field.getClass();
+        }
         schema.put("items", generateSchema(genericClass));
     }
 
@@ -271,20 +290,32 @@ public abstract class JsonSchemaGenerator {
             processSchemaProperty(schema, sProp);
     }
 
-    protected <T> void processProperties(Class<T> type, ObjectNode schema) {
+    protected <T> void processProperties(Class<T> type, ObjectNode schema) throws TypeException {
         HashMap<Method, Field> props = findProperties(type);
         for (Map.Entry<Method, Field> entry : props.entrySet()) {
             Field field = entry.getValue();
             Method method = entry.getKey();
             ObjectNode prop = generatePropertySchema(type, method, field);
-            if (prop != null) {
+            if (prop != null && field != null) {
                 addPropertyToSchema(schema, field, method, prop);
             }
         }
     }
+    
+    protected <T> void processFields(Class<T> type, ObjectNode schema) throws TypeException {
+        List<Field> props = findFields(type);
+        
+        for (Field field : props) {
+            ObjectNode prop = generatePropertySchema(type, null, field);
+            if (prop != null && field != null) {
+                addPropertyToSchema(schema, field, null, prop);
+            }
+        }
+    }
 
-    protected <T> ObjectNode generatePropertySchema(Class<T> type, Method method, Field field) {
-        Class<?> returnType = method.getReturnType();
+    protected <T> ObjectNode generatePropertySchema(Class<T> type, Method method, Field field) throws TypeException {
+        Class<?> returnType = method != null ? method.getReturnType() : field.getType();
+        
         AccessibleObject propertyReflection = field != null ? field : method;
 
         SchemaIgnore ignoreAnn = propertyReflection.getAnnotation(SchemaIgnore.class);
@@ -299,9 +330,12 @@ public abstract class JsonSchemaGenerator {
             Class<?> genericClass;
             Class<?> collectionClass;
             if (Collection.class.isAssignableFrom(returnType)) {
-                ParameterizedType genericType = (ParameterizedType) method
-                        .getGenericReturnType();
-                genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+                if (method != null) {
+                    ParameterizedType genericType = (ParameterizedType) method.getGenericReturnType();
+                    genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
+                } else {
+                    genericClass = field.getClass();
+                }
                 collectionClass = returnType;
             } else {
                 genericClass = returnType;
@@ -347,7 +381,7 @@ public abstract class JsonSchemaGenerator {
 
 
         if (Collection.class.isAssignableFrom(returnType)) {
-            processPropertyCollection(method, schema);
+            processPropertyCollection(method, field, schema);
         } else {
             schema = generateSchema(returnType);
         }
@@ -380,6 +414,7 @@ public abstract class JsonSchemaGenerator {
 
     private void addPropertyToSchema(ObjectNode schema, Field field,
                                      Method method, ObjectNode prop) {
+        
         String name = getPropertyName(field, method);
         if (prop.has("selfRequired")) {
             ArrayNode requiredNode;
@@ -411,7 +446,7 @@ public abstract class JsonSchemaGenerator {
      * @param schema
      * @return The actual schema merged with its parent schema (if it exists)
      */
-    protected <T> ObjectNode mergeWithParent(Class<T> type, ObjectNode schema) {
+    protected <T> ObjectNode mergeWithParent(Class<T> type, ObjectNode schema) throws TypeException {
         Class<? super T> superclass = type.getSuperclass();
         if (superclass != null && superclass != Object.class) {
             ObjectNode parentSchema = generateSchema(superclass);
@@ -487,12 +522,14 @@ public abstract class JsonSchemaGenerator {
     private <T> HashMap<Method, Field> findProperties(Class<T> type) {
         Field[] fields = type.getDeclaredFields();
         Method[] methods = type.getMethods();
-        // Ordering the properties
-        Arrays.sort(methods, new Comparator<Method>() {
-            public int compare(Method m1, Method m2) {
-                return m1.getName().compareTo(m2.getName());
-            }
-        });
+        if (this.sortProperties) {
+            // Ordering the properties
+            Arrays.sort(methods, new Comparator<Method>() {
+                public int compare(Method m1, Method m2) {
+                    return m1.getName().compareTo(m2.getName());
+                }
+            });
+        }
 
         LinkedHashMap<Method, Field> props = new LinkedHashMap<Method, Field>();
         // get valid properties (get method and respective field (if exists))
@@ -507,7 +544,13 @@ public abstract class JsonSchemaGenerator {
                 boolean hasField = false;
                 for (Field field : fields) {
                     String name = getNameFromGetter(method);
-                    if (field.getName().equalsIgnoreCase(name)) {
+                    Attributes attribs = field.getAnnotation(Attributes.class);
+                    boolean process = true;
+                    if (this.processAnnotatedOnly && attribs == null) {
+                        process = false;
+                    }
+                            
+                    if (process && field.getName().equalsIgnoreCase(name)) {
                         props.put(method, field);
                         hasField = true;
                         break;
@@ -515,6 +558,37 @@ public abstract class JsonSchemaGenerator {
                 }
                 if (!hasField) {
                     props.put(method, null);
+                }
+            }
+        }
+        return props;
+    }
+    
+    private <T> List<Field> findFields(Class<T> type) {
+        Field[] fields = type.getDeclaredFields();
+        if (this.sortProperties) {
+            // Order the fields
+            Arrays.sort(fields, new Comparator<Field>() {
+                public int compare(Field m1, Field m2) {
+                    return m1.getName().compareTo(m2.getName());
+                }
+            });
+        }
+        List<Field> props = new ArrayList<Field>();
+        // get fields
+        for (Field field : fields) {
+            Class<?> declaringClass = field.getDeclaringClass();
+            if (declaringClass.equals(Object.class)
+                    || Collection.class.isAssignableFrom(declaringClass)) {
+                continue;
+            }
+
+            String name = field.getName();
+            if (field.getName().equalsIgnoreCase(name)) {
+                Attributes attrs = field.getAnnotation(Attributes.class);
+                // Only process annotated fields if processAnnotatedOnly set
+                if (attrs != null || !this.processAnnotatedOnly) {
+                    props.add(field);
                 }
             }
         }
