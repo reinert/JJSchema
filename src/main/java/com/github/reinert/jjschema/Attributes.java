@@ -68,4 +68,6 @@ public @interface Attributes {
     long maxLength() default -1L;
     
     boolean readonly() default false;
+
+    String attributeAlias() default "";
 }
