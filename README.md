@@ -10,7 +10,7 @@ Latest Release
 <dependency>
   <groupId>com.github.nilportugues</groupId>
   <artifactId>jjschema</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 </dependency>
 ```
 
@@ -20,15 +20,19 @@ Simple HOW TO
 Suppose the following Class:
 
 ```java
-@Attributes(title="Product", description="A product from Acme's catalog")
+@JsonSchema(title="Product", description="A product from Acme's catalog")
 static class Product {
-	@Attributes(required=true, description="The unique identifier for a product")
+    
+	@JsonSchema(alias="product-id", required=true, description="The unique identifier for a product")
 	private long id;
-	@Attributes(required=true, description="Name of the product")
+	
+	@JsonSchema(required=true, description="Name of the product")
 	private String name;
-	@Attributes(required=true, minimum=0, exclusiveMinimum=true)
+	
+	@JsonSchema(required=true, minimum=0, exclusiveMinimum=true)
 	private BigDecimal price;
-	@Attributes(minItems=1,uniqueItems=true)
+	
+	@JsonSchema(minItems=1,uniqueItems=true)
 	private List<String> tags;
 	
 	public long getId() {
@@ -74,7 +78,7 @@ The output:
   "description" : "A product from Acme's catalog",
   "title" : "Product",
   "properties" : {
-    "id" : {
+    "product-id" : {
       "type" : "integer",
       "description" : "The unique identifier for a product"
     },
@@ -101,5 +105,6 @@ The output:
 }
 ```
 
-##Thanks to
-[![IntelliJ](https://lh6.googleusercontent.com/--QIIJfKrjSk/UJJ6X-UohII/AAAAAAAAAVM/cOW7EjnH778/s800/banner_IDEA.png)](http://www.jetbrains.com/idea/index.html)
+## Thanks to
+
+Danilo Reinert for writing the original version: https://github.com/reinert/JJSchema
