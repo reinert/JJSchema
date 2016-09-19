@@ -69,5 +69,5 @@ public @interface Attributes {
     
     boolean readonly() default false;
 
-    String attributeAlias() default "";
+    String alias() default "";
 }

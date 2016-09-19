@@ -31,7 +31,7 @@ public class User {
     @Attributes(required = true, description = "User's name")
     private String name;
 
-    @Attributes(description = "User's sex", enums = {"M", "F"})
+    @Attributes(alias = "gender", description = "User's sex", enums = {"M", "F"})
     @Nullable
     private char sex;
 

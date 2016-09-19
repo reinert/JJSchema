@@ -426,8 +426,22 @@ public abstract class JsonSchemaGenerator {
             requiredNode.add(name);
             prop.remove("selfRequired");
         }
-        if (!schema.has(TAG_PROPERTIES))
+        if (!schema.has(TAG_PROPERTIES)) {
             schema.putObject(TAG_PROPERTIES);
+        }
+
+        // Adding alias capability. Because sometimes renames is actually needed!
+        // Eg: JSON-API JSON Schemas
+        if (field.getDeclaredAnnotations().length > 0) {
+            Attributes declaredAnnotation = field.getDeclaredAnnotation(Attributes.class);
+            if (null != declaredAnnotation ) {
+                String alias = declaredAnnotation.alias();
+                if (alias.length()>0) {
+                    name = alias;
+                }
+            }
+        }
+
         ((ObjectNode) schema.get(TAG_PROPERTIES)).put(name, prop);
     }
 

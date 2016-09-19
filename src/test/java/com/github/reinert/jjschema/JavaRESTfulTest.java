@@ -30,12 +30,16 @@ import junit.framework.TestCase;
 
 public class JavaRESTfulTest extends TestCase {
 
-    ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
-    JsonSchemaGenerator v4hyperGenerator = SchemaGeneratorBuilder.draftV4HyperSchema().setAutoPutSchemaVersion(false).build();
+    private ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
+    private JsonSchemaGenerator v4hyperGenerator = SchemaGeneratorBuilder.draftV4HyperSchema().setAutoPutSchemaVersion(false).build();
 
     public void testHyperSchema() throws JsonProcessingException, TypeException  {
         JsonNode userHyperSchema = v4hyperGenerator.generateSchema(User.class);
-        //System.out.println(om.writeValueAsString(userSchema));
+
+        //Testing property aliasing
+        assertNotNull(userHyperSchema.get("properties").get("gender"));
+
+        //Testing property values property serialized.
         assertEquals("image/jpg", userHyperSchema.get("properties").get("photo").get("mediaType").asText());
         assertEquals("base64", userHyperSchema.get("properties").get("photo").get("binaryEncoding").asText());
 
