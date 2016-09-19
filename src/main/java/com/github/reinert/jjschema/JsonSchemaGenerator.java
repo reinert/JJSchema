@@ -423,13 +423,21 @@ public abstract class JsonSchemaGenerator {
             } else {
                 requiredNode = (ArrayNode) schema.get(TAG_REQUIRED);
             }
+
+            name = getAlias(field, name);
             requiredNode.add(name);
             prop.remove("selfRequired");
         }
+
         if (!schema.has(TAG_PROPERTIES)) {
             schema.putObject(TAG_PROPERTIES);
         }
+        name = getAlias(field, name);
 
+        ((ObjectNode) schema.get(TAG_PROPERTIES)).put(name, prop);
+    }
+
+    private String getAlias(Field field, String name) {
         // Adding alias capability. Because sometimes renames is actually needed!
         // Eg: JSON-API JSON Schemas
         if (field.getDeclaredAnnotations().length > 0) {
@@ -441,8 +449,7 @@ public abstract class JsonSchemaGenerator {
                 }
             }
         }
-
-        ((ObjectNode) schema.get(TAG_PROPERTIES)).put(name, prop);
+        return name;
     }
 
     private String getPropertyName(Field field, Method method) {
