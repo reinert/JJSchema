@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.nilportugues.jjschema.model.Person;
 import com.github.nilportugues.jjschema.model.Task;
 import com.github.nilportugues.jjschema.model.TaskList;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import java.io.IOException;
@@ -49,13 +50,13 @@ public class CircularReferenceComplexTest extends TestCase {
     public void testGenerateSchema() throws IOException {
 
         JsonNode taskSchema = schemaFactory.createSchema(Task.class);
-        System.out.println(WRITER.writeValueAsString(taskSchema));
+        Assert.assertNotNull(WRITER.writeValueAsString(taskSchema));
 
         JsonNode personSchema = schemaFactory.createSchema(Person.class);
-        System.out.println(WRITER.writeValueAsString(personSchema));
+        Assert.assertNotNull(WRITER.writeValueAsString(personSchema));
 
         JsonNode taskListSchema = schemaFactory.createSchema(TaskList.class);
-        System.out.println(WRITER.writeValueAsString(taskListSchema));
+        Assert.assertNotNull(WRITER.writeValueAsString(taskListSchema));
     }
 
 }

@@ -21,6 +21,7 @@ package com.github.nilportugues.jjschema.v1;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nilportugues.jjschema.annotation.Nullable;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class NullableArrayTest extends TestCase {
     public void testGenerateSchema() {
 
         JsonNode schema = schemaFactory.createSchema(Something.class);
-        System.out.println(schema);
+        Assert.assertNotNull(schema);
 
         JsonNode expected = MAPPER.createArrayNode().add("array").add("null");
 

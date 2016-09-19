@@ -49,7 +49,7 @@ public class ProductTest extends TestCase {
      */
     public void testProductSchema() throws UnavailableVersion, IOException {
         JsonNode productSchema = schemaFactory.createSchema(Product.class);
-        //System.out.println(om.writeValueAsString(productSchema));
+        //Assert.assertNotNull(om.writeValueAsString(productSchema));
         JsonNode productSchemaRes = JsonLoader
                 .fromResource("/product_schema.json");
         assertEquals(productSchemaRes, productSchema);
@@ -60,7 +60,7 @@ public class ProductTest extends TestCase {
         // inheritance support of JJSchema.
         /*
         JsonNode productSetSchema = SchemaWrapperFactory.createArrayWrapper(ProductSet.class).putDollarSchema().asJson();
-        System.out.println(om.writeValueAsString(productSetSchema));
+        Assert.assertNotNull(om.writeValueAsString(productSetSchema));
         JsonNode productSetSchemaRes = JsonLoader
                 .fromResource("/products_set_schema.json");
         assertEquals(productSetSchemaRes, productSetSchema);

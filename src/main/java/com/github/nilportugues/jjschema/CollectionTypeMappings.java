@@ -37,10 +37,6 @@ public enum CollectionTypeMappings {
     ARRAY_DEQUE(ArrayDeque.class, "array"),
 
     // Map implementations
-    //HASH_MAP(HashMap.class, "object"),
-    //TREE_MAP(TreeMap.class, "object"),
-    //LINKED_HASH_MAP(LinkedHashMap.class, "object"),
-
     ABSTRACT_COLLECTION(AbstractCollection.class, "array");
 
     private static final Map<Class<?>, String> MAPPINGS;

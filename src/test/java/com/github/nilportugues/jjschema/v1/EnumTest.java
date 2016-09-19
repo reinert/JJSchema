@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nilportugues.jjschema.annotation.JsonSchema;
 import com.github.nilportugues.jjschema.annotation.Nullable;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class EnumTest extends TestCase {
     public void testGenerateSchema() throws IOException {
 
         JsonNode schema = schemaFactory.createSchema(Hyperthing.class);
-        System.out.println(schema);
+        Assert.assertNotNull(schema);
 
         JsonNode expected = MAPPER.createArrayNode().add("GET").add("POST").add("PUT").add("DELETE");
         assertEquals(expected, schema.get("properties").get("method").get("enum"));

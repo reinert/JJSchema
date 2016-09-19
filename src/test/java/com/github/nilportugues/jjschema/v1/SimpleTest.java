@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nilportugues.jjschema.annotation.JsonSchema;
 import com.github.nilportugues.jjschema.exception.UnavailableVersion;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import java.io.IOException;
@@ -55,13 +56,13 @@ public class SimpleTest extends TestCase {
             throw new IOException("resource not found");
         JsonNode fromResource = MAPPER.readTree(in);
         JsonNode fromJavaType = schemaFactory.createSchema(SimpleExample.class);
-        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(fromJavaType));
+        Assert.assertNotNull(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(fromJavaType));
 
         assertEquals(fromResource, fromJavaType);
     }
 
     @JsonSchema(title = "Example Schema")
-    static class SimpleExample {
+    private static class SimpleExample {
         @JsonSchema(required = true)
         private String firstName;
         @JsonSchema(required = true)

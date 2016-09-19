@@ -24,12 +24,12 @@ import java.util.Collection;
 
 public class Person {
 
-    String name;
-    int age;
+    private String name;
+    private int age;
     @JsonManagedReference
-    Collection<TaskList> createdTasks;
+    private Collection<TaskList> createdTasks;
     @JsonManagedReference("assigned")
-    Collection<TaskList> assignedTasks;
+    private Collection<TaskList> assignedTasks;
 
     public String getName() {
         return name;

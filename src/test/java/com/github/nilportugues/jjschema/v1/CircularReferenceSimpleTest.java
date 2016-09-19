@@ -24,6 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.nilportugues.jjschema.annotation.JsonSchema;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import java.util.List;
@@ -46,10 +47,10 @@ public class CircularReferenceSimpleTest extends TestCase {
     public void testGenerateSchema() throws JsonProcessingException {
 
         JsonNode schema = schemaFactory.createSchema(Sale.class);
-        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+        Assert.assertNotNull(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
 
         schema = schemaFactory.createSchema(SaleItem.class);
-        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+        Assert.assertNotNull(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
     }
 
     @JsonSchema(id = "#sale")

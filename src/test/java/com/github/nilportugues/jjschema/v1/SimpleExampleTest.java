@@ -60,7 +60,7 @@ public class SimpleExampleTest extends TestCase {
     }
 
     @JsonSchema(title = "Example Schema")
-    static class SimpleExample {
+    private static class SimpleExample {
         @JsonSchema(required = true)
         private String firstName;
         @JsonSchema(required = true)

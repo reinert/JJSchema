@@ -33,7 +33,7 @@ public class EmployeeTest extends TestCase {
     private final ObjectMapper MAPPER = new ObjectMapper();
     ObjectWriter ow = MAPPER.writerWithDefaultPrettyPrinter();
 
-    static class Employee {
+    private static class Employee {
         @JsonSchema(required = true, minLength = 5, maxLength = 50, description = "Name")
         private String name;
 
@@ -56,7 +56,7 @@ public class EmployeeTest extends TestCase {
         }
     }
 
-    JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
+    private JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
     {
         schemaFactory.setAutoPutDollarSchema(true);
@@ -65,7 +65,7 @@ public class EmployeeTest extends TestCase {
     @SuppressWarnings({"unchecked", "rawtypes", "serial"})
     public void testEmployeeSchema() throws UnavailableVersion, IOException {
         JsonNode employeeSchema = schemaFactory.createSchema(Employee.class);
-        //System.out.println(ow.writeValueAsString(employeeSchema));
+        //Assert.assertNotNull(ow.writeValueAsString(employeeSchema));
         String str = MAPPER.writeValueAsString(employeeSchema);
         Map<String, Object> result = (Map<String, Object>) MAPPER.readValue(str, Map.class);
         assertNotNull(result);

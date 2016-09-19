@@ -27,9 +27,9 @@ import java.util.List;
 public class TaskList {
 
     @JsonManagedReference
-    List<Task> taks;
+    private List<Task> taks;
     @JsonBackReference
-    Person creator;
+    private Person creator;
     @JsonBackReference("assigned")
     Collection<Person> assignedPersons;
 

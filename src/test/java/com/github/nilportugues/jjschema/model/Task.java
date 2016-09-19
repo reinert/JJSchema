@@ -22,9 +22,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class Task {
 
-    String text;
+    private String text;
     @JsonBackReference
-    TaskList list;
+    private TaskList list;
 
     public String getText() {
         return text;
