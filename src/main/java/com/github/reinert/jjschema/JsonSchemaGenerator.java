@@ -433,7 +433,7 @@ public abstract class JsonSchemaGenerator {
         // Adding alias capability. Because sometimes renames is actually needed!
         // Eg: JSON-API JSON Schemas
         if (field.getDeclaredAnnotations().length > 0) {
-            Attributes declaredAnnotation = field.getDeclaredAnnotation(Attributes.class);
+            Attributes declaredAnnotation = field.getAnnotation(Attributes.class);
             if (null != declaredAnnotation ) {
                 String alias = declaredAnnotation.alias();
                 if (alias.length()>0) {
