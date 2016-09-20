@@ -2,13 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.reinert</groupId>
+    <groupId>com.github.nilportugues</groupId>
     <artifactId>jjschema</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>JJSchema</name>
-    <url>http://github.com/reinert/JJSchema/</url>
+    <url>http://github.com/nilportugues/JJSchema/</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,25 +24,34 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
-
-            <!--
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-gpg-plugin</artifactId>
-    <version>1.4</version>
-    <executions>
-        <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-                <goal>sign</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin>
-            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -83,7 +92,7 @@
         </dependency>
     </dependencies>
     <organization>
-        <name>Reinert, Danilo</name>
+        <name>Nil Portugués Calderó</name>
     </organization>
     <licenses>
         <license>
@@ -92,13 +101,24 @@
         </license>
     </licenses>
     <scm>
-        <url>git@github.com:reinert/JJSchema</url>
-        <connection>scm:git:git@github.com:reinert/JJSchema</connection>
-        <developerConnection>scm:git:git@github.com:reinert/JJSchema</developerConnection>
+        <url>git@github.com:nilportugues/JJSchema</url>
+        <connection>scm:git:git@github.com:nilportugues/JJSchema</connection>
+        <developerConnection>scm:git:git@github.com:nilportugues/JJSchema</developerConnection>
     </scm>
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 </project>
