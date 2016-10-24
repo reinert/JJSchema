@@ -3,16 +3,16 @@
 
 if [ -n "$1" ] && [ -n "$2" ]; then
   # update version to release version
-  mvn versions:set -DnewVersion=$1
-  mvn versions:commit
+#  mvn versions:set -DnewVersion=$1
+#  mvn versions:commit
   # update tag to release version
-  sh ./tag.sh $1
+#  sh ./tag.sh $1
   # commit
-  git add .
-  git commit -m "Release $1"
+#  git add .
+#  git commit -m "Release $1"
   # deploy
   # errors are occurring during deployment; it's necessary to try many times
-  mvn clean deploy -Prelease
+#  mvn clean deploy -Prelease
   # tag
   git tag -a JJSchema-$1 -m "JJSchema v$1"
   git push origin JJSchema-$1
