@@ -12,7 +12,7 @@ if [ -n "$1" ] && [ -n "$2" ]; then
   git commit -m "Release $1"
   # deploy
   # errors are occurring during deployment; it's necessary to try many times
-  mvn clean deploy -P!project,release
+  mvn clean deploy -Prelease
   # tag
   git tag -a JJSchema-$1 -m "JJSchema v$1"
   git push origin JJSchema-$1

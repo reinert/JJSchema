@@ -28,6 +28,7 @@ import com.github.fge.jsonschema.SchemaVersion;
  *
  * @author reinert
  */
+@Deprecated
 public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
 
     @Override

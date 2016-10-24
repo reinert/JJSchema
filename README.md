@@ -11,7 +11,7 @@ Latest Release
 <dependency>
   <groupId>com.github.reinert</groupId>
   <artifactId>jjschema</artifactId>
-  <version>0.6</version>
+  <version>1.0</version>
 </dependency>
 ```
 
@@ -61,14 +61,6 @@ static class Product {
 
 Type the following code:
 
-For version 0.6:
-```java
-JsonSchemaGenerator v4generator = SchemaGeneratorBuilder.draftV4Schema().build();
-JsonNode productSchema = v4generator.generateSchema(Product.class);
-System.out.println(productSchema);
-```
-
-For version 1.0 (not released yet)
 ```java
 JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 schemaFactory.setAutoPutDollarSchema(true);
