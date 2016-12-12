@@ -193,7 +193,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             }
         }
 
-        if (fieldName == null) {
+        if (fieldName == null || "".equals(fieldName)) {
             return null;
         }
 
