@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.ManagedReference;
 import com.google.common.collect.Lists;
+import com.google.common.collect.ObjectArrays;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -143,7 +144,13 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
     }
 
     private HashMap<Method, Field> findProperties() {
-        Field[] fields = getJavaType().getDeclaredFields();
+        Field[] fields = new Field[0];
+        Class<?> javaType = getJavaType();
+        while(javaType.getSuperclass() != null) {
+            fields = ObjectArrays.concat(fields, javaType.getDeclaredFields(), Field.class);
+            javaType = javaType.getSuperclass();
+        }
+
         Method[] methods = getJavaType().getMethods();
         // Ordering the properties
         Arrays.sort(methods, new Comparator<Method>() {

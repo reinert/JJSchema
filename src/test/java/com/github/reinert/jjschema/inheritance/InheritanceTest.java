@@ -26,6 +26,9 @@ import com.github.reinert.jjschema.v1.JsonSchemaFactory;
 import com.github.reinert.jjschema.v1.JsonSchemaV4Factory;
 import junit.framework.TestCase;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 /**
  * @author Danilo Reinert
  */
@@ -44,5 +47,15 @@ public class InheritanceTest extends TestCase {
 
         generatedSchema = schemaFactory.createSchema(WarrantyItem.class);
         System.out.println(WRITER.writeValueAsString(generatedSchema));
+    }
+
+    public void testInheritedProperties() throws JsonProcessingException {
+        JsonNode generatedSchema = schemaFactory.createSchema(CollegeStudent.class);
+        System.out.println(WRITER.writeValueAsString(generatedSchema));
+        assertEquals(generatedSchema.get("properties").get("name").get("description").asText(), "student name");
+        Iterator<JsonNode> jsonNodeIterator = generatedSchema.get("required").iterator();
+        while (jsonNodeIterator.hasNext()) {
+            assertTrue(Arrays.asList("major", "name").contains(jsonNodeIterator.next().asText()));
+        }
     }
 }
