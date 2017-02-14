@@ -6,7 +6,7 @@ if [ -n "$1" ] && [ -n "$2" ]; then
   mvn versions:set -DnewVersion=$1
   mvn versions:commit
   # update tag to release version
-  sh ./tag.sh $1
+  sh ./tag.sh $1 --readme
   # commit
   git add .
   git commit -m "Release $1"
