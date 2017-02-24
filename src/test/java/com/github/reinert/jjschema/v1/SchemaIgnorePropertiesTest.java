@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Danilo Reinert (daniloreinert@growbit.com)
+ * Copyright (c) 2017, Danilo Reinert (daniloreinert@growbit.com)
  *
  * This software is dual-licensed under:
  *

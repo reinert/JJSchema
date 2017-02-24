@@ -3,6 +3,7 @@ JJSchema
 
 A Java JSON Schema and Hyper-Schema generator.
 Currently, it is based on v4 draft.
+Supports Java 8 Date and Time API.
 
 Latest Release
 ----------------
