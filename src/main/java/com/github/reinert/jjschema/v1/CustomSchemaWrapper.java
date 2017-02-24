@@ -45,23 +45,34 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
     private String relativeId = "#";
 
     public CustomSchemaWrapper(Class<?> type) {
-        this(type, new HashSet<ManagedReference>());
+        this(type, false);
     }
 
-    public CustomSchemaWrapper(Class<?> type, Set<ManagedReference> managedReferences) {
-        this(type, managedReferences, null);
+    public CustomSchemaWrapper(Class<?> type, boolean ignoreProperties) {
+        this(type, new HashSet<ManagedReference>(), null, ignoreProperties);
     }
 
-    public CustomSchemaWrapper(Class<?> type, Set<ManagedReference> managedReferences, String relativeId) {
+    public CustomSchemaWrapper(Class<?> type, Set<ManagedReference> managedReferences, boolean ignoreProperties) {
+        this(type, managedReferences, null, ignoreProperties);
+    }
+
+    public CustomSchemaWrapper(Class<?> type, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
         super(type);
         setType("object");
         processNullable();
         processAttributes(getNode(), type);
-        propertyWrappers = Lists.newArrayListWithExpectedSize(type.getDeclaredFields().length);
         this.managedReferences = managedReferences;
+
         if (relativeId != null) {
             addTokenToRelativeId(relativeId);
         }
+
+        if (ignoreProperties) {
+            this.propertyWrappers = null;
+            return;
+        }
+
+        this.propertyWrappers = Lists.newArrayListWithExpectedSize(type.getDeclaredFields().length);
         processProperties();
     }
 
@@ -130,7 +141,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
      */
     @Override
     public Iterator<PropertyWrapper> iterator() {
-        return propertyWrappers.iterator();
+        return propertyWrappers != null ? propertyWrappers.iterator() : Collections.<PropertyWrapper>emptyIterator();
     }
 
     protected void processProperties() {

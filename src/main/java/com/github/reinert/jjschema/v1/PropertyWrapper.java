@@ -27,6 +27,7 @@ import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.ManagedReference;
 import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaIgnore;
+import com.github.reinert.jjschema.SchemaIgnoreProperties;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -83,7 +84,7 @@ public class PropertyWrapper extends SchemaWrapper {
 
         processReference(propertyType);
 
-        if (getAccessibleObject().getAnnotation(SchemaIgnore.class) != null) {
+        if (shouldIgnoreField()) {
             this.schemaWrapper = new EmptySchemaWrapper();
         } else if (getReferenceType() == ReferenceType.BACKWARD) {
             SchemaWrapper schemaWrapperLocal;
@@ -120,9 +121,9 @@ public class PropertyWrapper extends SchemaWrapper {
             }
             String relativeId1 = ownerSchemaWrapper.getRelativeId() + relativeId;
             if (collectionType != null) {
-                this.schemaWrapper = SchemaWrapperFactory.createArrayWrapper(collectionType, propertyType, managedReferences, relativeId1);
+                this.schemaWrapper = SchemaWrapperFactory.createArrayWrapper(collectionType, propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
             } else {
-                this.schemaWrapper = SchemaWrapperFactory.createWrapper(propertyType, managedReferences, relativeId1);
+                this.schemaWrapper = SchemaWrapperFactory.createWrapper(propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
             }
             processAttributes(getNode(), getAccessibleObject());
             processNullable();
@@ -369,5 +370,13 @@ public class PropertyWrapper extends SchemaWrapper {
     private String firstToLowerCase(String string) {
         return Character.toLowerCase(string.charAt(0))
                 + (string.length() > 1 ? string.substring(1) : "");
+    }
+
+    private boolean shouldIgnoreField() {
+        return getAccessibleObject().getAnnotation(SchemaIgnore.class) != null;
+    }
+
+    private boolean shouldIgnoreProperties() {
+        return getAccessibleObject().getAnnotation(SchemaIgnoreProperties.class) != null;
     }
 }

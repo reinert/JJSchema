@@ -32,7 +32,7 @@ public class ArraySchemaWrapper extends SchemaWrapper {
 
     final SchemaWrapper itemsSchemaWrapper;
 
-    public ArraySchemaWrapper(Class<?> type, Class<?> parametrizedType, Set<ManagedReference> managedReferences, String relativeId) {
+    public ArraySchemaWrapper(Class<?> type, Class<?> parametrizedType, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
         super(type);
         setType("array");
         if (parametrizedType != null) {
@@ -41,19 +41,19 @@ public class ArraySchemaWrapper extends SchemaWrapper {
             if (managedReferences == null)
                 this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(parametrizedType);
             else
-                this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(parametrizedType, managedReferences, relativeId);
+                this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(parametrizedType, managedReferences, relativeId, ignoreProperties);
             setItems(this.itemsSchemaWrapper.asJson());
         } else {
             this.itemsSchemaWrapper = null;
         }
     }
 
-    public ArraySchemaWrapper(Class<?> type, Class<?> parametrizedType, Set<ManagedReference> managedReferences) {
-        this(type, parametrizedType, managedReferences, null);
+    public ArraySchemaWrapper(Class<?> type, Class<?> parametrizedType, Set<ManagedReference> managedReferences, boolean ignoreProperties) {
+        this(type, parametrizedType, managedReferences, null, ignoreProperties);
     }
 
-    public ArraySchemaWrapper(Class<?> type, Class<?> parametrizedType) {
-        this(type, parametrizedType, null);
+    public ArraySchemaWrapper(Class<?> type, Class<?> parametrizedType, boolean ignoreProperties) {
+        this(type, parametrizedType, null, ignoreProperties);
     }
 
     public ArraySchemaWrapper(Class<?> type, RefSchemaWrapper refSchemaWrapper) {
