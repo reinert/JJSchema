@@ -20,6 +20,7 @@ package com.github.reinert.jjschema;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.ZonedDateTime;
 import java.util.AbstractCollection;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -55,7 +56,8 @@ public enum SimpleTypeMappings {
     CHAR(Character.class, "string"),
     CHARSEQUENCE(CharSequence.class, "string"),
     STRING(String.class, "string"),
-    UUID(UUID.class, "string");
+    UUID(UUID.class, "string"),
+    ZONEDDATETIME(ZonedDateTime.class,"string");
 
     private static final Map<Class<?>, String> MAPPINGS;
 
