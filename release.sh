@@ -13,8 +13,8 @@ if [ -n "$1" ] && [ -n "$2" ]; then
   # deploy
   mvn clean deploy -Prelease
   # tag
-  git tag -a JJSchema-$1 -m "JJSchema v$1"
-  git push origin JJSchema-$1
+  git tag -a JJSchema-1-$1 -m "JJSchema-1 v$1"
+  git push origin JJSchema-1$1
   # update version to next snapshot
   mvn versions:set -DnewVersion=$2
   mvn versions:commit
