@@ -236,6 +236,9 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             if (!attributes.pattern().isEmpty()) {
                 node.put("pattern", attributes.pattern());
             }
+            if (!attributes.format().isEmpty()) {
+                node.put("format", attributes.format());
+            }
             if (!attributes.title().isEmpty()) {
                 node.put("title", attributes.title());
             }
