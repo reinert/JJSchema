@@ -69,5 +69,5 @@ public @interface Attributes {
     
     boolean readonly() default false;
 
-    boolean additionalProperties () default true;
+    boolean additionalProperties() default true;
 }

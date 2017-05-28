@@ -34,7 +34,7 @@ public class AdditionalPropertiesTest extends TestCase {
     static ObjectMapper MAPPER = new ObjectMapper();
     JsonSchemaFactory v4generator = new JsonSchemaV4Factory();
 
-    public AdditionalPropertiesTest (String testName) {
+    public AdditionalPropertiesTest(String testName) {
         super(testName);
     }
 
@@ -43,18 +43,18 @@ public class AdditionalPropertiesTest extends TestCase {
         // System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
         JsonNode properties = schema.get("properties");
         assertEquals(2, properties.size());
-        assertFalse (schema.get ("additionalProperties").asBoolean ());
+        assertFalse(schema.get("additionalProperties").asBoolean());
     }
 
     public void testGenerateSaleSchema() throws JsonProcessingException {
         JsonNode schema = v4generator.createSchema(Sale.class);
         // System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
-        assertFalse (schema.get ("additionalProperties").asBoolean ());
+        assertFalse(schema.get("additionalProperties").asBoolean());
         JsonNode properties = schema.get("properties");
         assertEquals(2, properties.size());
 
         // ensure additional properties is in the nested schema
-        assertFalse (properties.findValue ("additionalProperties").asBoolean ());
+        assertFalse(properties.findValue("additionalProperties").asBoolean());
     }
 
     @Attributes(title = "Sale Parent Schema", additionalProperties = false)
@@ -93,11 +93,11 @@ public class AdditionalPropertiesTest extends TestCase {
             this.idSale = idSale;
         }
 
-        public String getName () {
+        public String getName() {
             return name;
         }
 
-        public void setName (String name) {
+        public void setName(String name) {
             this.name = name;
         }
     }

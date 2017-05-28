@@ -285,8 +285,8 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             if (attributes.readonly()) {
             	node.put("readonly", attributes.readonly());
             }
-            if (! attributes.additionalProperties ()) {
-                node.put ("additionalProperties", false);
+            if (!attributes.additionalProperties()) {
+                node.put("additionalProperties", false);
             }
         }
     }
