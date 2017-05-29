@@ -13,7 +13,7 @@ mvn versions:set -DnewVersion=$CURRENT
 mvn versions:commit
 
 # update tag to release version
-sh ./tag.sh $CURRENT --readme
+./tag.sh $CURRENT --readme
 
 # commit
 git add .
@@ -31,7 +31,7 @@ mvn versions:set -DnewVersion=$SNAPSHOT
 mvn versions:commit
 
 # update tag to next snapshot
-sh ./tag.sh HEAD
+./tag.sh HEAD
 
 # commit
 git add .
