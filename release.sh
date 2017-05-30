@@ -33,12 +33,12 @@ mvn versions:commit
 # update tag to next snapshot
 ./tag.sh HEAD
 
+# update VERSION file
+echo "MAJOR=$MAJOR" > ./VERSION
+echo "MINOR=$MINOR" >> ./VERSION
+
 # commit
 git add .
 git commit -m "Start $SNAPSHOT development"
 git push origin master
-
-# update VERSION file
-echo "MAJOR=$MAJOR" > ./VERSION
-echo "MINOR=$MINOR" >> ./VERSION
 
