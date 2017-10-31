@@ -51,7 +51,7 @@ public class ProductTest extends TestCase {
         JsonNode productSchema = schemaFactory.createSchema(Product.class);
         //Assert.assertNotNull(om.writeValueAsString(productSchema));
         JsonNode productSchemaRes = JsonLoader
-                .fromResource("/product_schema.json");
+            .fromResource("/product_schema.json");
         assertEquals(productSchemaRes, productSchema);
 
         //TODO: Add support to custom Iterable classes?

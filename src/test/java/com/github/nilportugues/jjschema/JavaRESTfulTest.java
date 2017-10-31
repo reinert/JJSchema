@@ -18,7 +18,6 @@
 
 package com.github.nilportugues.jjschema;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +32,7 @@ public class JavaRESTfulTest extends TestCase {
     private ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
     private JsonSchemaGenerator v4hyperGenerator = SchemaGeneratorBuilder.draftV4HyperSchema().setAutoPutSchemaVersion(false).build();
 
-    public void testHyperSchema() throws JsonProcessingException, TypeException  {
+    public void testHyperSchema() throws JsonProcessingException, TypeException {
         JsonNode userHyperSchema = v4hyperGenerator.generateSchema(User.class);
 
         //Testing property aliasing

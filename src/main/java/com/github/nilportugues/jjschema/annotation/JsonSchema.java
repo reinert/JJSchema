@@ -67,7 +67,7 @@ public @interface JsonSchema {
     int minLength() default 0;
 
     long maxLength() default -1L;
-    
+
     boolean readonly() default false;
 
     String alias() default "";

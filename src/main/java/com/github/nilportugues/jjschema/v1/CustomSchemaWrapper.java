@@ -37,7 +37,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 
     public static final String TAG_REQUIRED = "required";
     public static final String TAG_PROPERTIES = "properties";
-    
+
     private final List<PropertyWrapper> propertyWrappers;
     private boolean required;
     private final Set<ManagedReference> managedReferences;
@@ -87,13 +87,13 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             addRequired(propertyWrapper.getName());
     }
 
-//    public boolean removeProperty(PropertyWrapper propertyWrapper) {
-//        return propertyWrappers.remove(propertyWrapper);
-//    }
-//
-//    public void clearProperties() {
-//        propertyWrappers.clear();
-//    }
+    //    public boolean removeProperty(PropertyWrapper propertyWrapper) {
+    //        return propertyWrappers.remove(propertyWrapper);
+    //    }
+    //
+    //    public void clearProperties() {
+    //        propertyWrappers.clear();
+    //    }
 
     public boolean isRequired() {
         return required;
@@ -135,8 +135,8 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
     protected void processProperties() {
         HashMap<Method, Field> properties = findProperties();
         for (Entry<Method, Field> prop : properties.entrySet()) {
-            PropertyWrapper propertyWrapper = new PropertyWrapper(this, managedReferences, 
-                    prop.getKey(), prop.getValue());
+            PropertyWrapper propertyWrapper = new PropertyWrapper(this, managedReferences,
+                prop.getKey(), prop.getValue());
             if (!propertyWrapper.isEmptyWrapper())
                 addProperty(propertyWrapper);
         }
@@ -157,7 +157,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
         for (Method method : methods) {
             Class<?> declaringClass = method.getDeclaringClass();
             if (declaringClass.equals(Object.class)
-                    || Collection.class.isAssignableFrom(declaringClass)) {
+                || Collection.class.isAssignableFrom(declaringClass)) {
                 continue;
             }
 
@@ -262,7 +262,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
                 setRequired(true);
             }
             if (attributes.readonly()) {
-            	node.put("readonly", attributes.readonly());
+                node.put("readonly", attributes.readonly());
             }
         }
     }

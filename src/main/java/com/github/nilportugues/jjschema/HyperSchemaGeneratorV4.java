@@ -48,7 +48,7 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
 
     private static final String BINARY_ENCODING = "binaryEncoding";
     private static final String MEDIA_TYPE = "mediaType";
-    
+
     private final JsonSchemaGenerator jsonSchemaGenerator;
 
     protected HyperSchemaGeneratorV4(JsonSchemaGenerator jsonSchemaGenerator) {
@@ -218,7 +218,7 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
         return link;
     }
 
-    private <T> ObjectNode generateHyperSchemaFromResource(Class<T> type) throws TypeException  {
+    private <T> ObjectNode generateHyperSchemaFromResource(Class<T> type) throws TypeException {
         ObjectNode schema = null;
 
         Annotation[] ans = type.getAnnotations();

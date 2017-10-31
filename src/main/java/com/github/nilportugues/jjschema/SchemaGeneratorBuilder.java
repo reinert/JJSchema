@@ -18,15 +18,15 @@
 
 package com.github.nilportugues.jjschema;
 
-
 /**
  * A SchemaGenerator builder for creating SchemaGenerators considering some options.
  *
  * @author reinert
  */
 public class SchemaGeneratorBuilder {
-    
-    private SchemaGeneratorBuilder() {}
+
+    private SchemaGeneratorBuilder() {
+    }
 
     public static ConfigurationStep draftV4Schema() {
         return new ConfigurationStep(new JsonSchemaGeneratorV4());
@@ -52,17 +52,17 @@ public class SchemaGeneratorBuilder {
             generator.sortProperties = sortProperties;
             return this;
         }
-        
+
         public ConfigurationStep processAnnotatedOnly(boolean processAnnotatedOnly) {
             generator.processAnnotatedOnly = processAnnotatedOnly;
             return this;
         }
-        
+
         public ConfigurationStep processFieldsOnly(boolean processFieldsOnly) {
             generator.processFieldsOnly = processFieldsOnly;
             return this;
         }
-        
+
         public final JsonSchemaGenerator build() {
             return generator;
         }

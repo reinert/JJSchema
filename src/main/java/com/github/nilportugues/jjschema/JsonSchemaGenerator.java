@@ -46,7 +46,7 @@ public abstract class JsonSchemaGenerator {
     private static final String TAG_REQUIRED = "required";
     private static final String TAG_TYPE = "type";
     private static final String TAG_ARRAY = "array";
-    
+
     private final ObjectMapper mapper = new ObjectMapper();
     boolean autoPutVersion = true;
     boolean sortProperties = true;
@@ -54,7 +54,7 @@ public abstract class JsonSchemaGenerator {
     boolean processAnnotatedOnly = false;
     private Set<ManagedReference> forwardReferences;
     private Set<ManagedReference> backReferences;
-    
+
     protected JsonSchemaGenerator() {
     }
 
@@ -94,11 +94,9 @@ public abstract class JsonSchemaGenerator {
         return getBackwardReferences().remove(backReference);
     }
 
-
     protected ObjectNode createRefSchema(String ref) {
         return createInstance().put("$ref", ref);
     }
-
 
     /**
      * Reads {@link JsonSchema} annotation and put its values into the
@@ -159,7 +157,7 @@ public abstract class JsonSchemaGenerator {
         }
         // If it is a Collection or Iterable the generate the schema as an array
         else if (Iterable.class.isAssignableFrom(type)
-                || Collection.class.isAssignableFrom(type)) {
+            || Collection.class.isAssignableFrom(type)) {
             checkAndProcessCollection(type, schema);
         }
         // If it is void then return null
@@ -191,7 +189,7 @@ public abstract class JsonSchemaGenerator {
 
         if (this.processFieldsOnly) {
             // Process fields only
-            processFields(type,schema);
+            processFields(type, schema);
         } else {
             // Generate the schemas of type's properties
             processProperties(type, schema);
@@ -227,7 +225,7 @@ public abstract class JsonSchemaGenerator {
         schema.put(TAG_TYPE, TAG_ARRAY);
         Field field = type.getDeclaredFields()[0];
         ParameterizedType genericType = (ParameterizedType) field
-                .getGenericType();
+            .getGenericType();
         Class<?> genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
         ObjectNode itemsSchema = generateSchema(genericClass);
         itemsSchema.remove("$schema");
@@ -266,7 +264,7 @@ public abstract class JsonSchemaGenerator {
             if (!ParameterizedType.class.isAssignableFrom(methodType.getClass())) {
                 throw new TypeException("Collection property must be parameterized: " + method.getName());
             }
-            ParameterizedType genericType = (ParameterizedType)methodType;
+            ParameterizedType genericType = (ParameterizedType) methodType;
             genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
         } else {
             genericClass = field.getClass();
@@ -291,10 +289,10 @@ public abstract class JsonSchemaGenerator {
             }
         }
     }
-    
+
     protected <T> void processFields(Class<T> type, ObjectNode schema) throws TypeException {
         List<Field> props = findFields(type);
-        
+
         for (Field field : props) {
             ObjectNode prop = generatePropertySchema(type, null, field);
             if (prop != null && field != null) {
@@ -305,7 +303,7 @@ public abstract class JsonSchemaGenerator {
 
     protected <T> ObjectNode generatePropertySchema(Class<T> type, Method method, Field field) throws TypeException {
         Class<?> returnType = method != null ? method.getReturnType() : field.getType();
-        
+
         AccessibleObject propertyReflection = field != null ? field : method;
 
         SchemaIgnore ignoreAnn = propertyReflection.getAnnotation(SchemaIgnore.class);
@@ -335,7 +333,7 @@ public abstract class JsonSchemaGenerator {
             if (!isFowardReferencePiled(fowardReference)) {
                 pushFowardReference(fowardReference);
             } else
-//        	if (isBackwardReferencePiled(fowardReference)) 
+            //        	if (isBackwardReferencePiled(fowardReference)) 
             {
                 boolean a = pullFowardReference(fowardReference);
                 boolean b = pullBackwardReference(fowardReference);
@@ -351,7 +349,7 @@ public abstract class JsonSchemaGenerator {
             Class<?> collectionClass;
             if (Collection.class.isAssignableFrom(returnType)) {
                 ParameterizedType genericType = (ParameterizedType) method
-                        .getGenericReturnType();
+                    .getGenericReturnType();
                 genericClass = (Class<?>) genericType.getActualTypeArguments()[0];
                 collectionClass = returnType;
             } else {
@@ -360,15 +358,14 @@ public abstract class JsonSchemaGenerator {
             backReference = new ManagedReference(genericClass, backRefAnn.value(), type);
 
             if (isFowardReferencePiled(backReference) &&
-                    !isBackwardReferencePiled(backReference)) {
+                !isBackwardReferencePiled(backReference)) {
                 pushBackwardReference(backReference);
             } else {
-//        		pullFowardReference(backReference);
-//        		pullBackwardReference(backReference);
+                //        		pullFowardReference(backReference);
+                //        		pullBackwardReference(backReference);
                 return null;
             }
         }
-
 
         if (Collection.class.isAssignableFrom(returnType)) {
             processPropertyCollection(method, field, schema);
@@ -403,8 +400,8 @@ public abstract class JsonSchemaGenerator {
     }
 
     private void addPropertyToSchema(ObjectNode schema, Field field,
-                                     Method method, ObjectNode prop) {
-        
+        Method method, ObjectNode prop) {
+
         String name = getPropertyName(field, method);
         if (prop.has("selfRequired")) {
             ArrayNode requiredNode;
@@ -432,9 +429,9 @@ public abstract class JsonSchemaGenerator {
         // Eg: JSON-API JSON Schemas
         if (field.getDeclaredAnnotations().length > 0) {
             JsonSchema declaredAnnotation = field.getAnnotation(JsonSchema.class);
-            if (null != declaredAnnotation ) {
+            if (null != declaredAnnotation) {
                 String alias = declaredAnnotation.alias();
-                if (alias.length()>0) {
+                if (alias.length() > 0) {
                     name = alias;
                 }
             }
@@ -444,7 +441,7 @@ public abstract class JsonSchemaGenerator {
 
     private String getPropertyName(Field field, Method method) {
         return (field == null) ? firstToLowCase(method.getName()
-                .replace("get", "")) : field.getName();
+            .replace("get", "")) : field.getName();
     }
 
     /**
@@ -475,7 +472,7 @@ public abstract class JsonSchemaGenerator {
      * @return The tow schemas merged
      */
     protected ObjectNode mergeSchema(ObjectNode parent, ObjectNode child,
-                                     boolean overwriteChildProperties) {
+        boolean overwriteChildProperties) {
         Iterator<String> namesIterator = child.fieldNames();
 
         if (overwriteChildProperties) {
@@ -505,7 +502,7 @@ public abstract class JsonSchemaGenerator {
                     String pName = entry.getKey();
                     ObjectNode pSchema = (ObjectNode) entry.getValue();
                     ObjectNode actualSchema = (ObjectNode) parent.get(
-                            TAG_PROPERTIES).get(pName);
+                        TAG_PROPERTIES).get(pName);
                     if (actualSchema != null) {
                         mergeSchema(pSchema, actualSchema, false);
                     }
@@ -518,7 +515,7 @@ public abstract class JsonSchemaGenerator {
     }
 
     protected void overwriteProperty(ObjectNode parent, ObjectNode child,
-                                     String propertyName) {
+        String propertyName) {
         if (child.has(propertyName)) {
             parent.put(propertyName, child.get(propertyName));
         }
@@ -547,7 +544,7 @@ public abstract class JsonSchemaGenerator {
         for (Method method : methods) {
             Class<?> declaringClass = method.getDeclaringClass();
             if (declaringClass.equals(Object.class)
-                    || Collection.class.isAssignableFrom(declaringClass)) {
+                || Collection.class.isAssignableFrom(declaringClass)) {
                 continue;
             }
 
@@ -560,7 +557,7 @@ public abstract class JsonSchemaGenerator {
                     if (this.processAnnotatedOnly && attribs == null) {
                         process = false;
                     }
-                            
+
                     if (process && field.getName().equalsIgnoreCase(name)) {
                         props.put(method, field);
                         hasField = true;
@@ -574,7 +571,7 @@ public abstract class JsonSchemaGenerator {
         }
         return props;
     }
-    
+
     private <T> List<Field> findFields(Class<T> type) {
         Field[] fields = type.getDeclaredFields();
         if (this.sortProperties) {
@@ -590,7 +587,7 @@ public abstract class JsonSchemaGenerator {
         for (Field field : fields) {
             Class<?> declaringClass = field.getDeclaringClass();
             if (declaringClass.equals(Object.class)
-                    || Collection.class.isAssignableFrom(declaringClass)) {
+                || Collection.class.isAssignableFrom(declaringClass)) {
                 continue;
             }
 
@@ -608,7 +605,7 @@ public abstract class JsonSchemaGenerator {
 
     private String firstToLowCase(String string) {
         return Character.toLowerCase(string.charAt(0))
-                + (string.length() > 1 ? string.substring(1) : "");
+            + (string.length() > 1 ? string.substring(1) : "");
     }
 
     private boolean isGetter(final Method method) {

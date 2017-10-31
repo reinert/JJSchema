@@ -49,6 +49,13 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <configuration>
+                    <configFile>formatter.xml</configFile>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

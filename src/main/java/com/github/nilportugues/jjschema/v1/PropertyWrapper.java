@@ -41,7 +41,9 @@ import java.util.Set;
 
 public class PropertyWrapper extends SchemaWrapper {
 
-    enum ReferenceType {NONE, FORWARD, BACKWARD}
+    enum ReferenceType {
+        NONE, FORWARD, BACKWARD
+    }
 
     final CustomSchemaWrapper ownerSchemaWrapper;
     final SchemaWrapper schemaWrapper;
@@ -62,8 +64,6 @@ public class PropertyWrapper extends SchemaWrapper {
         this.field = field;
         this.method = method;
 
-
-
         String relativeId;
 
         Class<?> propertyType = method.getReturnType();
@@ -73,7 +73,7 @@ public class PropertyWrapper extends SchemaWrapper {
         if (Collection.class.isAssignableFrom(propertyType)) {
             collectionType = method.getReturnType();
             ParameterizedType genericType = (ParameterizedType) method
-                    .getGenericReturnType();
+                .getGenericReturnType();
             propertyType = (Class<?>) genericType.getActualTypeArguments()[0];
 
             relativeId = propertiesStr + getName() + itemsStr;
@@ -325,7 +325,8 @@ public class PropertyWrapper extends SchemaWrapper {
         JsonBackReference backRefAnn = getAccessibleObject().getAnnotation(JsonBackReference.class);
         if (backRefAnn != null) {
             if (referenceExists)
-                throw new RuntimeException("Error at " + getOwnerSchema().getJavaType().getName() + ": Cannot reference " + propertyType.getName() + " both as Managed and Back Reference.");
+                throw new RuntimeException(
+                    "Error at " + getOwnerSchema().getJavaType().getName() + ": Cannot reference " + propertyType.getName() + " both as Managed and Back Reference.");
             managedReference = new ManagedReference(propertyType, backRefAnn.value(), getOwnerSchema().getJavaType());
             referenceType = ReferenceType.BACKWARD;
         }
@@ -363,11 +364,11 @@ public class PropertyWrapper extends SchemaWrapper {
 
     private String processPropertyName() {
         return (field == null) ? firstToLowerCase(method.getName()
-                .replace("get", "")) : field.getName();
+            .replace("get", "")) : field.getName();
     }
 
     private String firstToLowerCase(String string) {
         return Character.toLowerCase(string.charAt(0))
-                + (string.length() > 1 ? string.substring(1) : "");
+            + (string.length() > 1 ? string.substring(1) : "");
     }
 }

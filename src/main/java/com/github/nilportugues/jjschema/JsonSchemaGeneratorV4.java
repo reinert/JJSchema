@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.SchemaVersion;
 import com.github.nilportugues.jjschema.annotation.JsonSchema;
 
-
 /**
  * Implements the JSON Schema generation according to draft v4
  *

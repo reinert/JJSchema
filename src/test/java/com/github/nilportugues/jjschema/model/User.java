@@ -22,7 +22,6 @@ import com.github.nilportugues.jjschema.annotation.JsonSchema;
 import com.github.nilportugues.jjschema.annotation.Media;
 import com.github.nilportugues.jjschema.annotation.Nullable;
 
-
 public class User {
 
     @JsonSchema(required = true, title = "ID", minimum = 100000, maximum = 999999)
