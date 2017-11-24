@@ -121,9 +121,9 @@ public class PropertyWrapper extends SchemaWrapper {
             }
             String relativeId1 = ownerSchemaWrapper.getRelativeId() + relativeId;
             if (collectionType != null) {
-                this.schemaWrapper = SchemaWrapperFactory.createArrayWrapper(collectionType, propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
+                this.schemaWrapper = createArrayWrapper(managedReferences, propertyType, collectionType, relativeId1);
             } else {
-                this.schemaWrapper = SchemaWrapperFactory.createWrapper(propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
+                this.schemaWrapper = createWrapper(managedReferences, propertyType, relativeId1);
             }
             processAttributes(getNode(), getAccessibleObject());
             processNullable();
@@ -233,6 +233,16 @@ public class PropertyWrapper extends SchemaWrapper {
     public <T extends SchemaWrapper> T cast() {
         return schemaWrapper.cast();
     }
+
+    protected SchemaWrapper createWrapper(Set<ManagedReference> managedReferences, Class<?> propertyType,
+			String relativeId1) {
+		return SchemaWrapperFactory.createWrapper(propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
+	}
+
+	protected SchemaWrapper createArrayWrapper(Set<ManagedReference> managedReferences, Class<?> propertyType,
+			Class<?> collectionType, String relativeId1) {
+		return SchemaWrapperFactory.createArrayWrapper(collectionType, propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
+	}
 
     protected void setRequired(boolean required) {
         this.required = required;
@@ -375,11 +385,11 @@ public class PropertyWrapper extends SchemaWrapper {
                 + (string.length() > 1 ? string.substring(1) : "");
     }
 
-    private boolean shouldIgnoreField() {
+    protected boolean shouldIgnoreField() {
         return getAccessibleObject().getAnnotation(SchemaIgnore.class) != null;
     }
 
-    private boolean shouldIgnoreProperties() {
+    protected boolean shouldIgnoreProperties() {
         return getAccessibleObject().getAnnotation(SchemaIgnoreProperties.class) != null;
     }
 }

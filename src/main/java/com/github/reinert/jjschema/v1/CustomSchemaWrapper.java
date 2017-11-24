@@ -99,14 +99,6 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             addRequired(propertyWrapper.getName());
     }
 
-//    public boolean removeProperty(PropertyWrapper propertyWrapper) {
-//        return propertyWrappers.remove(propertyWrapper);
-//    }
-//
-//    public void clearProperties() {
-//        propertyWrappers.clear();
-//    }
-
     public boolean isRequired() {
         return required;
     }
