@@ -4,8 +4,8 @@
 
     <groupId>com.github.reinert</groupId>
     <artifactId>jjschema</artifactId>
-    <version>1.6-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <version>1.6</version>
+    <packaging>bundle</packaging>
 
     <name>JJSchema</name>
     <url>http://github.com/reinert/JJSchema/</url>
@@ -76,6 +76,23 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>          
+                        <Export-Package>com.github.reinert.jjschema.*,
+            			</Export-Package>
+			            <Import-Package>
+			            	com.google.*,
+			            	com.fasterxml.jackson.*,
+			            	javax.ws.rs.*,
+			            </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>            
         </plugins>
     </build>
 
@@ -87,34 +104,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jsonSchema</artifactId>
-            <version>2.1.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-            <version>1.1.1</version>
+		    <groupId>com.eclipsesource.jaxrs</groupId>
+		    <artifactId>jersey-all</artifactId>
+		    <version>2.22.2</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>13.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.fge</groupId>
-            <artifactId>json-schema-core</artifactId>
-            <version>1.0.1</version>
+            <version>16.0.1</version>
         </dependency>
     </dependencies>
 
