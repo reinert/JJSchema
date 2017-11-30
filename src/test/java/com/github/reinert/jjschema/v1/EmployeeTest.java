@@ -18,16 +18,17 @@
 
 package com.github.reinert.jjschema.v1;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
-import junit.framework.TestCase;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import junit.framework.TestCase;
 
 public class EmployeeTest extends TestCase {
     private final ObjectMapper MAPPER = new ObjectMapper();
@@ -62,12 +63,12 @@ public class EmployeeTest extends TestCase {
         schemaFactory.setAutoPutDollarSchema(true);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes", "serial"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testEmployeeSchema() throws UnavailableVersion, IOException {
         JsonNode employeeSchema = schemaFactory.createSchema(Employee.class);
         //System.out.println(ow.writeValueAsString(employeeSchema));
         String str = MAPPER.writeValueAsString(employeeSchema);
-        Map<String, Object> result = (Map<String, Object>) MAPPER.readValue(str, Map.class);
+        Map<String, Object> result = MAPPER.readValue(str, Map.class);
         assertNotNull(result);
         assertEquals("object", result.get("type"));
         assertNotNull(result.get("required"));

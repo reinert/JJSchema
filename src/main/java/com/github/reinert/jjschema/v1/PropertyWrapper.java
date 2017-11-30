@@ -18,6 +18,15 @@
 
 package com.github.reinert.jjschema.v1;
 
+import static com.github.reinert.jjschema.JJSchemaUtil.processCommonAttributes;
+
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,13 +37,6 @@ import com.github.reinert.jjschema.ManagedReference;
 import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaIgnore;
 import com.github.reinert.jjschema.SchemaIgnoreProperties;
-
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.util.Collection;
-import java.util.Set;
 
 /**
  * @author Danilo Reinert
@@ -235,14 +237,14 @@ public class PropertyWrapper extends SchemaWrapper {
     }
 
     protected SchemaWrapper createWrapper(Set<ManagedReference> managedReferences, Class<?> propertyType,
-			String relativeId1) {
-		return SchemaWrapperFactory.createWrapper(propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
-	}
+            String relativeId1) {
+        return SchemaWrapperFactory.createWrapper(propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
+    }
 
-	protected SchemaWrapper createArrayWrapper(Set<ManagedReference> managedReferences, Class<?> propertyType,
-			Class<?> collectionType, String relativeId1) {
-		return SchemaWrapperFactory.createArrayWrapper(collectionType, propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
-	}
+    protected SchemaWrapper createArrayWrapper(Set<ManagedReference> managedReferences, Class<?> propertyType,
+            Class<?> collectionType, String relativeId1) {
+        return SchemaWrapperFactory.createArrayWrapper(collectionType, propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
+    }
 
     protected void setRequired(boolean required) {
         this.required = required;
@@ -263,65 +265,10 @@ public class PropertyWrapper extends SchemaWrapper {
     protected void processAttributes(ObjectNode node, AccessibleObject accessibleObject) {
         final Attributes attributes = accessibleObject.getAnnotation(Attributes.class);
         if (attributes != null) {
-            //node.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
             node.remove("$schema");
-            if (!attributes.id().isEmpty()) {
-                node.put("id", attributes.id());
-            }
-            if (!attributes.description().isEmpty()) {
-                node.put("description", attributes.description());
-            }
-            if (!attributes.pattern().isEmpty()) {
-                node.put("pattern", attributes.pattern());
-            }
-            if (!attributes.format().isEmpty()) {
-                node.put("format", attributes.format());
-            }
-            if (!attributes.title().isEmpty()) {
-                node.put("title", attributes.title());
-            }
-            if (attributes.maximum() > -1) {
-                node.put("maximum", attributes.maximum());
-            }
-            if (attributes.exclusiveMaximum()) {
-                node.put("exclusiveMaximum", true);
-            }
-            if (attributes.minimum() > -1) {
-                node.put("minimum", attributes.minimum());
-            }
-            if (attributes.exclusiveMinimum()) {
-                node.put("exclusiveMinimum", true);
-            }
-            if (attributes.enums().length > 0) {
-                ArrayNode enumArray = node.putArray("enum");
-                String[] enums = attributes.enums();
-                for (String v : enums) {
-                    enumArray.add(v);
-                }
-            }
-            if (attributes.uniqueItems()) {
-                node.put("uniqueItems", true);
-            }
-            if (attributes.minItems() > 0) {
-                node.put("minItems", attributes.minItems());
-            }
-            if (attributes.maxItems() > -1) {
-                node.put("maxItems", attributes.maxItems());
-            }
-            if (attributes.multipleOf() > 0) {
-                node.put("multipleOf", attributes.multipleOf());
-            }
-            if (attributes.minLength() > 0) {
-                node.put("minLength", attributes.minLength());
-            }
-            if (attributes.maxLength() > -1) {
-                node.put("maxLength", attributes.maxLength());
-            }
+            processCommonAttributes(node, attributes);
             if (attributes.required()) {
                 setRequired(true);
-            }
-            if (attributes.readonly()) {
-                node.put("readonly", true);
             }
         }
     }

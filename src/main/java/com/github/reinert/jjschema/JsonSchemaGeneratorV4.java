@@ -18,9 +18,10 @@
 
 package com.github.reinert.jjschema;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import static com.github.reinert.jjschema.JJSchemaUtil.processCommonAttributes;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.fge.jsonschema.SchemaVersion;
+import com.github.reinert.jjschema.v1.SchemaWrapper;
 
 
 /**
@@ -32,70 +33,17 @@ import com.github.fge.jsonschema.SchemaVersion;
 public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
 
     @Override
-    protected void processSchemaProperty(ObjectNode schema, Attributes props) {
-        if (!props.$ref().isEmpty()) {
-            schema.put("$ref", props.$ref());
+    protected void processSchemaProperty(ObjectNode schema, Attributes attributes) {
+        if (!attributes.$ref().isEmpty()) {
+            schema.put("$ref", attributes.$ref());
         }
         if (autoPutVersion) {
-            schema.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
+            schema.put("$schema", SchemaWrapper.DRAFT_04);
         }
-        if (!props.id().isEmpty()) {
-            schema.put("id", props.id());
-        }
-        if (props.required()) {
+        processCommonAttributes(schema, attributes);
+
+        if (attributes.required()) {
             schema.put("selfRequired", true);
-        }
-        if (!props.description().isEmpty()) {
-            schema.put("description", props.description());
-        }
-        if (!props.pattern().isEmpty()) {
-            schema.put("pattern", props.pattern());
-        }
-        if (!props.format().isEmpty()) {
-            schema.put("format", props.format());
-        }
-        if (!props.title().isEmpty()) {
-            schema.put("title", props.title());
-        }
-        if (props.maximum() > -1) {
-            schema.put("maximum", props.maximum());
-        }
-        if (props.exclusiveMaximum()) {
-            schema.put("exclusiveMaximum", true);
-        }
-        if (props.minimum() > -1) {
-            schema.put("minimum", props.minimum());
-        }
-        if (props.exclusiveMinimum()) {
-            schema.put("exclusiveMinimum", true);
-        }
-        if (props.enums().length > 0) {
-            ArrayNode enumArray = schema.putArray("enum");
-            String[] enums = props.enums();
-            for (String v : enums) {
-                enumArray.add(v);
-            }
-        }
-        if (props.uniqueItems()) {
-            schema.put("uniqueItems", true);
-        }
-        if (props.minItems() > 0) {
-            schema.put("minItems", props.minItems());
-        }
-        if (props.maxItems() > -1) {
-            schema.put("maxItems", props.maxItems());
-        }
-        if (props.multipleOf() > 0) {
-            schema.put("multipleOf", props.multipleOf());
-        }
-        if (props.minLength() > 0) {
-            schema.put("minLength", props.minLength());
-        }
-        if (props.maxLength() > -1) {
-            schema.put("maxLength", props.maxLength());
-        }
-        if (props.readonly()) {
-            schema.put("readonly", true);
         }
     }
 

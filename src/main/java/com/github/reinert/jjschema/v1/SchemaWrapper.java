@@ -21,7 +21,6 @@ package com.github.reinert.jjschema.v1;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.fge.jsonschema.SchemaVersion;
 import com.github.reinert.jjschema.Nullable;
 
 /**
@@ -31,6 +30,7 @@ import com.github.reinert.jjschema.Nullable;
 public abstract class SchemaWrapper {
     private final Class<?> type;
     private final ObjectNode node = SchemaWrapperFactory.MAPPER.createObjectNode();
+    public static final String DRAFT_04 = "http://json-schema.org/draft-04/schema#";
 
     public SchemaWrapper(Class<?> type) {
         this.type = type;
@@ -45,7 +45,7 @@ public abstract class SchemaWrapper {
     }
 
     public SchemaWrapper putDollarSchema() {
-        node.put("$schema", SchemaVersion.DRAFTV4.getLocation().toString());
+        node.put("$schema", DRAFT_04);
         return this;
     }
 

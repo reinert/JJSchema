@@ -21,12 +21,15 @@ package com.github.reinert.jjschema.v1;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.github.fge.jsonschema.util.JsonLoader;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
+
 import junit.framework.TestCase;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
@@ -49,10 +52,14 @@ public class ProductTest extends TestCase {
      */
     public void testProductSchema() throws UnavailableVersion, IOException {
         JsonNode productSchema = schemaFactory.createSchema(Product.class);
-        //System.out.println(om.writeValueAsString(productSchema));
-        JsonNode productSchemaRes = JsonLoader
-                .fromResource("/product_schema.json");
-        assertEquals(productSchemaRes, productSchema);
+        
+        String expectedResult = CharStreams.toString(new InputStreamReader(
+       		 Thread.currentThread().getContextClassLoader().getResourceAsStream("product_schema.json"), Charsets.UTF_8));
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode actualObj = mapper.readTree(expectedResult);
+        
+        assertEquals(productSchema, actualObj);
 
         //TODO: Add support to custom Iterable classes?
         // NOTE that my implementation of ProductSet uses the ComplexProduct
