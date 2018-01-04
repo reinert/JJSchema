@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.reinert.jjschema.ManagedReference;
 import com.github.reinert.jjschema.SimpleTypeMappings;
 
+import java.lang.reflect.Type;
 import java.util.AbstractCollection;
 import java.util.Set;
 
@@ -47,7 +48,7 @@ public class SchemaWrapperFactory {
         return createWrapper(type, managedReferences, null, false);
     }
 
-    public static SchemaWrapper createWrapper(Class<?> type, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
+    public static SchemaWrapper createWrapper(Type type, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
         // If it is void then return null
         if (type == Void.class || type == void.class || type == null) {
             return new NullSchemaWrapper(type);
@@ -57,8 +58,8 @@ public class SchemaWrapperFactory {
             return new SimpleSchemaWrapper(type);
         }
         // If it is an Enum than process like enum
-        else if (type.isEnum()) {
-            return new EnumSchemaWrapper(type);
+        else if (type instanceof Class && ((Class<?>)type).isEnum()) {
+            return new EnumSchemaWrapper((Class<?>) type);
         }
         // If none of the above possibilities were true, then it is a custom object
         else {

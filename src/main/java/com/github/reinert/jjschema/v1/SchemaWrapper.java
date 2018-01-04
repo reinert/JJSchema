@@ -18,6 +18,9 @@
 
 package com.github.reinert.jjschema.v1;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -28,11 +31,11 @@ import com.github.reinert.jjschema.Nullable;
  */
 
 public abstract class SchemaWrapper {
-    private final Class<?> type;
+    private final Type type;
     private final ObjectNode node = SchemaWrapperFactory.MAPPER.createObjectNode();
     public static final String DRAFT_04 = "http://json-schema.org/draft-04/schema#";
 
-    public SchemaWrapper(Class<?> type) {
+    public SchemaWrapper(Type type) {
         this.type = type;
     }
 
@@ -61,8 +64,8 @@ public abstract class SchemaWrapper {
         return getNodeTextValue(node.get("type"));
     }
 
-    public Class<?> getJavaType() {
-        return type;
+    public Class<?> getJavaType() {    	
+        return (Class<?>) ((type instanceof ParameterizedType) ? ( (ParameterizedType) type).getRawType() : type);
     }
 
     public boolean isEnumWrapper() {
@@ -103,7 +106,7 @@ public abstract class SchemaWrapper {
 
     // TODO: Shouldn't I check the Nullable annotation only on fields or methods?
     protected void processNullable() {
-        final Nullable nullable = type.getAnnotation(Nullable.class);
+        final Nullable nullable = getJavaType().getAnnotation(Nullable.class);
         if (nullable != null) {
             String oldType = node.get("type").asText();
             ArrayNode typeArray = node.putArray("type");

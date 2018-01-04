@@ -18,6 +18,8 @@
 
 package com.github.reinert.jjschema.v1;
 
+import java.lang.reflect.Type;
+
 import com.github.reinert.jjschema.SimpleTypeMappings;
 
 /**
@@ -26,7 +28,7 @@ import com.github.reinert.jjschema.SimpleTypeMappings;
 
 public class SimpleSchemaWrapper extends SchemaWrapper {
 
-    public SimpleSchemaWrapper(Class<?> type) {
+    public SimpleSchemaWrapper(Type type) {
         super(type);
         setType(SimpleTypeMappings.forClass(type));
         processNullable();

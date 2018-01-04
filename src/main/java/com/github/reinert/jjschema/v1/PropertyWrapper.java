@@ -70,13 +70,15 @@ public class PropertyWrapper extends SchemaWrapper {
 
         String relativeId;
 
+        Type genericType = method.getGenericReturnType();
         Class<?> propertyType = method.getReturnType();
         Class<?> collectionType = null;
+        
         final String propertiesStr = "/properties/";
-        String itemsStr = "/items";
+        final String itemsStr = "/items";
+        
         if (Collection.class.isAssignableFrom(propertyType)) {
             collectionType = method.getReturnType();
-            Type genericType = method.getGenericReturnType();
             if (!(genericType instanceof ParameterizedType)) {
             	genericType = collectionType.getGenericSuperclass();
                 while (!(genericType instanceof ParameterizedType) ) {                    
@@ -131,6 +133,8 @@ public class PropertyWrapper extends SchemaWrapper {
             String relativeId1 = ownerSchemaWrapper.getRelativeId() + relativeId;
             if (collectionType != null) {
                 this.schemaWrapper = createArrayWrapper(managedReferences, propertyType, collectionType, relativeId1);
+            } else if (genericType instanceof ParameterizedType) {
+            	this.schemaWrapper=createWrapper(managedReferences, genericType, relativeId);
             } else {
                 this.schemaWrapper = createWrapper(managedReferences, propertyType, relativeId1);
             }
@@ -243,9 +247,9 @@ public class PropertyWrapper extends SchemaWrapper {
         return schemaWrapper.cast();
     }
 
-    protected SchemaWrapper createWrapper(Set<ManagedReference> managedReferences, Class<?> propertyType,
+    protected SchemaWrapper createWrapper(Set<ManagedReference> managedReferences, Type genericType,
             String relativeId1) {
-        return SchemaWrapperFactory.createWrapper(propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
+        return SchemaWrapperFactory.createWrapper(genericType, managedReferences, relativeId1, shouldIgnoreProperties());
     }
 
     protected SchemaWrapper createArrayWrapper(Set<ManagedReference> managedReferences, Class<?> propertyType,
