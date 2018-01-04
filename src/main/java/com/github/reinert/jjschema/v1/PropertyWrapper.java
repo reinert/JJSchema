@@ -24,6 +24,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Set;
 
@@ -75,9 +76,15 @@ public class PropertyWrapper extends SchemaWrapper {
         String itemsStr = "/items";
         if (Collection.class.isAssignableFrom(propertyType)) {
             collectionType = method.getReturnType();
-            ParameterizedType genericType = (ParameterizedType) method
-                    .getGenericReturnType();
-            propertyType = (Class<?>) genericType.getActualTypeArguments()[0];
+            Type genericType = method.getGenericReturnType();
+            if (!(genericType instanceof ParameterizedType)) {
+            	genericType = collectionType.getGenericSuperclass();
+                while (!(genericType instanceof ParameterizedType) ) {                    
+                	genericType = ((Class<?>) genericType).getGenericSuperclass();
+                }
+            }
+        	propertyType = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
+            
 
             relativeId = propertiesStr + getName() + itemsStr;
         } else {
