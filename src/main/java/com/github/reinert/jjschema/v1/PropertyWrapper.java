@@ -21,10 +21,13 @@ package com.github.reinert.jjschema.v1;
 import static com.github.reinert.jjschema.JJSchemaUtil.processCommonAttributes;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -38,6 +41,7 @@ import com.github.reinert.jjschema.ManagedReference;
 import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaIgnore;
 import com.github.reinert.jjschema.SchemaIgnoreProperties;
+import com.google.common.base.Objects;
 
 /**
  * @author Danilo Reinert
@@ -45,7 +49,10 @@ import com.github.reinert.jjschema.SchemaIgnoreProperties;
 
 public class PropertyWrapper extends SchemaWrapper {
 
-    enum ReferenceType {NONE, FORWARD, BACKWARD}
+	final static String propertiesStr = "/properties/";
+	final static String itemsStr = "/items";
+
+	enum ReferenceType {NONE, FORWARD, BACKWARD}
 
     final CustomSchemaWrapper ownerSchemaWrapper;
     final SchemaWrapper schemaWrapper;
@@ -66,16 +73,19 @@ public class PropertyWrapper extends SchemaWrapper {
         this.field = field;
         this.method = method;
 
-
-
         String relativeId;
 
         Type genericType = method.getGenericReturnType();
         Class<?> propertyType = method.getReturnType();
         Class<?> collectionType = null;
-        
-        final String propertiesStr = "/properties/";
-        final String itemsStr = "/items";
+
+        if (genericType instanceof TypeVariable) {
+        	ParameterizedType p = ownerSchemaWrapper.getParameterizedType();
+        	if (p!=null) {
+        		final int i= Arrays.asList(((Class<?>)p.getRawType()).getTypeParameters()).indexOf(genericType);
+        		propertyType = (Class<?>) p.getActualTypeArguments()[i];
+        	}
+        }
         
         if (Collection.class.isAssignableFrom(propertyType)) {
             collectionType = method.getReturnType();

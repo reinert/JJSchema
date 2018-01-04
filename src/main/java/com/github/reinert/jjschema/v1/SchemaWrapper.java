@@ -64,6 +64,10 @@ public abstract class SchemaWrapper {
         return getNodeTextValue(node.get("type"));
     }
 
+    public ParameterizedType getParameterizedType() {
+    	return (ParameterizedType) ((type instanceof ParameterizedType) ? type : null);
+    }
+    
     public Class<?> getJavaType() {    	
         return (Class<?>) ((type instanceof ParameterizedType) ? ( (ParameterizedType) type).getRawType() : type);
     }
