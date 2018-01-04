@@ -21,6 +21,7 @@ package com.github.reinert.jjschema.v1;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.reinert.jjschema.ManagedReference;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Set;
 
@@ -32,16 +33,16 @@ public class ArraySchemaWrapper extends SchemaWrapper {
 
     final SchemaWrapper itemsSchemaWrapper;
 
-    public ArraySchemaWrapper(Class<?> type, Class<?> parametrizedType, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
+    public ArraySchemaWrapper(Class<?> type, Type propertyType, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
         super(type);
         setType("array");
-        if (parametrizedType != null) {
+        if (propertyType != null) {
             if (!Collection.class.isAssignableFrom(type))
                 throw new RuntimeException("Cannot instantiate a SchemaWrapper of a non Collection class with a Parametrized Type.");
             if (managedReferences == null)
-                this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(parametrizedType);
+                this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(propertyType);
             else
-                this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(parametrizedType, managedReferences, relativeId, ignoreProperties);
+                this.itemsSchemaWrapper = SchemaWrapperFactory.createWrapper(propertyType, managedReferences, relativeId, ignoreProperties);
             setItems(this.itemsSchemaWrapper.asJson());
         } else {
             this.itemsSchemaWrapper = null;

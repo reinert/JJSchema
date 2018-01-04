@@ -36,16 +36,16 @@ public class SchemaWrapperFactory {
     
     private SchemaWrapperFactory() {}
 
-    public static SchemaWrapper createWrapper(Class<?> type) {
-        return createWrapper(type, null);
+    public static SchemaWrapper createWrapper(Type propertyType) {
+        return createWrapper(propertyType, null);
     }
 
     public static SchemaWrapper createArrayWrapper(Class<?> type, Class<?> parametrizedType, boolean ignoreProperties) {
         return new ArraySchemaWrapper(type, parametrizedType, ignoreProperties);
     }
 
-    public static SchemaWrapper createWrapper(Class<?> type, Set<ManagedReference> managedReferences) {
-        return createWrapper(type, managedReferences, null, false);
+    public static SchemaWrapper createWrapper(Type propertyType, Set<ManagedReference> managedReferences) {
+        return createWrapper(propertyType, managedReferences, null, false);
     }
 
     public static SchemaWrapper createWrapper(Type type, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
@@ -77,8 +77,8 @@ public class SchemaWrapperFactory {
         return new ArraySchemaWrapper(type, parametrizedType, managedReferences, ignoreProperties);
     }
 
-    public static SchemaWrapper createArrayWrapper(Class<?> type, Class<?> parametrizedType, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
-        return new ArraySchemaWrapper(type, parametrizedType, managedReferences, relativeId, ignoreProperties);
+    public static SchemaWrapper createArrayWrapper(Class<?> type, Type propertyType, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
+        return new ArraySchemaWrapper(type, propertyType, managedReferences, relativeId, ignoreProperties);
     }
 
     public static SchemaWrapper createArrayRefWrapper(RefSchemaWrapper refSchemaWrapper) {

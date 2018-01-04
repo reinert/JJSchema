@@ -76,7 +76,7 @@ public class PropertyWrapper extends SchemaWrapper {
         String relativeId;
 
         Type genericType = method.getGenericReturnType();
-        Class<?> propertyType = method.getReturnType();
+        Type propertyType = method.getReturnType();
         Class<?> collectionType = null;
 
         if (genericType instanceof TypeVariable) {
@@ -87,7 +87,7 @@ public class PropertyWrapper extends SchemaWrapper {
         	}
         }
         
-        if (Collection.class.isAssignableFrom(propertyType)) {
+        if (propertyType instanceof Class && Collection.class.isAssignableFrom((Class<?>) propertyType)) {
             collectionType = method.getReturnType();
             if (!(genericType instanceof ParameterizedType)) {
             	genericType = collectionType.getGenericSuperclass();
@@ -95,7 +95,7 @@ public class PropertyWrapper extends SchemaWrapper {
                 	genericType = ((Class<?>) genericType).getGenericSuperclass();
                 }
             }
-        	propertyType = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
+        	propertyType =  ((ParameterizedType) genericType).getActualTypeArguments()[0];
             
 
             relativeId = propertiesStr + getName() + itemsStr;
@@ -262,7 +262,7 @@ public class PropertyWrapper extends SchemaWrapper {
         return SchemaWrapperFactory.createWrapper(genericType, managedReferences, relativeId1, shouldIgnoreProperties());
     }
 
-    protected SchemaWrapper createArrayWrapper(Set<ManagedReference> managedReferences, Class<?> propertyType,
+    protected SchemaWrapper createArrayWrapper(Set<ManagedReference> managedReferences, Type propertyType,
             Class<?> collectionType, String relativeId1) {
         return SchemaWrapperFactory.createArrayWrapper(collectionType, propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
     }
@@ -294,7 +294,7 @@ public class PropertyWrapper extends SchemaWrapper {
         }
     }
 
-    protected void processReference(Class<?> propertyType) {
+    protected void processReference(Type propertyType) {
         boolean referenceExists = false;
 
         JsonManagedReference refAnn = getAccessibleObject().getAnnotation(JsonManagedReference.class);
@@ -307,7 +307,7 @@ public class PropertyWrapper extends SchemaWrapper {
         JsonBackReference backRefAnn = getAccessibleObject().getAnnotation(JsonBackReference.class);
         if (backRefAnn != null) {
             if (referenceExists)
-                throw new RuntimeException("Error at " + getOwnerSchema().getJavaType().getName() + ": Cannot reference " + propertyType.getName() + " both as Managed and Back Reference.");
+                throw new RuntimeException("Error at " + getOwnerSchema().getJavaType().getName() + ": Cannot reference " + propertyType.getTypeName() + " both as Managed and Back Reference.");
             managedReference = new ManagedReference(propertyType, backRefAnn.value(), getOwnerSchema().getJavaType());
             referenceType = ReferenceType.BACKWARD;
         }
