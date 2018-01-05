@@ -4,7 +4,7 @@
 
     <groupId>com.github.reinert</groupId>
     <artifactId>jjschema</artifactId>
-    <version>1.8-SNAPSHOT</version>
+    <version>1.8</version>
     <packaging>bundle</packaging>
 
     <name>JJSchema</name>
@@ -35,7 +35,7 @@
         <connection>scm:git:ssh://github.com/reinert/JJSchema.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/reinert/JJSchema.git</developerConnection>
         <url>https://github.com/reinert/JJSchema</url>
-        <tag>HEAD</tag>
+        <tag>1.8</tag>
     </scm>
 
     <issueManagement>
