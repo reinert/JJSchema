@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.reinert.jjschema.ManagedReference;
 import com.github.reinert.jjschema.SimpleTypeMappings;
 
+import java.lang.reflect.Type;
 import java.util.AbstractCollection;
 import java.util.Set;
 
@@ -35,19 +36,19 @@ public class SchemaWrapperFactory {
     
     private SchemaWrapperFactory() {}
 
-    public static SchemaWrapper createWrapper(Class<?> type) {
-        return createWrapper(type, null);
+    public static SchemaWrapper createWrapper(Type propertyType) {
+        return createWrapper(propertyType, null);
     }
 
     public static SchemaWrapper createArrayWrapper(Class<?> type, Class<?> parametrizedType, boolean ignoreProperties) {
         return new ArraySchemaWrapper(type, parametrizedType, ignoreProperties);
     }
 
-    public static SchemaWrapper createWrapper(Class<?> type, Set<ManagedReference> managedReferences) {
-        return createWrapper(type, managedReferences, null, false);
+    public static SchemaWrapper createWrapper(Type propertyType, Set<ManagedReference> managedReferences) {
+        return createWrapper(propertyType, managedReferences, null, false);
     }
 
-    public static SchemaWrapper createWrapper(Class<?> type, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
+    public static SchemaWrapper createWrapper(Type type, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
         // If it is void then return null
         if (type == Void.class || type == void.class || type == null) {
             return new NullSchemaWrapper(type);
@@ -57,8 +58,8 @@ public class SchemaWrapperFactory {
             return new SimpleSchemaWrapper(type);
         }
         // If it is an Enum than process like enum
-        else if (type.isEnum()) {
-            return new EnumSchemaWrapper(type);
+        else if (type instanceof Class && ((Class<?>)type).isEnum()) {
+            return new EnumSchemaWrapper((Class<?>) type);
         }
         // If none of the above possibilities were true, then it is a custom object
         else {
@@ -76,8 +77,8 @@ public class SchemaWrapperFactory {
         return new ArraySchemaWrapper(type, parametrizedType, managedReferences, ignoreProperties);
     }
 
-    public static SchemaWrapper createArrayWrapper(Class<?> type, Class<?> parametrizedType, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
-        return new ArraySchemaWrapper(type, parametrizedType, managedReferences, relativeId, ignoreProperties);
+    public static SchemaWrapper createArrayWrapper(Class<?> type, Type propertyType, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
+        return new ArraySchemaWrapper(type, propertyType, managedReferences, relativeId, ignoreProperties);
     }
 
     public static SchemaWrapper createArrayRefWrapper(RefSchemaWrapper refSchemaWrapper) {

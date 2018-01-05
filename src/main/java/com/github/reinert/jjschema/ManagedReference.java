@@ -18,17 +18,19 @@
 
 package com.github.reinert.jjschema;
 
+import java.lang.reflect.Type;
+
 public class ManagedReference {
 
     Class<?> collectionType;
-    final Class<?> type;
+    final Type type;
     final String name;
-    final Class<?> backwardType;
+    final Type backwardType;
 
-    public ManagedReference(Class<?> type, String name, Class<?> backwardType) {
+    public ManagedReference(Type type, String name, Type propertyType) {
         this.type = type;
         this.name = name;
-        this.backwardType = backwardType;
+        this.backwardType = propertyType;
     }
 
     public ManagedReference(Class<?> collectionType, Class<?> type, String name, Class<?> backwardType) {
@@ -45,8 +47,8 @@ public class ManagedReference {
         result = prime * result
                 + ((collectionType == null) ? 0 : collectionType.getName().hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.getName().hashCode());
-        result = prime * result + ((backwardType == null) ? 0 : backwardType.getName().hashCode());
+        result = prime * result + ((type == null) ? 0 : type.getTypeName().hashCode());
+        result = prime * result + ((backwardType == null) ? 0 : backwardType.getTypeName().hashCode());
         return result;
     }
 
@@ -72,12 +74,12 @@ public class ManagedReference {
         if (type == null) {
             if (other.type != null)
                 return false;
-        } else if (!type.getName().equals(other.type.getName()))
+        } else if (!type.getTypeName().equals(other.type.getTypeName()))
             return false;
         if (backwardType == null) {
             if (other.backwardType != null)
                 return false;
-        } else if (!backwardType.getName().equals(other.backwardType.getName()))
+        } else if (!backwardType.getTypeName().equals(other.backwardType.getTypeName()))
             return false;
         return true;
     }

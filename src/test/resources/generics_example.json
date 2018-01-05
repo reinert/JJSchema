@@ -1,0 +1,30 @@
+{  
+   "type":"object",
+   "properties":{  
+      "listOfTuples":{  
+         "type":"array",
+         "items":{  
+            "type":"object",
+            "properties":{  
+               "first":{  
+                  "type":"string"
+               },
+               "second":{  
+                  "type":"boolean"
+               }
+            }
+         }
+      },
+      "tuple":{  
+         "type":"object",
+         "properties":{  
+            "first":{  
+               "type":"string"
+            },
+            "second":{  
+               "type":"integer"
+            }
+         }
+      }
+   }
+}

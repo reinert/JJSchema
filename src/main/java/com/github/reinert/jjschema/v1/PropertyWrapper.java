@@ -21,10 +21,13 @@ package com.github.reinert.jjschema.v1;
 import static com.github.reinert.jjschema.JJSchemaUtil.processCommonAttributes;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -38,6 +41,7 @@ import com.github.reinert.jjschema.ManagedReference;
 import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaIgnore;
 import com.github.reinert.jjschema.SchemaIgnoreProperties;
+import com.google.common.base.Objects;
 
 /**
  * @author Danilo Reinert
@@ -45,7 +49,10 @@ import com.github.reinert.jjschema.SchemaIgnoreProperties;
 
 public class PropertyWrapper extends SchemaWrapper {
 
-    enum ReferenceType {NONE, FORWARD, BACKWARD}
+	final static String propertiesStr = "/properties/";
+	final static String itemsStr = "/items";
+
+	enum ReferenceType {NONE, FORWARD, BACKWARD}
 
     final CustomSchemaWrapper ownerSchemaWrapper;
     final SchemaWrapper schemaWrapper;
@@ -66,24 +73,29 @@ public class PropertyWrapper extends SchemaWrapper {
         this.field = field;
         this.method = method;
 
-
-
         String relativeId;
 
-        Class<?> propertyType = method.getReturnType();
+        Type genericType = method.getGenericReturnType();
+        Type propertyType = method.getReturnType();
         Class<?> collectionType = null;
-        final String propertiesStr = "/properties/";
-        String itemsStr = "/items";
-        if (Collection.class.isAssignableFrom(propertyType)) {
+
+        if (genericType instanceof TypeVariable) {
+        	ParameterizedType p = ownerSchemaWrapper.getParameterizedType();
+        	if (p!=null) {
+        		final int i= Arrays.asList(((Class<?>)p.getRawType()).getTypeParameters()).indexOf(genericType);
+        		propertyType = (Class<?>) p.getActualTypeArguments()[i];
+        	}
+        }
+        
+        if (propertyType instanceof Class && Collection.class.isAssignableFrom((Class<?>) propertyType)) {
             collectionType = method.getReturnType();
-            Type genericType = method.getGenericReturnType();
             if (!(genericType instanceof ParameterizedType)) {
             	genericType = collectionType.getGenericSuperclass();
                 while (!(genericType instanceof ParameterizedType) ) {                    
                 	genericType = ((Class<?>) genericType).getGenericSuperclass();
                 }
             }
-        	propertyType = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
+        	propertyType =  ((ParameterizedType) genericType).getActualTypeArguments()[0];
             
 
             relativeId = propertiesStr + getName() + itemsStr;
@@ -131,6 +143,8 @@ public class PropertyWrapper extends SchemaWrapper {
             String relativeId1 = ownerSchemaWrapper.getRelativeId() + relativeId;
             if (collectionType != null) {
                 this.schemaWrapper = createArrayWrapper(managedReferences, propertyType, collectionType, relativeId1);
+            } else if (genericType instanceof ParameterizedType) {
+            	this.schemaWrapper=createWrapper(managedReferences, genericType, relativeId);
             } else {
                 this.schemaWrapper = createWrapper(managedReferences, propertyType, relativeId1);
             }
@@ -243,12 +257,12 @@ public class PropertyWrapper extends SchemaWrapper {
         return schemaWrapper.cast();
     }
 
-    protected SchemaWrapper createWrapper(Set<ManagedReference> managedReferences, Class<?> propertyType,
+    protected SchemaWrapper createWrapper(Set<ManagedReference> managedReferences, Type genericType,
             String relativeId1) {
-        return SchemaWrapperFactory.createWrapper(propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
+        return SchemaWrapperFactory.createWrapper(genericType, managedReferences, relativeId1, shouldIgnoreProperties());
     }
 
-    protected SchemaWrapper createArrayWrapper(Set<ManagedReference> managedReferences, Class<?> propertyType,
+    protected SchemaWrapper createArrayWrapper(Set<ManagedReference> managedReferences, Type propertyType,
             Class<?> collectionType, String relativeId1) {
         return SchemaWrapperFactory.createArrayWrapper(collectionType, propertyType, managedReferences, relativeId1, shouldIgnoreProperties());
     }
@@ -280,7 +294,7 @@ public class PropertyWrapper extends SchemaWrapper {
         }
     }
 
-    protected void processReference(Class<?> propertyType) {
+    protected void processReference(Type propertyType) {
         boolean referenceExists = false;
 
         JsonManagedReference refAnn = getAccessibleObject().getAnnotation(JsonManagedReference.class);
@@ -293,7 +307,7 @@ public class PropertyWrapper extends SchemaWrapper {
         JsonBackReference backRefAnn = getAccessibleObject().getAnnotation(JsonBackReference.class);
         if (backRefAnn != null) {
             if (referenceExists)
-                throw new RuntimeException("Error at " + getOwnerSchema().getJavaType().getName() + ": Cannot reference " + propertyType.getName() + " both as Managed and Back Reference.");
+                throw new RuntimeException("Error at " + getOwnerSchema().getJavaType().getName() + ": Cannot reference " + propertyType.getTypeName() + " both as Managed and Back Reference.");
             managedReference = new ManagedReference(propertyType, backRefAnn.value(), getOwnerSchema().getJavaType());
             referenceType = ReferenceType.BACKWARD;
         }

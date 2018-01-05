@@ -18,6 +18,8 @@
 
 package com.github.reinert.jjschema.v1;
 
+import java.lang.reflect.Type;
+
 /**
  * @author Danilo Reinert
  */
@@ -29,8 +31,8 @@ public class RefSchemaWrapper extends SchemaWrapper {
         setRef("#");
     }
 
-    public RefSchemaWrapper(Class<?> type, String ref) {
-        super(type);
+    public RefSchemaWrapper(Type propertyType, String ref) {
+        super(propertyType);
         setRef(ref);
     }
 

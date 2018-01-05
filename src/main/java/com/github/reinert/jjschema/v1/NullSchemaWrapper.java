@@ -18,13 +18,15 @@
 
 package com.github.reinert.jjschema.v1;
 
+import java.lang.reflect.Type;
+
 /**
  * @author Danilo Reinert
  */
 
 public class NullSchemaWrapper extends SchemaWrapper {
 
-    public NullSchemaWrapper(Class<?> type) {
+    public NullSchemaWrapper(Type type) {
         super(type);
         setType("null");
     }

@@ -18,6 +18,7 @@
 
 package com.github.reinert.jjschema;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -84,22 +85,23 @@ public enum SimpleTypeMappings {
     /**
      * Return a primitive type for a given class, if any
      *
-     * @param c the class
+     * @param type the class
      * @return the primitive type if found, {@code null} otherwise
      */
-    public static String forClass(final Class<?> c) {
-        if (AbstractCollection.class.isAssignableFrom(c))
+    public static String forClass(final Type type) {
+    	if (!(type instanceof Class)) return null;
+        if (AbstractCollection.class.isAssignableFrom((Class<?>) type))
             return "array";
-        return MAPPINGS.get(c);
+        return MAPPINGS.get(type);
     }
 
     /**
      * Informs which the given type is some Java default type
      *
-     * @param c the class
+     * @param type the class
      * @return true if c is a Java default Ype, false otherwise
      */
-    public static boolean isSimpleType(final Class<?> c) {
-        return forClass(c) != null;
+    public static boolean isSimpleType(final Type type) {
+        return forClass(type) != null;
     }
 }

@@ -22,6 +22,7 @@ import static com.github.reinert.jjschema.JJSchemaUtil.processCommonAttributes;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,19 +56,19 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
     private final Set<ManagedReference> managedReferences;
     private String relativeId = "#";
 
-    public CustomSchemaWrapper(Class<?> type) {
+    public CustomSchemaWrapper(Type type) {
         this(type, false);
     }
 
-    public CustomSchemaWrapper(Class<?> type, boolean ignoreProperties) {
+    public CustomSchemaWrapper(Type type, boolean ignoreProperties) {
         this(type, new HashSet<ManagedReference>(), null, ignoreProperties);
     }
 
-    public CustomSchemaWrapper(Class<?> type, Set<ManagedReference> managedReferences, boolean ignoreProperties) {
+    public CustomSchemaWrapper(Type type, Set<ManagedReference> managedReferences, boolean ignoreProperties) {
         this(type, managedReferences, null, ignoreProperties);
     }
 
-    public CustomSchemaWrapper(Class<?> type, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
+    public CustomSchemaWrapper(Type type, Set<ManagedReference> managedReferences, String relativeId, boolean ignoreProperties) {
         super(type);
         setType("object");
         processNullable();
@@ -83,7 +84,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             return;
         }
 
-        this.propertyWrappers = Lists.newArrayListWithExpectedSize(type.getDeclaredFields().length);
+        this.propertyWrappers = Lists.newArrayListWithExpectedSize(getJavaType().getDeclaredFields().length);
         processProperties();
     }
 
@@ -227,8 +228,8 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
         this.required = required;
     }
 
-    protected void processAttributes(ObjectNode node, Class<?> type) {
-        final Attributes attributes = type.getAnnotation(Attributes.class);
+    protected void processAttributes(ObjectNode node, Type type) {
+        final Attributes attributes = getJavaType().getAnnotation(Attributes.class);
         if (attributes != null) {
             processCommonAttributes(node, attributes);
             if (attributes.required()) {
