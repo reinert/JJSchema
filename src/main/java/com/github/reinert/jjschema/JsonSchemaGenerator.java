@@ -359,8 +359,8 @@ public abstract class JsonSchemaGenerator {
             } else
 //        	if (isBackwardReferencePiled(fowardReference)) 
             {
-                boolean a = pullFowardReference(fowardReference);
-                boolean b = pullBackwardReference(fowardReference);
+                pullFowardReference(fowardReference);
+                pullBackwardReference(fowardReference);
                 //return null;
                 return createRefSchema("#");
             }

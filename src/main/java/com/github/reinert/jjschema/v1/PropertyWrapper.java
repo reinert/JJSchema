@@ -87,7 +87,7 @@ public class PropertyWrapper extends SchemaWrapper {
         	}
         }
         
-        if (propertyType instanceof Class && Collection.class.isAssignableFrom((Class<?>) propertyType)) {
+        if (Collection.class.isAssignableFrom((Class<?>) propertyType)) {
             collectionType = method.getReturnType();
             if (!(genericType instanceof ParameterizedType)) {
             	genericType = collectionType.getGenericSuperclass();
