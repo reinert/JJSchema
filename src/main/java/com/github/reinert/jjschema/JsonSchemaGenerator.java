@@ -556,6 +556,13 @@ public abstract class JsonSchemaGenerator {
             if (isGetter(method)) {
                 boolean hasField = false;
                 for (Field field : fields) {
+
+                    int fieldModifiers = field.getModifiers();
+
+                    if (field.isSynthetic() || field.isEnumConstant() || Modifier.isStatic(fieldModifiers) || Modifier.isTransient(fieldModifiers)) {
+                        continue;
+                    }
+
                     String name = getNameFromGetter(method);
                     Attributes attribs = field.getAnnotation(Attributes.class);
                     boolean process = true;
