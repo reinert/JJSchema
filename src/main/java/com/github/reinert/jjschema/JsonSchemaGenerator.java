@@ -360,8 +360,9 @@ public abstract class JsonSchemaGenerator {
             } else
 //        	if (isBackwardReferencePiled(forwardReference))
             {
-                boolean a = pullForwardReference(forwardReference);
-                boolean b = pullBackwardReference(forwardReference);
+                pullForwardReference(forwardReference);
+                pullBackwardReference(fowardReference);
+
                 //return null;
                 return createRefSchema("#");
             }
