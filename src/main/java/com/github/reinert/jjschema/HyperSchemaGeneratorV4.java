@@ -29,6 +29,7 @@ import javax.ws.rs.core.Context;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.Iterator;
@@ -243,6 +244,10 @@ public class HyperSchemaGeneratorV4 extends JsonSchemaGenerator {
         ArrayNode links = schema.putArray("links");
 
         for (Method method : type.getDeclaredMethods()) {
+            int modifiers = method.getModifiers();
+            if (method.isSynthetic() || method.isBridge() || Modifier.isStatic(modifiers)) {
+                continue;
+            }
             try {
                 ObjectNode link = generateLink(method);
                 if ("GET".equals(link.get("method").asText()) && "#".equals(link.get("href").asText())) {

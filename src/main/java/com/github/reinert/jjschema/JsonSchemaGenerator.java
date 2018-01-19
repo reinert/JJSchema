@@ -21,6 +21,7 @@ package com.github.reinert.jjschema;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -555,6 +556,13 @@ public abstract class JsonSchemaGenerator {
             if (isGetter(method)) {
                 boolean hasField = false;
                 for (Field field : fields) {
+
+                    int fieldModifiers = field.getModifiers();
+
+                    if (field.isSynthetic() || field.isEnumConstant() || Modifier.isStatic(fieldModifiers) || Modifier.isTransient(fieldModifiers)) {
+                        continue;
+                    }
+
                     String name = getNameFromGetter(method);
                     Attributes attribs = field.getAnnotation(Attributes.class);
                     boolean process = true;
@@ -590,6 +598,13 @@ public abstract class JsonSchemaGenerator {
         // get fields
         for (Field field : fields) {
             Class<?> declaringClass = field.getDeclaringClass();
+
+            int fieldModifiers = field.getModifiers();
+
+            if (field.isSynthetic() || field.isEnumConstant() || Modifier.isStatic(fieldModifiers) || Modifier.isTransient(fieldModifiers)) {
+                continue;
+            }
+
             if (declaringClass.equals(Object.class)
                     || Collection.class.isAssignableFrom(declaringClass)) {
                 continue;
