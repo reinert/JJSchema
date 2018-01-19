@@ -77,16 +77,16 @@ public abstract class JsonSchemaGenerator {
         return forwardReferences;
     }
 
-    <T> void pushFowardReference(ManagedReference fowardReference) {
-        getForwardReferences().add(fowardReference);
+    <T> void pushForwardReference(ManagedReference forwardReference) {
+        getForwardReferences().add(forwardReference);
     }
 
-    <T> boolean isFowardReferencePiled(ManagedReference fowardReference) {
-        return getForwardReferences().contains(fowardReference);
+    <T> boolean isForwardReferencePiled(ManagedReference forwardReference) {
+        return getForwardReferences().contains(forwardReference);
     }
 
-    <T> boolean pullFowardReference(ManagedReference fowardReference) {
-        return getForwardReferences().remove(fowardReference);
+    <T> boolean pullForwardReference(ManagedReference forwardReference) {
+        return getForwardReferences().remove(forwardReference);
     }
 
     Set<ManagedReference> getBackwardReferences() {
@@ -339,7 +339,7 @@ public abstract class JsonSchemaGenerator {
 
         JsonManagedReference refAnn = propertyReflection.getAnnotation(JsonManagedReference.class);
         if (refAnn != null) {
-            ManagedReference fowardReference;
+            ManagedReference forwardReference;
             Class<?> genericClass;
             Class<?> collectionClass;
             if (Collection.class.isAssignableFrom(returnType)) {
@@ -353,15 +353,15 @@ public abstract class JsonSchemaGenerator {
             } else {
                 genericClass = returnType;
             }
-            fowardReference = new ManagedReference(type, refAnn.value(), genericClass);
+            forwardReference = new ManagedReference(type, refAnn.value(), genericClass);
 
-            if (!isFowardReferencePiled(fowardReference)) {
-                pushFowardReference(fowardReference);
+            if (!isForwardReferencePiled(forwardReference)) {
+                pushForwardReference(forwardReference);
             } else
-//        	if (isBackwardReferencePiled(fowardReference)) 
+//        	if (isBackwardReferencePiled(forwardReference))
             {
-                boolean a = pullFowardReference(fowardReference);
-                boolean b = pullBackwardReference(fowardReference);
+                boolean a = pullForwardReference(forwardReference);
+                boolean b = pullBackwardReference(forwardReference);
                 //return null;
                 return createRefSchema("#");
             }
@@ -382,11 +382,11 @@ public abstract class JsonSchemaGenerator {
             }
             backReference = new ManagedReference(genericClass, backRefAnn.value(), type);
 
-            if (isFowardReferencePiled(backReference) &&
+            if (isForwardReferencePiled(backReference) &&
                     !isBackwardReferencePiled(backReference)) {
                 pushBackwardReference(backReference);
             } else {
-//        		pullFowardReference(backReference);
+//        		pullForwardReference(backReference);
 //        		pullBackwardReference(backReference);
                 return null;
             }
