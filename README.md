@@ -12,7 +12,7 @@ Latest Release
 <dependency>
   <groupId>com.github.reinert</groupId>
   <artifactId>jjschema</artifactId>
-  <version>1.8</version>
+  <version>1.9</version>
 </dependency>
 ```
 
