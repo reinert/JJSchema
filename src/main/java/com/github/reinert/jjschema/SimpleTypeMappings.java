@@ -24,10 +24,7 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.AbstractCollection;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Mapping of builtin Java types to their matching JSON Schema primitive type
@@ -60,9 +57,10 @@ public enum SimpleTypeMappings {
     CHARSEQUENCE(CharSequence.class, "string"),
     STRING(String.class, "string"),
     UUID(UUID.class, "string"),
-    ZONEDDATETIME(ZonedDateTime.class,"string"),
-    LOCALDATE(LocalDate.class,"string"),
-    INSTANT(Instant.class,"string");
+    DATE(Date.class, "string"),
+    ZONEDDATETIME(ZonedDateTime.class, "string"),
+    LOCALDATE(LocalDate.class, "string"),
+    INSTANT(Instant.class, "string");
 
     private static final Map<Class<?>, String> MAPPINGS;
 
