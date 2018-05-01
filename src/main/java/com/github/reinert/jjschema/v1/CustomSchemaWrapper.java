@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.ManagedReference;
+import com.github.reinert.jjschema.Nullable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.ObjectArrays;
 
@@ -230,8 +231,9 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 
     protected void processAttributes(ObjectNode node, Type type) {
         final Attributes attributes = getJavaType().getAnnotation(Attributes.class);
+        final Nullable nullable = getJavaType().getAnnotation(Nullable.class);
         if (attributes != null) {
-            processCommonAttributes(node, attributes);
+            processCommonAttributes(node, attributes, nullable);
             if (attributes.required()) {
                 setRequired(true);
             }

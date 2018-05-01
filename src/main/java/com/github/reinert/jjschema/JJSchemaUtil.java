@@ -3,11 +3,13 @@ package com.github.reinert.jjschema;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.lang.annotation.Annotation;
+
 public class JJSchemaUtil {
     private JJSchemaUtil() {
     }
 
-    public static void processCommonAttributes(ObjectNode node, Attributes attributes) {
+    public static void processCommonAttributes(ObjectNode node, Attributes attributes, Nullable nullable) {
         if (!attributes.id().isEmpty()) {
             node.put("id", attributes.id());
         }
@@ -40,6 +42,10 @@ public class JJSchemaUtil {
             String[] enums = attributes.enums();
             for (String v : enums) {
                 enumArray.add(v);
+            }
+            if(nullable!=null){
+                String nullEnum=null;
+                enumArray.add(nullEnum);
             }
         }
         if (attributes.uniqueItems()) {
