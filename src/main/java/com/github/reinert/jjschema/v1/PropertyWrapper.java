@@ -323,7 +323,7 @@ public class PropertyWrapper extends SchemaWrapper {
         final Nullable nullable = getAccessibleObject().getAnnotation(Nullable.class);
         if (nullable != null) {
             if (isEnumWrapper()) {
-                ((ArrayNode) getNode().get("enum")).add("null");
+                ((ArrayNode) getNode().get("enum")).addNull();
             } else {
                 String oldType = getType();
                 ArrayNode typeArray = getNode().putArray("type");

@@ -49,7 +49,7 @@ public class EnumTest extends TestCase {
         JsonNode schema = schemaFactory.createSchema(Hyperthing.class);
         System.out.println(schema);
 
-        JsonNode expected = MAPPER.createArrayNode().add("GET").add("POST").add("PUT").add("DELETE");
+        JsonNode expected = MAPPER.createArrayNode().add("GET").add("POST").add("PUT").add("DELETE").addNull();
         assertEquals(expected, schema.get("properties").get("method").get("enum"));
 
         expected = MAPPER.createArrayNode().add(404).add(401);
@@ -66,7 +66,7 @@ public class EnumTest extends TestCase {
         generated = MAPPER.readTree(schema.get("properties").get("floatingResultCode").get("enum").toString());
         assertEquals(expected, generated);
 
-        expected = MAPPER.createArrayNode().add("NOT_FOUND").add("UNAUTHORIZED").add("null");
+        expected = MAPPER.createArrayNode().add("NOT_FOUND").add("UNAUTHORIZED").addNull();
         assertEquals(expected, schema.get("properties").get("result").get("enum"));
     }
 
@@ -116,8 +116,8 @@ public class EnumTest extends TestCase {
     }
 
     static class Hyperthing {
-
-        @Attributes(enums = {"GET", "POST", "PUT", "DELETE"})
+        // "null" is a reserved string mapped to null primitive on json schema
+        @Attributes(enums = {"GET", "POST", "PUT", "DELETE", "null"})
         private String method;
         private IntegerEnum resultCode;
         private FloatingEnum floatingResultCode;

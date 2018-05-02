@@ -39,7 +39,11 @@ public class JJSchemaUtil {
             ArrayNode enumArray = node.putArray("enum");
             String[] enums = attributes.enums();
             for (String v : enums) {
-                enumArray.add(v);
+                if (v.equals("null")) {
+                    enumArray.addNull();
+                } else {
+                    enumArray.add(v);
+                }
             }
         }
         if (attributes.uniqueItems()) {
