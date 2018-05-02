@@ -285,10 +285,9 @@ public class PropertyWrapper extends SchemaWrapper {
 
     protected void processAttributes(ObjectNode node, AccessibleObject accessibleObject) {
         final Attributes attributes = accessibleObject.getAnnotation(Attributes.class);
-        final Nullable nullable = accessibleObject.getAnnotation(Nullable.class);
         if (attributes != null) {
             node.remove("$schema");
-            processCommonAttributes(node, attributes, nullable);
+            processCommonAttributes(node, attributes);
             if (attributes.required()) {
                 setRequired(true);
             }
