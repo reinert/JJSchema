@@ -40,7 +40,7 @@ public class JsonSchemaGeneratorV4 extends JsonSchemaGenerator {
         if (autoPutVersion) {
             schema.put("$schema", SchemaWrapper.DRAFT_04);
         }
-        processCommonAttributes(schema, attributes, null);
+        processCommonAttributes(schema, attributes);
 
         if (attributes.required()) {
             schema.put("selfRequired", true);
