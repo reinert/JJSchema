@@ -344,8 +344,11 @@ public class PropertyWrapper extends SchemaWrapper {
     }
 
     private String processPropertyName() {
-        return (field == null) ? firstToLowerCase(method.getName()
-                .replace("get", "")) : field.getName();
+        if (field != null) return field.getName();
+
+        if ("get".equals(method.getName())) return "get";
+
+        return firstToLowerCase(method.getName().replace("get", ""));
     }
 
     private String firstToLowerCase(String string) {
