@@ -23,13 +23,13 @@ public class JJSchemaUtil {
         if (!attributes.title().isEmpty()) {
             node.put("title", attributes.title());
         }
-        if (attributes.maximum() > -1) {
+        if (attributes.maximum() != Long.MIN_VALUE) {
             node.put("maximum", attributes.maximum());
         }
         if (attributes.exclusiveMaximum()) {
             node.put("exclusiveMaximum", true);
         }
-        if (attributes.minimum() > -1) {
+        if (attributes.minimum() != Integer.MAX_VALUE) {
             node.put("minimum", attributes.minimum());
         }
         if (attributes.exclusiveMinimum()) {

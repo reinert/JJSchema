@@ -39,11 +39,11 @@ public @interface Attributes {
 
     String description() default "";
 
-    long maximum() default -1L;
+    long maximum() default Long.MIN_VALUE;
 
     boolean exclusiveMaximum() default false;
 
-    int minimum() default -1;
+    int minimum() default Integer.MAX_VALUE;
 
     boolean exclusiveMinimum() default false;
 
