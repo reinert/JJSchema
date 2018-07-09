@@ -35,7 +35,12 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     /**
      * Regular expression for integers.
      */
-    private static final String REGEX_INTEGER = "[0-9]+$";
+    private static final String REGEX_INTEGER = "^[0-9]+$";
+
+    /**
+     * Regular expression for null values.
+     */
+    private static final String REGEX_NULL = "^null$";
 
     /**
      * Reads X Properties from an annotation instance.
@@ -140,15 +145,25 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * @return Property value as object (boolean, integer, double or string).
      */
     private static Object readPropertyValue(String propertyValue) {
+        propertyValue = propertyValue.trim();
+        if (propertyValue.matches(REGEX_NULL)) {
+            return null;
+        }
+
         final int index = propertyValue.indexOf(SEPARATOR_PROPERTY_VALUE);
+        if (index < 0) {
+            return propertyValue;
+        }
 
         final String type = propertyValue.substring(0, index).trim();
         final String value = propertyValue.substring(index + 1).trim();
+
         try {
             final Class<?> typeClass = Class.forName(type);
             if (typeClass == String.class) {
                 return value;
             }
+
             final Method valueOf = typeClass.getMethod("valueOf", String.class);
             final Object valueObject = valueOf.invoke(null, value);
 
