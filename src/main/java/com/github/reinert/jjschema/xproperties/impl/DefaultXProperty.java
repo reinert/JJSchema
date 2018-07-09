@@ -90,12 +90,13 @@ public class DefaultXProperty implements XProperty {
      *            Property value to validate.
      */
     private static void validatePropertyValue(Object propertyValue) {
+        final int stateNull = (propertyValue == null) ? 1 : 0;
         final int stateBoolean = (propertyValue instanceof Boolean) ? 1 : 0;
         final int stateInteger = (propertyValue instanceof Integer) ? 1 : 0;
         final int stateDouble = (propertyValue instanceof Double) ? 1 : 0;
         final int stateString = (propertyValue instanceof String) ? 1 : 0;
 
-        final int[] propertyValueStates = new int[] { stateBoolean, stateInteger, stateDouble, stateString };
+        final int[] propertyValueStates = new int[] { stateNull, stateBoolean, stateInteger, stateDouble, stateString };
         final int sum = Arrays.stream(propertyValueStates).reduce((x, y) -> x + y).getAsInt();
         if (sum != 1) {
             throw new IllegalArgumentException("propertyValue");
