@@ -34,9 +34,14 @@ public class DefaultXProperty implements XProperty {
      *            Property value as object (integer or string).
      */
     public DefaultXProperty(List<Object> propertyPath, Object propertyValue) {
-        propertyPath = new ArrayList<>(propertyPath);
+        if (propertyPath.size() < 1) {
+            throw new IllegalArgumentException("propertyPath");
+        }
+        if (!(propertyPath.get(0) instanceof String)) {
+            throw new IllegalArgumentException("propertyPath");
+        }
         propertyPath.forEach(propertyPathKey -> validatePropertyPathKey(propertyPathKey));
-
+        propertyPath = new ArrayList<>(propertyPath);
         this.propertyPath = propertyPath.toArray();
         this.propertyValue = propertyValue;
     }
