@@ -70,28 +70,28 @@ public class XPropertiesTest extends TestCase {
     }
 
     @Attributes(title = "Example Schema", xProperties = {
-        "fieldsets.0.fields.0 = firstName",
-        "fieldsets.0.fields.1 = lastName",
-        "fieldsets.1.fields.0 = age"
+        "fieldsets.0.fields.0 = :firstName",
+        "fieldsets.0.fields.1 = :lastName",
+        "fieldsets.1.fields.0 = :age"
     })
     static class XPropertiesExample {
         @Attributes(title = "First Name", required = true, xProperties = {
-            "widget.id = java.lang.String:string",
-            "widget.aBooleanProp = java.lang.Boolean:true"
+            "widget.id = :string",
+            "widget.aBooleanProp = true"
         })
         private String firstName;
         @Attributes(title = "Last Name", required = true, xProperties = {
-            "widget.id = java.lang.String:string",
-            "widget.anIntegerProp = java.lang.Integer:42",
+            "widget.id = :string",
+            "widget.anIntegerProp = 42",
         })
         private String lastName;
         @Attributes(title = "Age in years", minimum = 0, xProperties = {
-            "widget.id = java.lang.String:number",
+            "widget.id = :number",
             "widget.aDoubleProp = com.github.reinert.jjschema.xproperties.XPropertiesTest$CustomFactory:3.141"
         })
         private int age;
         @Attributes(title = "Example", xProperties = {
-            "widget.id = java.lang.String:TO_BE_REMOVED",
+            "widget.id = :TO_BE_REMOVED",
             "widget.id = null"
         })
         private String example;
