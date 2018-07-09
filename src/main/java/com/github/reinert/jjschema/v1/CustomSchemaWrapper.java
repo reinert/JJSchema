@@ -244,14 +244,14 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             if (!attributes.additionalProperties()) {
                 node.put("additionalProperties", false);
             }
-            
+
             //
             // Insert X Properties
             //
-        
+
             final XPropertiesReader reader = new DefaultXPropertiesReader();
             final XPropertiesWriter writer = new DefaultXPropertiesWriter();
-        
+
             final List<XProperty> xProperties = reader.readXProperties(attributes);
             writer.writeXProperties(node, xProperties);
         }
