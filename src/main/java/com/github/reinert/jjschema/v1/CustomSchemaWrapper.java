@@ -42,6 +42,12 @@ import com.github.reinert.jjschema.ManagedReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.ObjectArrays;
 
+import com.github.reinert.jjschema.xproperties.XProperty;
+import com.github.reinert.jjschema.xproperties.XPropertiesReader;
+import com.github.reinert.jjschema.xproperties.XPropertiesWriter;
+import com.github.reinert.jjschema.xproperties.impl.DefaultXPropertiesReader;
+import com.github.reinert.jjschema.xproperties.impl.DefaultXPropertiesWriter;
+
 /**
  * @author Danilo Reinert
  */
@@ -238,6 +244,16 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             if (!attributes.additionalProperties()) {
                 node.put("additionalProperties", false);
             }
+            
+            //
+            // Insert X Properties
+            //
+        
+            final XPropertiesReader reader = new DefaultXPropertiesReader();
+            final XPropertiesWriter writer = new DefaultXPropertiesWriter();
+        
+            final List<XProperty> xProperties = reader.readXProperties(attributes);
+            writer.writeXProperties(node, xProperties);
         }
     }
 }
