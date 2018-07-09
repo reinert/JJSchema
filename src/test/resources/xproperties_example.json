@@ -1,45 +1,37 @@
 {
-    "type": "object",
-    "title": "Example Schema",
-    "fieldsets": [
-        {
-            "fields": [
-                "firstName",
-                "lastName"
-            ]
-        },
-        {
-            "fields": [
-                "age"
-            ]
-        }
-    ],
-    "properties": {
-        "age": {
-            "type": "integer",
-            "title": "Age in years",
-            "minimum": 0,
-            "widget": {
-                "id": "number"
-            }
-        },
-        "firstName": {
-            "type": "string",
-            "title": "First Name",
-            "widget": {
-                "id": "string"
-            }
-        },
-        "lastName": {
-            "type": "string",
-            "title": "Last Name",
-            "widget": {
-                "id": "string"
-            }
-        }
+  "type" : "object",
+  "title" : "Example Schema",
+  "fieldsets" : [ {
+    "fields" : [ "firstName", "lastName" ]
+  }, {
+    "fields" : [ "age" ]
+  } ],
+  "properties" : {
+    "age" : {
+      "type" : "integer",
+      "title" : "Age in years",
+      "minimum" : 0,
+      "widget" : {
+        "id" : "number",
+        "aDoubleProp" : 3.141
+      }
     },
-    "required": [
-        "firstName",
-        "lastName"
-    ]
+    "firstName" : {
+      "type" : "string",
+      "title" : "First Name",
+      "widget" : {
+        "id" : "string",
+        "aBooleanProp" : true
+      }
+    },
+    "lastName" : {
+      "type" : "string",
+      "title" : "Last Name",
+      "widget" : {
+        "id" : "string",
+        "anIntegerProp" : 42
+      }
+    }
+  },
+  "required" : [ "firstName", "lastName" ]
 }
