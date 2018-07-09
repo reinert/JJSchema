@@ -23,6 +23,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
+import com.github.reinert.jjschema.v1.JsonSchemaFactory;
+import com.github.reinert.jjschema.v1.JsonSchemaV4Factory;
+
 import junit.framework.TestCase;
 
 import java.io.IOException;
