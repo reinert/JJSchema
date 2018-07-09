@@ -57,7 +57,7 @@ public class XPropertiesTest extends TestCase {
         if (in == null)
             throw new IOException("resource not found");
         JsonNode fromResource = MAPPER.readTree(in);
-        JsonNode fromJavaType = schemaFactory.createSchema(SimpleExample.class);
+        JsonNode fromJavaType = schemaFactory.createSchema(XPropertiesExample.class);
         System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(fromJavaType));
 
         assertEquals(fromResource, fromJavaType);
@@ -65,10 +65,10 @@ public class XPropertiesTest extends TestCase {
 
     @Attributes(title = "Example Schema", xProperties = {
         "fieldsets.0.fields.0 = java.lang.String:firstName",
-        "fieldsets.0.fields.1 = java.lang.String:lastName",
+        "fieldsets.0.fields.1 = lastName",
         "fieldsets.1.fields.0 = java.lang.String:age"
     })
-    static class SimpleExample {
+    static class XPropertiesExample {
         @Attributes(title = "First Name", required = true, xProperties = {
             "widget.id = java.lang.String:string",
             "widget.aBooleanProp = java.lang.Boolean:true"
@@ -84,6 +84,11 @@ public class XPropertiesTest extends TestCase {
             "widget.aDoubleProp = java.lang.Double:3.141"
         })
         private int age;
+        @Attributes(title = "Example", xProperties = {
+            "widget.id = java.lang.String:TO_BE_REMOVED",
+            "widget.id = null"
+        })
+        private String example;
 
         public String getFirstName() {
             return firstName;
@@ -107,6 +112,14 @@ public class XPropertiesTest extends TestCase {
 
         public void setAge(int age) {
             this.age = age;
+        }
+        
+        public void setExample(String example) {
+            this.example = example;
+        }
+        
+        public String getExample() {
+            return this.example;
         }
     }
 }
