@@ -29,6 +29,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -42,6 +43,12 @@ import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaIgnore;
 import com.github.reinert.jjschema.SchemaIgnoreProperties;
 import com.google.common.base.Objects;
+
+import com.github.reinert.jjschema.xproperties.XProperty;
+import com.github.reinert.jjschema.xproperties.XPropertiesReader;
+import com.github.reinert.jjschema.xproperties.XPropertiesWriter;
+import com.github.reinert.jjschema.xproperties.impl.DefaultXPropertiesReader;
+import com.github.reinert.jjschema.xproperties.impl.DefaultXPropertiesWriter;
 
 /**
  * @author Danilo Reinert
