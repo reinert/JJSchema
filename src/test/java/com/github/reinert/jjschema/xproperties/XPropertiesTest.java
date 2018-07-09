@@ -70,15 +70,18 @@ public class XPropertiesTest extends TestCase {
     })
     static class SimpleExample {
         @Attributes(title = "First Name", required = true, xProperties = {
-            "widget.id = java.lang.String:string"
+            "widget.id = java.lang.String:string",
+            "widget.aBooleanProp = java.lang.Boolean:true"
         })
         private String firstName;
         @Attributes(title = "Last Name", required = true, xProperties = {
-            "widget.id = java.lang.String:string"
+            "widget.id = java.lang.String:string",
+            "widget.anIntegerProp = java.lang.Integer:42",
         })
         private String lastName;
         @Attributes(title = "Age in years", minimum = 0, xProperties = {
-            "widget.id = java.lang.String:number"
+            "widget.id = java.lang.String:number",
+            "widget.aDoubleProp = java.lang.Double:3.141"
         })
         private int age;
 
