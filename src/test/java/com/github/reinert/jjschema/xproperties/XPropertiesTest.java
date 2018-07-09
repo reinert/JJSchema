@@ -62,6 +62,12 @@ public class XPropertiesTest extends TestCase {
 
         assertEquals(fromResource, fromJavaType);
     }
+    
+    public static class CustomFactory {
+        public static Double valueOf(String value) {
+            return Double.valueOf(value);
+        }
+    }
 
     @Attributes(title = "Example Schema", xProperties = {
         "fieldsets.0.fields.0 = java.lang.String:firstName",
@@ -81,7 +87,7 @@ public class XPropertiesTest extends TestCase {
         private String lastName;
         @Attributes(title = "Age in years", minimum = 0, xProperties = {
             "widget.id = java.lang.String:number",
-            "widget.aDoubleProp = java.lang.Double:3.141"
+            "widget.aDoubleProp = com.github.reinert.jjschema.xproperties.XPropertiesTest$CustomFactory:3.141"
         })
         private int age;
         @Attributes(title = "Example", xProperties = {
