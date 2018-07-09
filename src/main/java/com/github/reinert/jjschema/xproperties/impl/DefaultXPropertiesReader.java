@@ -33,14 +33,19 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     private static final String SEPARATOR_PROPERTY_VALUE = ":";
 
     /**
-     * Regular expression for integers.
-     */
-    private static final String REGEX_INTEGER = "^[0-9]+$";
-
-    /**
      * Regular expression for null values.
      */
     private static final String REGEX_NULL = "^null$";
+
+    /**
+     * Regular expression for booleans.
+     */
+    private static final String REGEX_BOOLEAN = "^(false|true)$";
+
+    /**
+     * Regular expression for integers.
+     */
+    private static final String REGEX_INTEGER = "^[0-9]+$";
 
     /**
      * Reads X Properties from an annotation instance.
@@ -76,13 +81,12 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * @return Property as object
      */
     private XProperty readProperty(String property) {
-        String propertyPath = property;
-        String propertyValue = null;
         final int indexOfSeparator = property.indexOf(SEPARATOR_PROPERTY);
-        if (indexOfSeparator > -1) {
-            propertyPath = property.substring(0, 0 + indexOfSeparator);
-            propertyValue = property.substring(indexOfSeparator + 1);
+        if (indexOfSeparator < 0) {
+            throw new IllegalArgumentException(property);
         }
+        final String propertyPath = property.substring(0, indexOfSeparator);
+        final String propertyValue = property.substring(indexOfSeparator + 1);
         return readProperty(propertyPath, propertyValue);
     }
 
@@ -100,7 +104,12 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      */
     private static XProperty readProperty(String propertyPath, String propertyValue) {
         final List<Object> propertyPathAsList = readPropertyPath(propertyPath);
-        final Object propertyValueAsObject = readPropertyValue(propertyValue);
+        final Object propertyValueAsObject;
+        try {
+            propertyValueAsObject = readPropertyValue(propertyValue);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(propertyPath);
+        }
         return new DefaultXProperty(propertyPathAsList, propertyValueAsObject);
     }
 
@@ -149,27 +158,28 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         if (propertyValue.matches(REGEX_NULL)) {
             return null;
         }
-
+        if (propertyValue.matches(REGEX_BOOLEAN)) {
+            return Boolean.valueOf(propertyValue);
+        }
+        if (propertyValue.matches(REGEX_INTEGER)) {
+            return Integer.valueOf(propertyValue);
+        }
         final int index = propertyValue.indexOf(SEPARATOR_PROPERTY_VALUE);
         if (index < 0) {
-            return propertyValue;
+            throw new IllegalArgumentException(propertyValue);
         }
-
         final String type = propertyValue.substring(0, index).trim();
         final String value = propertyValue.substring(index + 1).trim();
-
+        if (type.isEmpty()) {
+            return value;
+        }
         try {
             final Class<?> typeClass = Class.forName(type);
-            if (typeClass == String.class) {
-                return value;
-            }
-
             final Method valueOf = typeClass.getMethod("valueOf", String.class);
             final Object valueObject = valueOf.invoke(null, value);
-
             return valueObject;
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 }
