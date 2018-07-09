@@ -71,14 +71,9 @@ public class DefaultXProperty implements XProperty {
      *            Property path key to validate.
      */
     private static void validatePropertyPathKey(Object propertyPathKey) {
-        final int stateInteger = (propertyPathKey instanceof Integer) ? 1 : 0;
-        final int stateString = (propertyPathKey instanceof String) ? 1 : 0;
-
-        final int[] propertyPathKeyStates = new int[] { stateInteger, stateString };
-
-        final int sum = Arrays.stream(propertyPathKeyStates).reduce((x, y) -> x + y).getAsInt();
-
-        if (sum != 1) {
+        final boolean isInteger = propertyPathKey instanceof Integer;
+        final boolean isString = propertyPathKey instanceof String;
+        if ((!isInteger) && (!isString)) {
             throw new IllegalArgumentException("propertyPath");
         }
     }
