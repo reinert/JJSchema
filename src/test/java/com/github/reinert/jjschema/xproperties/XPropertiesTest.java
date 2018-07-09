@@ -70,9 +70,9 @@ public class XPropertiesTest extends TestCase {
     }
 
     @Attributes(title = "Example Schema", xProperties = {
-        "fieldsets.0.fields.0 = java.lang.String:firstName",
+        "fieldsets.0.fields.0 = firstName",
         "fieldsets.0.fields.1 = lastName",
-        "fieldsets.1.fields.0 = java.lang.String:age"
+        "fieldsets.1.fields.0 = age"
     })
     static class XPropertiesExample {
         @Attributes(title = "First Name", required = true, xProperties = {
