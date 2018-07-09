@@ -36,7 +36,6 @@ public class DefaultXProperty implements XProperty {
     public DefaultXProperty(List<Object> propertyPath, Object propertyValue) {
         propertyPath = new ArrayList<>(propertyPath);
         propertyPath.forEach(propertyPathKey -> validatePropertyPathKey(propertyPathKey));
-        validatePropertyValue(propertyValue);
 
         this.propertyPath = propertyPath.toArray();
         this.propertyValue = propertyValue;
@@ -76,30 +75,11 @@ public class DefaultXProperty implements XProperty {
         final int stateString = (propertyPathKey instanceof String) ? 1 : 0;
 
         final int[] propertyPathKeyStates = new int[] { stateInteger, stateString };
+
         final int sum = Arrays.stream(propertyPathKeyStates).reduce((x, y) -> x + y).getAsInt();
+
         if (sum != 1) {
             throw new IllegalArgumentException("propertyPath");
-        }
-    }
-
-    /**
-     * Validates one property value.
-     * 
-     * 
-     * @param propertyValue
-     *            Property value to validate.
-     */
-    private static void validatePropertyValue(Object propertyValue) {
-        final int stateNull = (propertyValue == null) ? 1 : 0;
-        final int stateBoolean = (propertyValue instanceof Boolean) ? 1 : 0;
-        final int stateInteger = (propertyValue instanceof Integer) ? 1 : 0;
-        final int stateDouble = (propertyValue instanceof Double) ? 1 : 0;
-        final int stateString = (propertyValue instanceof String) ? 1 : 0;
-
-        final int[] propertyValueStates = new int[] { stateNull, stateBoolean, stateInteger, stateDouble, stateString };
-        final int sum = Arrays.stream(propertyValueStates).reduce((x, y) -> x + y).getAsInt();
-        if (sum != 1) {
-            throw new IllegalArgumentException("propertyValue");
         }
     }
 }
