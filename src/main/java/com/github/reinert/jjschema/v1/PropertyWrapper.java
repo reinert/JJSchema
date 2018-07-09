@@ -291,6 +291,16 @@ public class PropertyWrapper extends SchemaWrapper {
             if (attributes.required()) {
                 setRequired(true);
             }
+
+            //
+            // Insert X Properties
+            //
+
+            final XPropertiesReader reader = new DefaultXPropertiesReader();
+            final XPropertiesWriter writer = new DefaultXPropertiesWriter();
+
+            final List<XProperty> xProperties = reader.readXProperties(attributes);
+            writer.writeXProperties(node, xProperties);
         }
     }
 
