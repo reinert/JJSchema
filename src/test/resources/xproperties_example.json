@@ -16,6 +16,11 @@
         "aDoubleProp" : 3.141
       }
     },
+    "example" : {
+      "type" : "string",
+      "title" : "Example",
+      "widget" : { }
+    },
     "firstName" : {
       "type" : "string",
       "title" : "First Name",
