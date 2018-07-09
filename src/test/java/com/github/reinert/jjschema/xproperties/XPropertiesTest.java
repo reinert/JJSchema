@@ -53,7 +53,7 @@ public class XPropertiesTest extends TestCase {
      */
     public void testGenerateSchema() throws UnavailableVersion, JsonProcessingException, IOException {
 
-        final InputStream in = XPropertiesTest.class.getResourceAsStream("/xproperties_exmaple.json");
+        final InputStream in = XPropertiesTest.class.getResourceAsStream("/xproperties_example.json");
         if (in == null)
             throw new IOException("resource not found");
         JsonNode fromResource = MAPPER.readTree(in);
