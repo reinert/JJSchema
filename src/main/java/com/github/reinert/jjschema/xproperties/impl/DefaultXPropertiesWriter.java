@@ -31,39 +31,74 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
      */
     @Override
     public void writeXProperties(ObjectNode schema, List<XProperty> properties) {
-        properties.forEach(property -> {
-            final List<Object> propertyPath = property.getPropertyPath();
-            final Object propertyKey = propertyPath.get(propertyPath.size() - 1);
-            final Object propertyValue = property.getPropertyValue();
-
-            JsonNode outerPtr = schema;
-            for (int i = 0; i < propertyPath.size() - 1; ++i) {
-
-                final Object outerKey = propertyPath.get(i);
-                final Object innerKey = propertyPath.get(i + 1);
-
-                JsonNode innerPtr;
-                if (outerKey instanceof Integer) {
-                    innerPtr = ((ArrayNode) outerPtr).get((Integer) outerKey);
-                } else {
-                    innerPtr = ((ObjectNode) outerPtr).get((String) outerKey);
-                }
-
-                prepareNodeStructure(outerPtr, outerKey, innerPtr, innerKey);
-
-                if (outerKey instanceof Integer) {
-                    innerPtr = ((ArrayNode) outerPtr).get((Integer) outerKey);
-                } else {
-                    innerPtr = ((ObjectNode) outerPtr).get((String) outerKey);
-                }
-                outerPtr = innerPtr;
+        for (int i = 0; i < properties.size(); ++i) {
+            final XProperty property = properties.get(i);
+            try {
+                setNodeValue(schema, property);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("xProperties[" + i + "]: " + e.toString());
             }
-            setNodeValue(outerPtr, propertyKey, propertyValue);
-        });
+
+        }
     }
 
+    /**
+     * Sets one node value.
+     * 
+     * @param schema
+     *            Node to apply value.
+     * 
+     * @param property
+     *            Data source.
+     */
+    private static void setNodeValue(ObjectNode schema, XProperty property) {
+        final List<Object> propertyPath = property.getPropertyPath();
+        final Object propertyKey = propertyPath.get(propertyPath.size() - 1);
+        final Object propertyValue = property.getPropertyValue();
+
+        JsonNode outerPtr = schema;
+        for (int i = 0; i < propertyPath.size() - 1; ++i) {
+            final Object outerKey = propertyPath.get(i);
+            final Object innerKey = propertyPath.get(i + 1);
+
+            JsonNode innerPtr;
+            if (outerKey instanceof Integer) {
+                innerPtr = ((ArrayNode) outerPtr).get((Integer) outerKey);
+            } else {
+                innerPtr = ((ObjectNode) outerPtr).get((String) outerKey);
+            }
+
+            prepareNodeStructure(outerPtr, outerKey, innerPtr, innerKey);
+
+            if (outerKey instanceof Integer) {
+                innerPtr = ((ArrayNode) outerPtr).get((Integer) outerKey);
+            } else {
+                innerPtr = ((ObjectNode) outerPtr).get((String) outerKey);
+            }
+            outerPtr = innerPtr;
+        }
+        setNodeValue(outerPtr, propertyKey, propertyValue);
+    }
+
+    /**
+     * Sets one node value.
+     * 
+     * @param ptr
+     *            Node to apply value.
+     * 
+     * @param key
+     *            Property name to apply value.
+     * 
+     * @param value
+     *            Data source.
+     */
     private static void setNodeValue(JsonNode ptr, Object key, Object value) {
         if (value instanceof Runnable) {
+
+            //
+            // Call applyXProperty(ptr, value)
+            //
+
             try {
                 if (key instanceof Integer) {
                     value.getClass().getField("input").set(value, ptr.get((Integer) key));
@@ -83,6 +118,11 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
             value = output;
         }
         if (key instanceof Integer) {
+
+            //
+            // Array
+            //
+
             try {
                 if (value == null) {
                     final Method remove = ArrayNode.class.getMethod("remove", int.class);
@@ -100,6 +140,11 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
                 throw new RuntimeException(e);
             }
         } else {
+
+            //
+            // Object
+            //
+
             try {
                 if (value == null) {
                     final Method remove = ObjectNode.class.getMethod("remove", String.class);
@@ -119,8 +164,28 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
         }
     }
 
+    /**
+     * Creates arrays and objects.
+     * 
+     * @param outerPtr
+     *            Outer pointer (immutable).
+     * 
+     * @param outerKey
+     *            Outer key (integer or string).
+     * 
+     * @param innerPtr
+     *            Inner pointer (mutable).
+     * 
+     * @param innerKey
+     *            Inner key (integer or string).
+     */
     private static void prepareNodeStructure(JsonNode outerPtr, Object outerKey, JsonNode innerPtr, Object innerKey) {
         if (innerKey instanceof Integer) {
+
+            //
+            // Array
+            //
+
             if (!(innerPtr instanceof ArrayNode)) {
                 final ArrayNode arrayNode = MAPPER.createArrayNode();
                 if (outerKey instanceof Integer) {
@@ -130,6 +195,11 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
                 }
             }
         } else {
+
+            //
+            // Object
+            //
+
             if (!(innerPtr instanceof ObjectNode)) {
                 final ObjectNode objectNode = MAPPER.createObjectNode();
                 if (outerKey instanceof Integer) {
