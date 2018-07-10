@@ -66,7 +66,12 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         final String[] xProperties = attributes.xProperties();
         for (int i = 0; i < xProperties.length; ++i) {
             final String xProperty = xProperties[i];
-            final XProperty property = readProperty(xProperty);
+            final XProperty property;
+            try {
+                property = readProperty(xProperty);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("xProperties[" + i + "]: " + e.toString());
+            }
             listOfProperties.add(property);
         }
         return listOfProperties;
@@ -104,13 +109,14 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * @return Property as object
      */
     private static XProperty readProperty(String propertyPath, String propertyValue) {
+
+        //
+        // k0.k1.k2 = value
+        //
+
         final List<Object> propertyPathAsList = readPropertyPath(propertyPath);
         final Object propertyValueAsObject;
-        try {
-            propertyValueAsObject = readPropertyValue(propertyValue);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(propertyPath);
-        }
+        propertyValueAsObject = readPropertyValue(propertyValue);
         return new DefaultXProperty(propertyPathAsList, propertyValueAsObject);
     }
 
@@ -124,6 +130,11 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * @return Property path as list of objects.
      */
     private static List<Object> readPropertyPath(String propertyPath) {
+
+        //
+        // k0.k1.k2
+        //
+
         return Arrays.asList(propertyPath.split(SEPARATOR_PROPERTY_PATH)).stream()
                 .map((String k) -> readPropertyPathKey(k)).collect(Collectors.toList());
     }
@@ -139,9 +150,19 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      */
     private static Object readPropertyPathKey(String propertyPathKey) {
         propertyPathKey = propertyPathKey.trim();
+
+        //
+        // Integer
+        //
+
         if (propertyPathKey.matches(REGEX_INTEGER)) {
             return Integer.valueOf(propertyPathKey);
         }
+
+        //
+        // String
+        //
+
         return propertyPathKey;
     }
 
@@ -152,10 +173,14 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * @param propertyValue
      *            Property value as string.
      * 
-     * @return Property value as object (boolean, integer, double or string).
+     * @return An object supported by ArrayNode.insert/ObjectNode.put.
      */
     private static Object readPropertyValue(String propertyValue) {
         propertyValue = propertyValue.trim();
+
+        //
+        // value without ':'
+        //
 
         if (propertyValue.matches(REGEX_NULL)) {
             return null;
@@ -166,6 +191,10 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         if (propertyValue.matches(REGEX_INTEGER)) {
             return Integer.valueOf(propertyValue);
         }
+
+        //
+        // value with ':'
+        //
 
         final int index = propertyValue.indexOf(SEPARATOR_PROPERTY_VALUE);
         if (index < 0) {
@@ -180,6 +209,17 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         return callStaticFactoryMethod(type, value);
     }
 
+    /**
+     * Calls applyXProperty or valueOf.
+     * 
+     * @param type
+     *            Name of the class to invoke applyXProperty or valueOf.
+     *
+     * @param value
+     *            Value to pass to applyXProperty or valueOf.
+     *
+     * @return An object supported by ArrayNode.insert/ObjectNode.put.
+     */
     private static Object callStaticFactoryMethod(String type, String value) {
         final Class<?> typeClass;
         try {
@@ -189,7 +229,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         }
 
         //
-        // Try call custom static factory method:
+        // Try to call the custom static factory method:
         //
         // Object applyXProperty(JsonNode schema, String value)
         //
@@ -221,7 +261,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         }
 
         //
-        // Call default static factory method:
+        // Call the default static factory method:
         //
         // Object valueOf (String value)
         //
