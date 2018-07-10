@@ -65,7 +65,11 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
     private static void setNodeValue(JsonNode ptr, Object key, Object value) {
         if (value instanceof Runnable) {
             try {
-                value.getClass().getField("input").set(value, ptr);
+                if (key instanceof Integer) {
+                    value.getClass().getField("input").set(value, ptr.get((Integer) key));
+                } else {
+                    value.getClass().getField("input").set(value, ptr.get((String) key));
+                }
             } catch (ReflectiveOperationException e) {
                 throw new IllegalArgumentException();
             }
@@ -86,7 +90,7 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
                 } else {
                     final Method insert;
                     if (value instanceof JsonNode) {
-                        insert = ArrayNode.class.getMethod("insert", int.class, value.getClass());
+                        insert = ArrayNode.class.getMethod("insert", int.class, JsonNode.class);
                     } else {
                         insert = ArrayNode.class.getMethod("insert", int.class, value.getClass());
                     }
