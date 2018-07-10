@@ -21,6 +21,7 @@ package com.github.reinert.jjschema.xproperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 import com.github.reinert.jjschema.v1.JsonSchemaFactory;
@@ -63,16 +64,25 @@ public class XPropertiesTest extends TestCase {
         assertEquals(fromResource, fromJavaType);
     }
     
-    public static class CustomFactory {
+    public static class DoubleFactory {
         public static Double valueOf(String value) {
             return Double.valueOf(value);
+        }
+    }
+    
+    public static class DeleteFactory {
+        public static JsonNode applyXProperty(JsonNode schema, String value) {
+            value = value.trim();
+            final ObjectNode objectNode = (ObjectNode) schema;
+            return objectNode.remove(value);
         }
     }
 
     @Attributes(title = "Example Schema", xProperties = {
         "fieldsets.0.fields.0 = :firstName",
         "fieldsets.0.fields.1 = :lastName",
-        "fieldsets.1.fields.0 = :age"
+        "fieldsets.1.fields.0 = :age",
+        "properties.another_name = com.github.reinert.jjschema.xproperties.XPropertiesTest$DeleteFactory:example"
     })
     static class XPropertiesExample {
         @Attributes(title = "First Name", required = true, xProperties = {
@@ -87,7 +97,7 @@ public class XPropertiesTest extends TestCase {
         private String lastName;
         @Attributes(title = "Age in years", minimum = 0, xProperties = {
             "widget.id = :number",
-            "widget.aDoubleProp = com.github.reinert.jjschema.xproperties.XPropertiesTest$CustomFactory:3.141"
+            "widget.aDoubleProp = com.github.reinert.jjschema.xproperties.XPropertiesTest$DoubleFactory:3.141"
         })
         private int age;
         @Attributes(title = "Example", xProperties = {
