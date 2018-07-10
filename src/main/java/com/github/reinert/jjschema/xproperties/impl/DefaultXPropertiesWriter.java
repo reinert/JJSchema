@@ -63,13 +63,33 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
     }
 
     private static void setNodeValue(JsonNode ptr, Object key, Object value) {
+        if (value instanceof Runnable) {
+            try {
+                value.getClass().getField("input").set(value, ptr);
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalArgumentException();
+            }
+            ((Runnable) value).run();
+            final Object output;
+            try {
+                output = value.getClass().getField("output").get(value);
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalArgumentException();
+            }
+            value = output;
+        }
         if (key instanceof Integer) {
             try {
                 if (value == null) {
                     final Method remove = ArrayNode.class.getMethod("remove", int.class);
                     remove.invoke(ptr, (Integer) key);
                 } else {
-                    final Method insert = ArrayNode.class.getMethod("insert", int.class, value.getClass());
+                    final Method insert;
+                    if (value instanceof JsonNode) {
+                        insert = ArrayNode.class.getMethod("insert", int.class, value.getClass());
+                    } else {
+                        insert = ArrayNode.class.getMethod("insert", int.class, value.getClass());
+                    }
                     insert.invoke(ptr, (Integer) key, value);
                 }
             } catch (ReflectiveOperationException e) {
@@ -81,7 +101,12 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
                     final Method remove = ObjectNode.class.getMethod("remove", String.class);
                     remove.invoke(ptr, (String) key);
                 } else {
-                    final Method put = ObjectNode.class.getMethod("put", String.class, value.getClass());
+                    final Method put;
+                    if (value instanceof JsonNode) {
+                        put = ObjectNode.class.getMethod("put", String.class, JsonNode.class);
+                    } else {
+                        put = ObjectNode.class.getMethod("put", String.class, value.getClass());
+                    }
                     put.invoke(ptr, (String) key, value);
                 }
             } catch (ReflectiveOperationException e) {
