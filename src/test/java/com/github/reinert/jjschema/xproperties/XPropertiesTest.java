@@ -70,11 +70,17 @@ public class XPropertiesTest extends TestCase {
         }
     }
     
-    public static class DeleteFactory {
+    public static class RenameFactory {
         public static JsonNode applyXProperty(JsonNode schema, String value) {
-            value = value.trim();
-            final ObjectNode objectNode = (ObjectNode) schema;
-            return objectNode.remove(value);
+            final String[] tokens = value.split("->");
+            if (tokens.length != 2) {
+                throw new IllegalArgumentException(value);
+            }
+            final String oldName = tokens[0].trim();
+            final String newName = tokens[1].trim();
+            final JsonNode node = ((ObjectNode)schema).remove(oldName);
+            ((ObjectNode) schema).set(newName, node);
+            return schema;
         }
     }
 
@@ -82,7 +88,7 @@ public class XPropertiesTest extends TestCase {
         "fieldsets.0.fields.0 = :firstName",
         "fieldsets.0.fields.1 = :lastName",
         "fieldsets.1.fields.0 = :age",
-        "properties.another_name = com.github.reinert.jjschema.xproperties.XPropertiesTest$DeleteFactory:example"
+        "properties = com.github.reinert.jjschema.xproperties.XPropertiesTest$RenameFactory:example -> another_name"
     })
     static class XPropertiesExample {
         @Attributes(title = "First Name", required = true, xProperties = {
