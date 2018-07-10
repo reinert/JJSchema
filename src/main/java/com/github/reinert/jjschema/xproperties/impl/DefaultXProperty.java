@@ -61,7 +61,7 @@ public class DefaultXProperty implements XProperty {
      * Gets the property value.
      * 
      * 
-     * @return A boolean, an integer, a double or a string.
+     * @return An object supported by ArrayNode.insert/ObjectNode.put.
      */
     @Override
     public Object getPropertyValue() {
