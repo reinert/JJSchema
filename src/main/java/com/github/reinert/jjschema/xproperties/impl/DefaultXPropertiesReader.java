@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.xproperties.XPropertiesReader;
 import com.github.reinert.jjschema.xproperties.XProperty;
@@ -155,6 +156,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      */
     private static Object readPropertyValue(String propertyValue) {
         propertyValue = propertyValue.trim();
+
         if (propertyValue.matches(REGEX_NULL)) {
             return null;
         }
@@ -164,6 +166,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         if (propertyValue.matches(REGEX_INTEGER)) {
             return Integer.valueOf(propertyValue);
         }
+
         final int index = propertyValue.indexOf(SEPARATOR_PROPERTY_VALUE);
         if (index < 0) {
             throw new IllegalArgumentException(propertyValue);
@@ -173,13 +176,65 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         if (type.isEmpty()) {
             return value;
         }
+
+        return callStaticFactoryMethod(type, value);
+    }
+
+    private static Object callStaticFactoryMethod(String type, String value) {
+        final Class<?> typeClass;
         try {
-            final Class<?> typeClass = Class.forName(type);
-            final Method valueOf = typeClass.getMethod("valueOf", String.class);
-            final Object valueObject = valueOf.invoke(null, value);
-            return valueObject;
+            typeClass = Class.forName(type);
         } catch (ReflectiveOperationException e) {
             throw new IllegalArgumentException(e);
+        }
+
+        //
+        // Try call custom static factory method:
+        //
+        // Object applyXProperty(JsonNode schema, String value)
+        //
+
+        {
+            try {
+                final Method applyXProperty = typeClass.getMethod("applyXProperty", JsonNode.class, String.class);
+
+                final Runnable runnable = new Runnable() {
+                    public JsonNode input = null;
+
+                    @SuppressWarnings("unused")
+                    public Object output = null;
+
+                    @Override
+                    public void run() {
+                        try {
+                            final Object valueObject = applyXProperty.invoke(null, input, value);
+                            this.output = valueObject;
+                        } catch (ReflectiveOperationException e) {
+                            throw new IllegalArgumentException(e);
+                        }
+                    }
+                };
+                return runnable;
+            } catch (ReflectiveOperationException e) {
+                // Use default valueOf below...
+            }
+        }
+
+        //
+        // Call default static factory method:
+        //
+        // Object valueOf (String value)
+        //
+
+        {
+            try {
+
+                final Method valueOf = typeClass.getMethod("valueOf", String.class);
+                final Object valueObject = valueOf.invoke(null, value);
+                return valueObject;
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
     }
 }
