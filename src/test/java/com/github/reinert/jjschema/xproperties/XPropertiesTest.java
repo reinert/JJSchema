@@ -111,6 +111,13 @@ public class XPropertiesTest extends TestCase {
             "widget.id = null"
         })
         private String example;
+        @Attributes(title = "Enum String", xProperties = {
+            "oneOf.0.enum.0 = :foo",
+            "oneOf.0.description = :Foo",
+            "oneOf.1.enum.0 = :bar",
+            "oneOf.1.description = :Bar"
+        })
+        private String enumString;
 
         public String getFirstName() {
             return firstName;
@@ -142,6 +149,14 @@ public class XPropertiesTest extends TestCase {
         
         public String getExample() {
             return this.example;
+        }
+        
+        public String getEnumString() {
+            return this.enumString;
+        }
+        
+        public void setEnumString(String enumString) {
+            this.enumString = enumString;
         }
     }
 }
