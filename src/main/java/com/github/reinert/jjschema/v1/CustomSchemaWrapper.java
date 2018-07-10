@@ -78,7 +78,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
         super(type);
         setType("object");
         processNullable();
-        processAttributes(getNode(), type);
+        // processAttributes(getNode(), type);
         this.managedReferences = managedReferences;
 
         if (relativeId != null) {
@@ -92,6 +92,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 
         this.propertyWrappers = Lists.newArrayListWithExpectedSize(getJavaType().getDeclaredFields().length);
         processProperties();
+        processAttributes(getNode(), type);
     }
 
     public String getRelativeId() {
