@@ -60,7 +60,7 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
             try {
                 setNodeValue(schema, property);
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("xProperties[" + i + "]: " + e.toString());
+                throw new IllegalArgumentException("xProperties[" + i + "]", e);
             }
 
         }
