@@ -256,7 +256,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
                 final List<XProperty> xProperties = reader.readXProperties(attributes);
                 writer.writeXProperties(node, xProperties);
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException(type.getTypeName() + ": " + e.toString());
+                throw new IllegalArgumentException(type.getTypeName(), e);
             }
         }
     }
