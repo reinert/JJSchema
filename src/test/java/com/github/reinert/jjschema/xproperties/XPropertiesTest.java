@@ -63,59 +63,60 @@ public class XPropertiesTest extends TestCase {
 
         assertEquals(fromResource, fromJavaType);
     }
-    
+
     public static class DoubleFactory {
         public static Double valueOf(String value) {
             return Double.valueOf(value);
         }
     }
-    
-    public static class RenameFactory {
-        public static JsonNode applyXProperty(JsonNode schema, String value) {
+
+    public static class RenameFactory implements XPropertyOperation {
+        @Override
+        public JsonNode applyXProperty(JsonNode schema, String value) {
             final String[] tokens = value.split("->");
             if (tokens.length != 2) {
                 throw new IllegalArgumentException(value);
             }
             final String oldName = tokens[0].trim();
             final String newName = tokens[1].trim();
-            final JsonNode node = ((ObjectNode)schema).remove(oldName);
+            final JsonNode node = ((ObjectNode) schema).remove(oldName);
             ((ObjectNode) schema).set(newName, node);
             return schema;
         }
     }
 
     @Attributes(title = "Example Schema", xProperties = {
-        "fieldsets.0.fields.0 = :firstName",
-        "fieldsets.0.fields.1 = :lastName",
-        "fieldsets.1.fields.0 = :age",
-        "properties = com.github.reinert.jjschema.xproperties.XPropertiesTest$RenameFactory:example -> another_name"
+            "fieldsets.0.fields.0 = :firstName",
+            "fieldsets.0.fields.1 = :lastName",
+            "fieldsets.1.fields.0 = :age",
+            "properties = com.github.reinert.jjschema.xproperties.XPropertiesTest$RenameFactory:example -> another_name"
     })
     static class XPropertiesExample {
         @Attributes(title = "First Name", required = true, xProperties = {
-            "widget.id = :string",
-            "widget.aBooleanProp = true"
+                "widget.id = :string",
+                "widget.aBooleanProp = true"
         })
         private String firstName;
         @Attributes(title = "Last Name", required = true, xProperties = {
-            "widget.id = :string",
-            "widget.anIntegerProp = 42",
+                "widget.id = :string",
+                "widget.anIntegerProp = 42",
         })
         private String lastName;
         @Attributes(title = "Age in years", minimum = 0, xProperties = {
-            "widget.id = :number",
-            "widget.aDoubleProp = com.github.reinert.jjschema.xproperties.XPropertiesTest$DoubleFactory:3.141"
+                "widget.id = :number",
+                "widget.aDoubleProp = com.github.reinert.jjschema.xproperties.XPropertiesTest$DoubleFactory:3.141"
         })
         private int age;
         @Attributes(title = "Example", xProperties = {
-            "widget.id = :TO_BE_REMOVED",
-            "widget.id = null"
+                "widget.id = :TO_BE_REMOVED",
+                "widget.id = null"
         })
         private String example;
         @Attributes(title = "Enum String", xProperties = {
-            "oneOf.0.enum.0 = :foo",
-            "oneOf.0.description = :Foo",
-            "oneOf.1.enum.0 = :bar",
-            "oneOf.1.description = :Bar"
+                "oneOf.0.enum.0 = :foo",
+                "oneOf.0.description = :Foo",
+                "oneOf.1.enum.0 = :bar",
+                "oneOf.1.description = :Bar"
         })
         private String enumString;
 
@@ -142,19 +143,19 @@ public class XPropertiesTest extends TestCase {
         public void setAge(int age) {
             this.age = age;
         }
-        
+
         public void setExample(String example) {
             this.example = example;
         }
-        
+
         public String getExample() {
             return this.example;
         }
-        
+
         public String getEnumString() {
             return this.enumString;
         }
-        
+
         public void setEnumString(String enumString) {
             this.enumString = enumString;
         }
