@@ -72,4 +72,6 @@ public @interface Attributes {
     boolean additionalProperties() default true;
     
     String[] xProperties() default {};
+    
+    String[] xPropertiesFiles() default {};
 }
