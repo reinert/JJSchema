@@ -58,6 +58,11 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     private static final String REGEX_INTEGER = "^[0-9]+$";
 
     /**
+     * Reader to read files.
+     */
+    private static final XPropertiesReader xPropertiesFileReader = new DefaultXPropertiesFileReader();
+
+    /**
      * Reads X Properties from an annotation instance.
      * 
      * 
@@ -69,9 +74,12 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     @Override
     public List<XProperty> readXProperties(Attributes attributes) {
         final List<XProperty> listOfProperties = new ArrayList<>();
+        listOfProperties.addAll(xPropertiesFileReader.readXProperties(attributes));
+
         if (attributes == null || attributes.xProperties() == null) {
             return listOfProperties;
         }
+
         final String[] xProperties = attributes.xProperties();
         for (int i = 0; i < xProperties.length; ++i) {
             final String xProperty = xProperties[i];
@@ -83,6 +91,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
             }
             listOfProperties.add(property);
         }
+
         return listOfProperties;
     }
 
@@ -117,7 +126,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * 
      * @return Property as object
      */
-    private static XProperty readProperty(String propertyPath, String propertyValue) {
+    public static XProperty readProperty(String propertyPath, String propertyValue) {
 
         //
         // k0.k1.k2 = value
