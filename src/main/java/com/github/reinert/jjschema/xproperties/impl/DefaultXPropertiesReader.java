@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.xproperties.XPropertiesReader;
 import com.github.reinert.jjschema.xproperties.XProperty;
+import com.github.reinert.jjschema.xproperties.XPropertyOperation;
 
 /**
  * X Properties Reader Implementation
@@ -236,7 +237,11 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
 
         {
             try {
-                final Method applyXProperty = typeClass.getMethod("applyXProperty", JsonNode.class, String.class);
+                final Method applyXProperty = typeClass.getMethod(
+                        XPropertyOperation.APPlY_X_PROPERTY_NAME,
+                        XPropertyOperation.APPLY_X_PROPERTY_ARGS);
+
+                final Object typeInstance = typeClass.getConstructor().newInstance();
 
                 final Runnable runnable = new Runnable() {
                     public JsonNode input = null;
@@ -247,7 +252,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
                     @Override
                     public void run() {
                         try {
-                            final Object valueObject = applyXProperty.invoke(null, input, value);
+                            final Object valueObject = applyXProperty.invoke(typeInstance, input, value);
                             this.output = valueObject;
                         } catch (ReflectiveOperationException e) {
                             throw new IllegalArgumentException(e);
@@ -269,7 +274,10 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         {
             try {
 
-                final Method valueOf = typeClass.getMethod("valueOf", String.class);
+                final Method valueOf = typeClass.getMethod(
+                        XPropertyOperation.STATIC_FALL_BACK_NAME,
+                        XPropertyOperation.STATIC_FALL_BACK_ARGS);
+
                 final Object valueObject = valueOf.invoke(null, value);
                 return valueObject;
             } catch (ReflectiveOperationException e) {
