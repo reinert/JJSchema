@@ -19,6 +19,14 @@ import com.github.reinert.jjschema.xproperties.XPropertyOperation;
  */
 public class DefaultXPropertiesReader implements XPropertiesReader {
 
+    //
+    // Errors
+    //
+    private static final String ERROR_PROPERTY_HAS_NO_SEPARATOR = "Property has no separator (=)";
+    private static final String ERROR_PROPERTY_VALUE_HAS_NO_SEPARATOR = "Property value has no separator (:) and is not null, a boolean or an integer";
+    private static final String ERROR_CLASS_NOT_FOUND = "Custom property value factory/operation class not found";
+    private static final String ERROR_METHOD_NOT_FOUND = "Custom property value factory/operation method not found or has error";
+
     /**
      * Separator for properties (Key=Value).
      */
@@ -71,7 +79,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
             try {
                 property = readProperty(xProperty);
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("xProperties[" + i + "]: " + e.toString());
+                throw new IllegalArgumentException("xProperties[" + i + "]", e);
             }
             listOfProperties.add(property);
         }
@@ -90,7 +98,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     private XProperty readProperty(String property) {
         final int indexOfSeparator = property.indexOf(SEPARATOR_PROPERTY);
         if (indexOfSeparator < 0) {
-            throw new IllegalArgumentException(property);
+            throw new IllegalArgumentException(ERROR_PROPERTY_HAS_NO_SEPARATOR);
         }
         final String propertyPath = property.substring(0, indexOfSeparator);
         final String propertyValue = property.substring(indexOfSeparator + 1);
@@ -199,7 +207,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
 
         final int index = propertyValue.indexOf(SEPARATOR_PROPERTY_VALUE);
         if (index < 0) {
-            throw new IllegalArgumentException(propertyValue);
+            throw new IllegalArgumentException(ERROR_PROPERTY_VALUE_HAS_NO_SEPARATOR);
         }
         final String type = propertyValue.substring(0, index).trim();
         final String value = propertyValue.substring(index + 1).trim();
@@ -226,7 +234,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         try {
             typeClass = Class.forName(type);
         } catch (ReflectiveOperationException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(ERROR_CLASS_NOT_FOUND, e);
         }
 
         //
@@ -255,7 +263,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
                             final Object valueObject = applyXProperty.invoke(typeInstance, input, value);
                             this.output = valueObject;
                         } catch (ReflectiveOperationException e) {
-                            throw new IllegalArgumentException(e);
+                            throw new IllegalArgumentException(ERROR_METHOD_NOT_FOUND, e);
                         }
                     }
                 };
@@ -281,7 +289,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
                 final Object valueObject = valueOf.invoke(null, value);
                 return valueObject;
             } catch (ReflectiveOperationException e) {
-                throw new IllegalArgumentException(e);
+                throw new IllegalArgumentException(ERROR_METHOD_NOT_FOUND, e);
             }
         }
     }
