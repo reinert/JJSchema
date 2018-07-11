@@ -40,7 +40,9 @@
     "another_name" : {
       "type" : "string",
       "title" : "Example",
-      "widget" : { }
+      "widget" : {
+        "id": null
+      }
     }
   },
   "required" : [ "firstName", "lastName" ],
