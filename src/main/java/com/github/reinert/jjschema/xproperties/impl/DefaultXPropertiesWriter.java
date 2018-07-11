@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.reinert.jjschema.xproperties.XPropertiesWriter;
 import com.github.reinert.jjschema.xproperties.XProperty;
@@ -17,7 +18,30 @@ import com.github.reinert.jjschema.xproperties.XProperty;
  */
 public class DefaultXPropertiesWriter implements XPropertiesWriter {
 
+    /**
+     * Factory for arrays and objects.
+     */
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    /**
+     * Field name of the runnable input.
+     */
+    private static String RUNNABLE_INPUT = "input";
+
+    /**
+     * Field name of the runnable output
+     */
+    private static String RUNNABLE_OUTPUT = "output";
+
+    /**
+     * Method name for insertions (ArrayNode)
+     */
+    private static String ARRAY_NODE_INSERT = "insert";
+
+    /**
+     * Method name for insertions (ObjectNode)
+     */
+    private static String OBJECT_NODE_PUT = "put";
 
     /**
      * Writes X Properties into schema.
@@ -101,9 +125,9 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
 
             try {
                 if (key instanceof Integer) {
-                    value.getClass().getField("input").set(value, ptr.get((Integer) key));
+                    value.getClass().getField(RUNNABLE_INPUT).set(value, ptr.get((Integer) key));
                 } else {
-                    value.getClass().getField("input").set(value, ptr.get((String) key));
+                    value.getClass().getField(RUNNABLE_INPUT).set(value, ptr.get((String) key));
                 }
             } catch (ReflectiveOperationException e) {
                 throw new IllegalArgumentException();
@@ -111,7 +135,7 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
             ((Runnable) value).run();
             final Object output;
             try {
-                output = value.getClass().getField("output").get(value);
+                output = value.getClass().getField(RUNNABLE_OUTPUT).get(value);
             } catch (ReflectiveOperationException e) {
                 throw new IllegalArgumentException();
             }
@@ -124,16 +148,15 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
             //
 
             try {
-                if (value == null) {
-                    final Method remove = ArrayNode.class.getMethod("remove", int.class);
-                    remove.invoke(ptr, (Integer) key);
+                final Method insert;
+                if (value == null || value instanceof JsonNode) {
+                    insert = ArrayNode.class.getMethod(ARRAY_NODE_INSERT, int.class, JsonNode.class);
                 } else {
-                    final Method insert;
-                    if (value instanceof JsonNode) {
-                        insert = ArrayNode.class.getMethod("insert", int.class, JsonNode.class);
-                    } else {
-                        insert = ArrayNode.class.getMethod("insert", int.class, value.getClass());
-                    }
+                    insert = ArrayNode.class.getMethod(ARRAY_NODE_INSERT, int.class, value.getClass());
+                }
+                if (value == null) {
+                    insert.invoke(ptr, (Integer) key, NullNode.instance);
+                } else {
                     insert.invoke(ptr, (Integer) key, value);
                 }
             } catch (ReflectiveOperationException e) {
@@ -146,16 +169,15 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
             //
 
             try {
-                if (value == null) {
-                    final Method remove = ObjectNode.class.getMethod("remove", String.class);
-                    remove.invoke(ptr, (String) key);
+                final Method put;
+                if (value == null || value instanceof JsonNode) {
+                    put = ObjectNode.class.getMethod(OBJECT_NODE_PUT, String.class, JsonNode.class);
                 } else {
-                    final Method put;
-                    if (value instanceof JsonNode) {
-                        put = ObjectNode.class.getMethod("put", String.class, JsonNode.class);
-                    } else {
-                        put = ObjectNode.class.getMethod("put", String.class, value.getClass());
-                    }
+                    put = ObjectNode.class.getMethod(OBJECT_NODE_PUT, String.class, value.getClass());
+                }
+                if (value == null) {
+                    put.invoke(ptr, (String) key, NullNode.instance);
+                } else {
                     put.invoke(ptr, (String) key, value);
                 }
             } catch (ReflectiveOperationException e) {
