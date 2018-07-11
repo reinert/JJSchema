@@ -309,7 +309,7 @@ public class PropertyWrapper extends SchemaWrapper {
                 final List<XProperty> xProperties = reader.readXProperties(attributes);
                 writer.writeXProperties(node, xProperties);
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException(getOwnerSchema().getJavaType().getName() + "." + getName() + ": " + e.toString());
+                throw new IllegalArgumentException(getOwnerSchema().getJavaType().getName() + "." + getName(), e);
             }
         }
     }
