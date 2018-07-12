@@ -157,6 +157,7 @@ public class PropertyWrapper extends SchemaWrapper {
             }
             processAttributes(getNode(), getAccessibleObject());
             processNullable();
+            processXProperties(getNode(), getAccessibleObject());
         }
     }
 
@@ -298,19 +299,6 @@ public class PropertyWrapper extends SchemaWrapper {
             if (attributes.required()) {
                 setRequired(true);
             }
-
-            //
-            // Insert X Properties
-            //
-
-            final XPropertiesReader reader = new DefaultXPropertiesReader();
-            final XPropertiesWriter writer = new DefaultXPropertiesWriter();
-            try {
-                final List<XProperty> xProperties = reader.readXProperties(attributes);
-                writer.writeXProperties(node, xProperties);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException(getOwnerSchema().getJavaType().getName() + "." + getName(), e);
-            }
         }
     }
 
@@ -382,5 +370,16 @@ public class PropertyWrapper extends SchemaWrapper {
 
     protected boolean shouldIgnoreProperties() {
         return getAccessibleObject().getAnnotation(SchemaIgnoreProperties.class) != null;
+    }
+
+    protected void processXProperties(ObjectNode node, AccessibleObject accessibleObj) {
+        final XPropertiesReader reader = new DefaultXPropertiesReader();
+        final XPropertiesWriter writer = new DefaultXPropertiesWriter();
+        try {
+            final List<XProperty> xProperties = reader.readXProperties(accessibleObj);
+            writer.writeXProperties(node, xProperties);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(getOwnerSchema().getJavaType().getName() + "." + getName(), e);
+        }
     }
 }
