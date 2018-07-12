@@ -78,7 +78,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
         super(type);
         setType("object");
         processNullable();
-        // processAttributes(getNode(), type);
+        processAttributes(getNode(), type);
         this.managedReferences = managedReferences;
 
         if (relativeId != null) {
@@ -92,7 +92,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 
         this.propertyWrappers = Lists.newArrayListWithExpectedSize(getJavaType().getDeclaredFields().length);
         processProperties();
-        processAttributes(getNode(), type);
+        processXProperties(getNode(), getJavaType());
     }
 
     public String getRelativeId() {
@@ -245,19 +245,17 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             if (!attributes.additionalProperties()) {
                 node.put("additionalProperties", false);
             }
+        }
+    }
 
-            //
-            // Insert X Properties
-            //
-
-            final XPropertiesReader reader = new DefaultXPropertiesReader();
-            final XPropertiesWriter writer = new DefaultXPropertiesWriter();
-            try {
-                final List<XProperty> xProperties = reader.readXProperties(attributes);
-                writer.writeXProperties(node, xProperties);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException(type.getTypeName(), e);
-            }
+    protected void processXProperties(ObjectNode node, Class<?> type) {
+        final XPropertiesReader reader = new DefaultXPropertiesReader();
+        final XPropertiesWriter writer = new DefaultXPropertiesWriter();
+        try {
+            final List<XProperty> xProperties = reader.readXProperties(type);
+            writer.writeXProperties(node, xProperties);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(type.getTypeName(), e);
         }
     }
 }
