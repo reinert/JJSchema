@@ -2,6 +2,7 @@ package com.github.reinert.jjschema.xproperties.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.AccessibleObject;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -21,17 +22,45 @@ public class DefaultXPropertiesFileReader implements XPropertiesReader {
 
     /**
      * 
-     * Reads X Properties from file.
+     * Reads X Properties from a class.
      * 
+     * @param type
+     *            A class to read X Properties from.
+     * 
+     * @return List of X Properties.
+     */
+    @Override
+    public List<XProperty> readXProperties(Class<?> type) {
+        final Attributes attributes = type.getAnnotation(Attributes.class);
+        return readXProperties(attributes);
+    }
+
+    /**
+     * 
+     * Reads X Properties from a field.
+     * 
+     * 
+     * @param accessibleObj
+     *            A field to read X Properties from.
+     * 
+     * @return List of X Properties.
+     */
+    @Override
+    public List<XProperty> readXProperties(AccessibleObject accessibleObj) {
+        final Attributes attributes = accessibleObj.getAnnotation(Attributes.class);
+        return readXProperties(attributes);
+    }
+
+    /**
+     * 
+     * Reads X Properties from an annotation instance.
      * 
      * @param attributes
      *            Annotation instance.
      * 
      * @return List of X Properties.
-     * 
      */
-    @Override
-    public List<XProperty> readXProperties(Attributes attributes) {
+    public static List<XProperty> readXProperties(Attributes attributes) {
         final List<XProperty> listOfProperties = new ArrayList<>();
         if (attributes == null || attributes.xPropertiesFiles() == null) {
             return listOfProperties;
@@ -54,27 +83,10 @@ public class DefaultXPropertiesFileReader implements XPropertiesReader {
             while (propertyNames.hasMoreElements()) {
                 final String propertyPath = (String) propertyNames.nextElement();
                 final String propertyValue = properties.getProperty(propertyPath);
-                final XProperty xProperty = readProperty(propertyPath, propertyValue);
+                final XProperty xProperty = DefaultXPropertiesReader.readProperty(propertyPath, propertyValue);
                 listOfProperties.add(xProperty);
             }
         }
         return listOfProperties;
     }
-
-    /**
-     * Reads a property.
-     * 
-     * 
-     * @param propertyPath
-     *            Property path as string
-     * 
-     * @param propertyValue
-     *            Property value as string
-     * 
-     * @return Property as object
-     */
-    public static XProperty readProperty(String propertyPath, String propertyValue) {
-        return DefaultXPropertiesReader.readProperty(propertyPath, propertyValue);
-    }
-
 }
