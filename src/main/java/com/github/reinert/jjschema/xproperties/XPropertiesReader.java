@@ -1,8 +1,7 @@
 package com.github.reinert.jjschema.xproperties;
 
+import java.lang.reflect.AccessibleObject;
 import java.util.List;
-
-import com.github.reinert.jjschema.Attributes;
 
 /**
  * 
@@ -16,15 +15,25 @@ public interface XPropertiesReader {
 
     /**
      * 
-     * Reads X Properties from an annotation instance.
+     * Reads X Properties from a class.
      * 
-     * 
-     * @param attributes
-     *            Annotation instance.
+     * @param type
+     *            A class to read X Properties from.
      * 
      * @return List of X Properties.
-     * 
      */
-    List<XProperty> readXProperties(Attributes attributes);
+    List<XProperty> readXProperties(Class<?> type);
+
+    /**
+     * 
+     * Reads X Properties from a field.
+     * 
+     * 
+     * @param accessibleObj
+     *            A field to read X Properties from.
+     * 
+     * @return List of X Properties.
+     */
+    List<XProperty> readXProperties(AccessibleObject accessibleObj);
 
 }
