@@ -1,5 +1,6 @@
 package com.github.reinert.jjschema.xproperties.impl;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,23 +59,48 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     private static final String REGEX_INTEGER = "^[0-9]+$";
 
     /**
-     * Reader to read files.
+     * 
+     * Reads X Properties from a class.
+     * 
+     * @param type
+     *            A class to read X Properties from.
+     * 
+     * @return List of X Properties.
      */
-    private static final XPropertiesReader xPropertiesFileReader = new DefaultXPropertiesFileReader();
+    @Override
+    public List<XProperty> readXProperties(Class<?> type) {
+        final Attributes attributes = type.getAnnotation(Attributes.class);
+        return readXProperties(attributes);
+    }
 
     /**
-     * Reads X Properties from an annotation instance.
      * 
+     * Reads X Properties from a field.
+     * 
+     * 
+     * @param accessibleObj
+     *            A field to read X Properties from.
+     * 
+     * @return List of X Properties.
+     */
+    @Override
+    public List<XProperty> readXProperties(AccessibleObject accessibleObj) {
+        final Attributes attributes = accessibleObj.getAnnotation(Attributes.class);
+        return readXProperties(attributes);
+    }
+
+    /**
+     * 
+     * Reads X Properties from an annotation instance.
      * 
      * @param attributes
      *            Annotation instance.
      * 
      * @return List of X Properties.
      */
-    @Override
-    public List<XProperty> readXProperties(Attributes attributes) {
+    private static List<XProperty> readXProperties(Attributes attributes) {
         final List<XProperty> listOfProperties = new ArrayList<>();
-        listOfProperties.addAll(xPropertiesFileReader.readXProperties(attributes));
+        listOfProperties.addAll(DefaultXPropertiesFileReader.readXProperties(attributes));
 
         if (attributes == null || attributes.xProperties() == null) {
             return listOfProperties;
@@ -104,7 +130,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * 
      * @return Property as object
      */
-    private XProperty readProperty(String property) {
+    private static XProperty readProperty(String property) {
         final int indexOfSeparator = property.indexOf(SEPARATOR_PROPERTY);
         if (indexOfSeparator < 0) {
             throw new IllegalArgumentException(ERROR_PROPERTY_HAS_NO_SEPARATOR);
