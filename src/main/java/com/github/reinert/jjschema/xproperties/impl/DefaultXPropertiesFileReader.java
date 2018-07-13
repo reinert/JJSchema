@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.reinert.jjschema.Attributes;
+import com.github.reinert.jjschema.xproperties.XProperties;
 import com.github.reinert.jjschema.xproperties.XPropertiesReader;
 import com.github.reinert.jjschema.xproperties.XProperty;
 
@@ -34,7 +34,7 @@ public class DefaultXPropertiesFileReader implements XPropertiesReader {
     public List<XProperty> readXProperties(Class<?> type) {
         type = Objects.requireNonNull(type);
 
-        final Attributes attributes = type.getAnnotation(Attributes.class);
+        final XProperties attributes = type.getAnnotation(XProperties.class);
         return readXProperties(attributes);
     }
 
@@ -51,7 +51,7 @@ public class DefaultXPropertiesFileReader implements XPropertiesReader {
     public List<XProperty> readXProperties(AccessibleObject accessibleObj) {
         accessibleObj = Objects.requireNonNull(accessibleObj);
 
-        final Attributes attributes = accessibleObj.getAnnotation(Attributes.class);
+        final XProperties attributes = accessibleObj.getAnnotation(XProperties.class);
         return readXProperties(attributes);
     }
 
@@ -80,12 +80,12 @@ public class DefaultXPropertiesFileReader implements XPropertiesReader {
      * 
      * @return A list of X Properties.
      */
-    public static List<XProperty> readXProperties(Attributes attributes) {
+    public static List<XProperty> readXProperties(XProperties attributes) {
         final List<XProperty> listOfProperties = new ArrayList<>();
-        if (attributes == null || attributes.xPropertiesFiles() == null) {
+        if (attributes == null || attributes.files() == null) {
             return listOfProperties;
         }
-        final String[] xPropertiesFiles = attributes.xPropertiesFiles();
+        final String[] xPropertiesFiles = attributes.files();
         for (int i = 0; i < xPropertiesFiles.length; ++i) {
             final String xPropertiesFileName = xPropertiesFiles[i];
             final InputStream xPropertiesFile = System.class.getResourceAsStream(xPropertiesFileName);
