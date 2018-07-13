@@ -31,9 +31,9 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     //
     private static final String ERROR_PROPERTY_HAS_NO_SEPARATOR = "Property has no separator (=)";
     private static final String ERROR_PROPERTY_VALUE_HAS_NO_SEPARATOR = "Property value has no separator (:) and is not null, a boolean or an integer";
-    private static final String ERROR_CLASS_NOT_FOUND = "Custom property value factory/operation class not found";
-    private static final String ERROR_METHOD_NOT_FOUND = "Custom property value factory/operation method not found or has error";
-    private static final String ERROR_FIELD_NOT_FOUND = "Could not find field for JSON schema property named";
+    private static final String ERROR_CLASS_NOT_FOUND = "Custom property value factory/operation class not found:";
+    private static final String ERROR_METHOD_NOT_FOUND = "Custom property value factory/operation method not found or has error:";
+    private static final String ERROR_FIELD_NOT_FOUND = "Could not find field for JSON schema property:";
 
     /**
      * Separator for properties (Key=Value).
@@ -340,7 +340,25 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         }
         final String type = propertyValue.substring(0, index).trim();
         final String value = propertyValue.substring(index + 1).trim();
-        if (type.isEmpty()) {
+
+        switch (type) {
+        case "Boolean":
+        case "b":
+            return callStaticFactoryMethod("java.lang.Boolean", value);
+        case "Double":
+        case "d":
+            return callStaticFactoryMethod("java.lang.Double", value);
+        case "Float":
+        case "f":
+            return callStaticFactoryMethod("java.lang.Float", value);
+        case "Integer":
+        case "i":
+            return callStaticFactoryMethod("java.lang.Integer", value);
+        case "Long":
+        case "l":
+            return callStaticFactoryMethod("java.lang.Long", value);
+        case "String":
+        case "s":
             return value;
         }
 
@@ -363,7 +381,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         try {
             typeClass = Class.forName(type);
         } catch (ReflectiveOperationException e) {
-            throw new IllegalArgumentException(ERROR_CLASS_NOT_FOUND, e);
+            throw new IllegalArgumentException(ERROR_CLASS_NOT_FOUND + " " + type, e);
         }
 
         //
@@ -392,7 +410,8 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
                             final Object valueObject = applyXProperty.invoke(typeInstance, input, value);
                             this.output = valueObject;
                         } catch (ReflectiveOperationException e) {
-                            throw new IllegalArgumentException(ERROR_METHOD_NOT_FOUND, e);
+                            throw new IllegalArgumentException(
+                                    ERROR_METHOD_NOT_FOUND + " " + XPropertyOperation.APPlY_X_PROPERTY_NAME, e);
                         }
                     }
                 };
