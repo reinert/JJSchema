@@ -55,39 +55,38 @@ public class XPropertiesTest extends TestCase {
 
     @Attributes(title = "Example Schema")
     @XProperties({
-            "fieldsets.0.fields.0 = :firstName",
-            "fieldsets.0.fields.1 = :lastName",
-            "fieldsets.1.fields.0 = :age"
+            "fieldsets.0.fields.0 = s:firstName",
+            "fieldsets.0.fields.1 = s:lastName",
+            "fieldsets.1.fields.0 = s:age"
     })
     static class XPropertiesExample {
 
         @Attributes(title = "First Name", required = true)
         @XProperties({
-                "widget.id = :string",
+                "widget.id = s:string",
                 "widget.aBooleanProp = true"
         })
         private String firstName;
 
         @Attributes(title = "Last Name", required = true)
         @XProperties({
-                "widget.id = :string",
+                "widget.id = s:string",
                 "widget.anIntegerProp = 42",
         })
         private String lastName;
 
         @Attributes(title = "Age in years", minimum = 0)
         @XProperties({
-                "widget.id = :number",
-                "widget.aDoubleProp = java.lang.Double:3.141"
-                // "widget.anotherDoubleProp =
-                // com.github.reinert.jjschema.xproperties.XPropertiesTest$DoubleFactory:3.141"
+                "widget.id = s:number",
+                "widget.aDoubleProp = java.lang.Double:3.141",
+                "widget.anotherDoubleProp = com.github.reinert.jjschema.xproperties.XPropertiesTest$DoubleFactory:3.141"
         })
         private int age;
 
         @JsonProperty(value = "another_name", required = true, defaultValue = "John Doe")
         @Attributes(title = "Example")
         @XProperties({
-                "widget.id = :TO_BE_REMOVED",
+                "widget.id = s:TO_BE_REMOVED",
                 "widget.id = null"
         })
         private String example;
