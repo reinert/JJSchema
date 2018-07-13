@@ -53,26 +53,30 @@ public class XPropertiesTest extends TestCase {
         }
     }
 
-    @Attributes(title = "Example Schema", xProperties = {
+    @Attributes(title = "Example Schema")
+    @XProperties({
             "fieldsets.0.fields.0 = :firstName",
             "fieldsets.0.fields.1 = :lastName",
             "fieldsets.1.fields.0 = :age"
     })
     static class XPropertiesExample {
 
-        @Attributes(title = "First Name", required = true, xProperties = {
+        @Attributes(title = "First Name", required = true)
+        @XProperties({
                 "widget.id = :string",
                 "widget.aBooleanProp = true"
         })
         private String firstName;
 
-        @Attributes(title = "Last Name", required = true, xProperties = {
+        @Attributes(title = "Last Name", required = true)
+        @XProperties({
                 "widget.id = :string",
                 "widget.anIntegerProp = 42",
         })
         private String lastName;
 
-        @Attributes(title = "Age in years", minimum = 0, xProperties = {
+        @Attributes(title = "Age in years", minimum = 0)
+        @XProperties({
                 "widget.id = :number",
                 "widget.aDoubleProp = java.lang.Double:3.141"
                 // "widget.anotherDoubleProp =
@@ -81,13 +85,15 @@ public class XPropertiesTest extends TestCase {
         private int age;
 
         @JsonProperty(value = "another_name", required = true, defaultValue = "John Doe")
-        @Attributes(title = "Example", xProperties = {
+        @Attributes(title = "Example")
+        @XProperties({
                 "widget.id = :TO_BE_REMOVED",
                 "widget.id = null"
         })
         private String example;
 
-        @Attributes(title = "Enum String", xPropertiesFiles = {
+        @Attributes(title = "Enum String")
+        @XProperties(files = {
                 "/xproperties_example.properties"
         })
         private String enumString;
