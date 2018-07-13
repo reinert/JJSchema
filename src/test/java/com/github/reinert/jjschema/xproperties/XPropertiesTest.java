@@ -15,7 +15,7 @@ import com.github.reinert.jjschema.v1.JsonSchemaV4Factory;
 import junit.framework.TestCase;
 
 /**
- * @author reinert
+ * X Properties Test
  */
 public class XPropertiesTest extends TestCase {
 
@@ -27,12 +27,8 @@ public class XPropertiesTest extends TestCase {
     }
 
     /**
-     * Test the scheme generate following a scheme source, avaliable at
+     * Test the scheme generate following a scheme source, available at
      * http://json-schema.org/examples.html the output should match the example.
-     *
-     * @throws java.io.IOException
-     * @throws com.fasterxml.jackson.core.JsonProcessingException
-     *
      */
     public void testGenerateSchema() throws UnavailableVersion, JsonProcessingException, IOException {
 
@@ -46,43 +42,32 @@ public class XPropertiesTest extends TestCase {
         assertEquals(fromResource, fromJavaType);
     }
 
-    @Attributes(title = "Example Schema")
+    @Attributes(title = "X Properties Example Schema")
     @XProperties({
-            "fieldsets.0.fields.0 = \"firstName\"",
-            "fieldsets.0.fields.1 = \"lastName\"",
-            "fieldsets.1.fields.0 =  \"age\""
+            "fieldsets.0.title = \"One\"",
+            "fieldsets.0.fields.0 = \"FirstName\"",
+            "fieldsets.0.fields.1 = \"LastName\"",
+            "fieldsets.1.title = \"Two\"",
+            "fieldsets.1.fields.0 =  \"Age\"",
+            "fieldsets.1.fields.1 =  \"EnumString\""
     })
     static class XPropertiesExample {
-
-        @Attributes(title = "First Name", required = true)
-        @XProperties({
-                "widget.id = \"string\"",
-                "widget.aBooleanProp = true"
-        })
+        @JsonProperty(value = "FirstName", required = true, defaultValue = "John")
+        @Attributes(title = "First Name")
+        @XProperties({ "widget.id = \"string\"" })
         private String firstName;
 
-        @Attributes(title = "Last Name", required = true)
-        @XProperties({
-                "widget.id = \"string\"",
-                "widget.anIntegerProp = 42",
-        })
+        @JsonProperty(value = "LastName", required = true, defaultValue = "Doe")
+        @Attributes(title = "Last Name")
+        @XProperties({ "widget.id = \"string\"" })
         private String lastName;
 
+        @JsonProperty(value = "Age", required = true, defaultValue = "1")
         @Attributes(title = "Age in years", minimum = 0)
-        @XProperties({
-                "widget.id = \"number\"",
-                "widget.aDoubleProp = 3.141"
-        })
+        @XProperties({ "widget.id = \"number\"", "maximum = 100" })
         private int age;
 
-        @JsonProperty(value = "another_name", required = true, defaultValue = "John Doe")
-        @Attributes(title = "Example")
-        @XProperties({
-                "widget.id = \"TO_BE_REMOVED\"",
-                "widget.id = null"
-        })
-        private String example;
-
+        @JsonProperty(value = "EnumString", required = true, defaultValue = "foo")
         @Attributes(title = "Enum String")
         @XProperties(files = {
                 "/xproperties_example.properties"
@@ -111,14 +96,6 @@ public class XPropertiesTest extends TestCase {
 
         public void setAge(int age) {
             this.age = age;
-        }
-
-        public void setExample(String example) {
-            this.example = example;
-        }
-
-        public String getExample() {
-            return this.example;
         }
 
         public String getEnumString() {
