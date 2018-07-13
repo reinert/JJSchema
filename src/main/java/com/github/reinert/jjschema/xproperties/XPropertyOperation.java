@@ -18,14 +18,14 @@ public interface XPropertyOperation {
      * 
      * 
      * @param schema
-     *            JSON schema to apply a custom operation on.
+     *            A JSON schema to apply a custom operation on.
      * 
      * @param value
-     *            Generic string argument.
+     *            A generic string argument.
      * 
      * 
      * @return
-     *         Value to replace the JSON schema (parent node).
+     *         A value to replace the JSON schema (parent node).
      * 
      */
     Object applyXProperty(JsonNode schema, String value);
