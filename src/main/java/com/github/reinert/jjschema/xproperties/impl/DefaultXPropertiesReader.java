@@ -1,13 +1,19 @@
 package com.github.reinert.jjschema.xproperties.impl;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.xproperties.XPropertiesReader;
 import com.github.reinert.jjschema.xproperties.XProperty;
@@ -59,44 +65,138 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     private static final String REGEX_INTEGER = "^[0-9]+$";
 
     /**
-     * 
+     * JSON Schema properties.
+     */
+    private static final String JSON_SCHEMA_PROPERTIES = "properties";
+
+    /**
+     * JSON Schema required.
+     */
+    private static final String JSON_SCHEMA_REQUIRED = "required";
+
+    /**
+     * JSON Schema required.
+     */
+    private static final String JSON_SCHEMA_DEFAULT = "default";
+
+    /**
      * Reads X Properties from a class.
      * 
      * @param type
      *            A class to read X Properties from.
      * 
-     * @return List of X Properties.
+     * @return A list of X Properties.
      */
     @Override
     public List<XProperty> readXProperties(Class<?> type) {
+        type = Objects.requireNonNull(type);
+
         final Attributes attributes = type.getAnnotation(Attributes.class);
         return readXProperties(attributes);
     }
 
     /**
-     * 
      * Reads X Properties from a field.
      * 
      * 
      * @param accessibleObj
      *            A field to read X Properties from.
      * 
-     * @return List of X Properties.
+     * @return A list of X Properties.
      */
     @Override
     public List<XProperty> readXProperties(AccessibleObject accessibleObj) {
+        accessibleObj = Objects.requireNonNull(accessibleObj);
+
         final Attributes attributes = accessibleObj.getAnnotation(Attributes.class);
         return readXProperties(attributes);
     }
 
     /**
+     * Reads X Properties from JsonProperty annotation instances.
      * 
+     * @param type
+     *            The class containing the fields to read from.
+     * 
+     * @param schema
+     *            Schema of the class containing the fields to read from.
+     * 
+     * @return A list of X Properties
+     */
+
+    @Override
+    public List<XProperty> readXProperties(Class<?> type, ObjectNode schema) {
+        type = Objects.requireNonNull(type);
+        schema = Objects.requireNonNull(schema);
+
+        final List<XProperty> listOfProperties = new ArrayList<>();
+        final ObjectNode properties = (ObjectNode) schema.get(JSON_SCHEMA_PROPERTIES);
+        if (properties == null) {
+            return listOfProperties;
+        }
+        final Iterator<String> fieldNames = properties.fieldNames();
+        while (fieldNames.hasNext()) {
+            final String fieldName = fieldNames.next();
+            try {
+                final Field field = type.getDeclaredField(fieldName);
+                final JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
+                if (jsonProperty != null) {
+                    listOfProperties.addAll(readXProperties(type, schema, fieldName, jsonProperty));
+                }
+            } catch (NoSuchFieldException e) {
+                // e.printStackTrace();
+                final String methodName;
+                if (fieldName.isEmpty() || fieldName.equals("get")) {
+                    methodName = fieldName;
+                } else {
+                    methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+                }
+                try {
+                    final Method method = type.getDeclaredMethod(methodName);
+                    final JsonProperty jsonProperty = method.getAnnotation(JsonProperty.class);
+                    if (jsonProperty != null) {
+                        listOfProperties.addAll(readXProperties(type, schema, fieldName, jsonProperty));
+                    }
+                } catch (NoSuchMethodException ex) {
+                    // ex.printStackTrace();
+                }
+            }
+        }
+        return listOfProperties;
+    }
+
+    /**
+     * Reads a property.
+     * 
+     * 
+     * @param propertyPath
+     *            Property path as string
+     * 
+     * @param propertyValue
+     *            Property value as string
+     * 
+     * @return Property as object
+     */
+    public static XProperty readProperty(String propertyPath, String propertyValue) {
+        propertyPath = Objects.requireNonNull(propertyPath);
+
+        //
+        // k0.k1.k2 = value
+        //
+
+        final List<Object> propertyPathAsList = readPropertyPath(propertyPath);
+        final Object propertyValueAsObject;
+        propertyValueAsObject = readPropertyValue(propertyValue);
+        return new DefaultXProperty(propertyPathAsList, propertyValueAsObject);
+    }
+
+    /**
      * Reads X Properties from an annotation instance.
      * 
      * @param attributes
-     *            Annotation instance.
+     *            An annotation instance.
      * 
-     * @return List of X Properties.
+     * @return A list of X Properties.
      */
     private static List<XProperty> readXProperties(Attributes attributes) {
         final List<XProperty> listOfProperties = new ArrayList<>();
@@ -138,30 +238,6 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         final String propertyPath = property.substring(0, indexOfSeparator);
         final String propertyValue = property.substring(indexOfSeparator + 1);
         return readProperty(propertyPath, propertyValue);
-    }
-
-    /**
-     * Reads a property.
-     * 
-     * 
-     * @param propertyPath
-     *            Property path as string
-     * 
-     * @param propertyValue
-     *            Property value as string
-     * 
-     * @return Property as object
-     */
-    public static XProperty readProperty(String propertyPath, String propertyValue) {
-
-        //
-        // k0.k1.k2 = value
-        //
-
-        final List<Object> propertyPathAsList = readPropertyPath(propertyPath);
-        final Object propertyValueAsObject;
-        propertyValueAsObject = readPropertyValue(propertyValue);
-        return new DefaultXProperty(propertyPathAsList, propertyValueAsObject);
     }
 
     /**
@@ -327,5 +403,68 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
                 throw new IllegalArgumentException(ERROR_METHOD_NOT_FOUND, e);
             }
         }
+    }
+
+    /**
+     * 
+     * Reads X Properties from a JsonProperty annotation instance.
+     * 
+     * 
+     * @param type
+     *            The class containing the field read from.
+     * 
+     * @param schema
+     *            Schema of the class containing the field to read from.
+     * 
+     * @param fieldName
+     *            Name of the field to read X Properties from.
+     * 
+     * @param jsonProperty
+     *            A JsonProperty annotation instance to read X Properties from.
+     * 
+     * @return A list of X Properties
+     * 
+     */
+    private static List<XProperty> readXProperties(Class<?> type, ObjectNode schema, String fieldName,
+            JsonProperty jsonProperty) {
+        final List<XProperty> listOfProperties = new ArrayList<>();
+        final boolean required = jsonProperty.required();
+        final String defaultValue = jsonProperty.defaultValue();
+        final String value = jsonProperty.value();
+        if (required) {
+            final ArrayNode requiredArray = (ArrayNode) schema.get(JSON_SCHEMA_REQUIRED);
+            if (requiredArray == null) {
+                listOfProperties.add(new DefaultXProperty(
+                        Arrays.asList(JSON_SCHEMA_REQUIRED, 0), fieldName));
+            } else {
+                final Iterator<JsonNode> it = requiredArray.elements();
+                int index = 0;
+                boolean isSet = false;
+                isSetLoop: while (it.hasNext()) {
+                    final String text = it.next().asText();
+                    if (fieldName.equals(text)) {
+                        isSet = true;
+                        break isSetLoop;
+                    }
+                    ++index;
+                }
+                if (!isSet) {
+                    listOfProperties.add(new DefaultXProperty(
+                            Arrays.asList(JSON_SCHEMA_REQUIRED, index), fieldName));
+                }
+            }
+        }
+        if (!defaultValue.isEmpty()) {
+            listOfProperties.add(new DefaultXProperty(
+                    Arrays.asList(JSON_SCHEMA_PROPERTIES, fieldName, JSON_SCHEMA_DEFAULT), defaultValue));
+        }
+        if (!value.isEmpty()) {
+            listOfProperties.add(
+                    new DefaultXProperty(Arrays.asList(JSON_SCHEMA_PROPERTIES, value),
+                            schema.get(JSON_SCHEMA_PROPERTIES).get(fieldName)));
+            listOfProperties.add(
+                    new DefaultXProperty(Arrays.asList(JSON_SCHEMA_PROPERTIES, fieldName), null));
+        }
+        return listOfProperties;
     }
 }
