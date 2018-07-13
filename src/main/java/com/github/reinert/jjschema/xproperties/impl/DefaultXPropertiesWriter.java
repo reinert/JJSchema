@@ -2,6 +2,7 @@ package com.github.reinert.jjschema.xproperties.impl;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,9 +40,32 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
     private static String ARRAY_NODE_INSERT = "insert";
 
     /**
+     * Method name for removing (ArrayNode)
+     */
+    private static String ARRAY_NODE_REMOVE = "insert";
+
+    /**
      * Method name for insertions (ObjectNode)
      */
     private static String OBJECT_NODE_PUT = "put";
+
+    /**
+     * Method name for removing (ObjectNode)
+     */
+    private static String OBJECT_NODE_REMOVE = "remove";
+
+    /**
+     * Mode: Remove null values (true) or insert null (false).
+     */
+    private final boolean removeNullValues;
+
+    public DefaultXPropertiesWriter() {
+        this.removeNullValues = false;
+    }
+
+    public DefaultXPropertiesWriter(boolean removeNullValues) {
+        this.removeNullValues = true;
+    }
 
     /**
      * Writes X Properties into schema.
@@ -55,6 +79,9 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
      */
     @Override
     public void writeXProperties(ObjectNode schema, List<XProperty> properties) {
+        schema = Objects.requireNonNull(schema);
+        properties = Objects.requireNonNull(properties);
+
         for (int i = 0; i < properties.size(); ++i) {
             final XProperty property = properties.get(i);
             try {
@@ -75,7 +102,7 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
      * @param property
      *            Data source.
      */
-    private static void setNodeValue(ObjectNode schema, XProperty property) {
+    private void setNodeValue(ObjectNode schema, XProperty property) {
         final List<Object> propertyPath = property.getPropertyPath();
         final Object propertyKey = propertyPath.get(propertyPath.size() - 1);
         final Object propertyValue = property.getPropertyValue();
@@ -116,7 +143,7 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
      * @param value
      *            Data source.
      */
-    private static void setNodeValue(JsonNode ptr, Object key, Object value) {
+    private void setNodeValue(JsonNode ptr, Object key, Object value) {
         if (value instanceof Runnable) {
 
             //
@@ -148,16 +175,21 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
             //
 
             try {
-                final Method insert;
-                if (value == null || value instanceof JsonNode) {
-                    insert = ArrayNode.class.getMethod(ARRAY_NODE_INSERT, int.class, JsonNode.class);
+                if (removeNullValues && value == null) {
+                    final Method remove = ArrayNode.class.getMethod(ARRAY_NODE_REMOVE, int.class);
+                    remove.invoke(ptr, (Integer) key);
                 } else {
-                    insert = ArrayNode.class.getMethod(ARRAY_NODE_INSERT, int.class, value.getClass());
-                }
-                if (value == null) {
-                    insert.invoke(ptr, (Integer) key, NullNode.instance);
-                } else {
-                    insert.invoke(ptr, (Integer) key, value);
+                    final Method insert;
+                    if (value == null || value instanceof JsonNode) {
+                        insert = ArrayNode.class.getMethod(ARRAY_NODE_INSERT, int.class, JsonNode.class);
+                    } else {
+                        insert = ArrayNode.class.getMethod(ARRAY_NODE_INSERT, int.class, value.getClass());
+                    }
+                    if (value == null) {
+                        insert.invoke(ptr, (Integer) key, NullNode.instance);
+                    } else {
+                        insert.invoke(ptr, (Integer) key, value);
+                    }
                 }
             } catch (ReflectiveOperationException e) {
                 throw new RuntimeException(e);
@@ -169,16 +201,21 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
             //
 
             try {
-                final Method put;
-                if (value == null || value instanceof JsonNode) {
-                    put = ObjectNode.class.getMethod(OBJECT_NODE_PUT, String.class, JsonNode.class);
+                if (removeNullValues && value == null) {
+                    final Method remove = ObjectNode.class.getMethod(OBJECT_NODE_REMOVE, String.class);
+                    remove.invoke(ptr, (String) key);
                 } else {
-                    put = ObjectNode.class.getMethod(OBJECT_NODE_PUT, String.class, value.getClass());
-                }
-                if (value == null) {
-                    put.invoke(ptr, (String) key, NullNode.instance);
-                } else {
-                    put.invoke(ptr, (String) key, value);
+                    final Method put;
+                    if (value == null || value instanceof JsonNode) {
+                        put = ObjectNode.class.getMethod(OBJECT_NODE_PUT, String.class, JsonNode.class);
+                    } else {
+                        put = ObjectNode.class.getMethod(OBJECT_NODE_PUT, String.class, value.getClass());
+                    }
+                    if (value == null) {
+                        put.invoke(ptr, (String) key, NullNode.instance);
+                    } else {
+                        put.invoke(ptr, (String) key, value);
+                    }
                 }
             } catch (ReflectiveOperationException e) {
                 throw new RuntimeException(e);
