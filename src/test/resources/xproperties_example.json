@@ -1,5 +1,6 @@
 {
   "type" : "object",
+  "title" : "Example Schema",
   "properties" : {
     "age" : {
       "type" : "integer",
@@ -14,8 +15,8 @@
       "type" : "string",
       "title" : "Enum String",
       "oneOf" : [ {
-        "enum" : [ "foo" ],
-        "description" : "Foo"
+        "description" : "Foo",
+        "enum" : [ "foo" ]
       }, {
         "enum" : [ "bar" ],
         "description" : "Bar"
@@ -41,12 +42,12 @@
       "type" : "string",
       "title" : "Example",
       "widget" : {
-        "id": null
-      }
+        "id" : null
+      },
+      "default" : "John Doe"
     }
   },
-  "required" : [ "firstName", "lastName" ],
-  "title" : "Example Schema",
+  "required" : [ "firstName", "lastName", "example" ],
   "fieldsets" : [ {
     "fields" : [ "firstName", "lastName" ]
   }, {
