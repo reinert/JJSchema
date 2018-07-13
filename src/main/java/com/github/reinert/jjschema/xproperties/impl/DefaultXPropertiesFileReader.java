@@ -6,8 +6,10 @@ import java.lang.reflect.AccessibleObject;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.xproperties.XPropertiesReader;
 import com.github.reinert.jjschema.xproperties.XProperty;
@@ -21,44 +23,62 @@ public class DefaultXPropertiesFileReader implements XPropertiesReader {
     private static final String ERROR_RESOURCE_IO_ERROR = "Could not load resource";
 
     /**
-     * 
      * Reads X Properties from a class.
      * 
      * @param type
      *            A class to read X Properties from.
      * 
-     * @return List of X Properties.
+     * @return A list of X Properties.
      */
     @Override
     public List<XProperty> readXProperties(Class<?> type) {
+        type = Objects.requireNonNull(type);
+
         final Attributes attributes = type.getAnnotation(Attributes.class);
         return readXProperties(attributes);
     }
 
     /**
-     * 
      * Reads X Properties from a field.
      * 
      * 
      * @param accessibleObj
      *            A field to read X Properties from.
      * 
-     * @return List of X Properties.
+     * @return A list of X Properties.
      */
     @Override
     public List<XProperty> readXProperties(AccessibleObject accessibleObj) {
+        accessibleObj = Objects.requireNonNull(accessibleObj);
+
         final Attributes attributes = accessibleObj.getAnnotation(Attributes.class);
         return readXProperties(attributes);
     }
 
     /**
+     * Reads X Properties from JsonProperty annotation instances.
      * 
+     * @param type
+     *            The class containing the fields to read from.
+     * 
+     * @param schema
+     *            Schema of the class containing the fields to read from.
+     * 
+     * @return A list of X Properties
+     */
+
+    @Override
+    public List<XProperty> readXProperties(Class<?> type, ObjectNode schema) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Reads X Properties from an annotation instance.
      * 
      * @param attributes
-     *            Annotation instance.
+     *            An annotation instance.
      * 
-     * @return List of X Properties.
+     * @return A list of X Properties.
      */
     public static List<XProperty> readXProperties(Attributes attributes) {
         final List<XProperty> listOfProperties = new ArrayList<>();
