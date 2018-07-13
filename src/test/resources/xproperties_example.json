@@ -15,6 +15,9 @@
     "EnumString" : {
       "type" : "string",
       "title" : "Enum String",
+      "widget" : {
+        "id" : "select"
+      },
       "oneOf" : [ {
         "description" : "Foo",
         "enum" : [ "foo" ]
