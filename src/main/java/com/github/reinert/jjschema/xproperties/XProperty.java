@@ -17,7 +17,7 @@ public interface XProperty {
      * Gets the property path.
      * 
      * 
-     * @return A List of integers and strings.
+     * @return A list of integers and strings.
      * 
      */
     List<Object> getPropertyPath();
