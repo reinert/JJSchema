@@ -1,36 +1,18 @@
-/*
- * Copyright (c) 2014, Danilo Reinert (daniloreinert@growbit.com)
- *
- * This software is dual-licensed under:
- *
- * - the Lesser General Public License (LGPL) version 3.0 or, at your option, any
- *   later version;
- * - the Apache Software License (ASL) version 2.0.
- *
- * The text of both licenses is available under the src/resources/ directory of
- * this project (under the names LGPL-3.0.txt and ASL-2.0.txt respectively).
- *
- * Direct link to the sources:
- *
- * - LGPL 3.0: https://www.gnu.org/licenses/lgpl-3.0.txt
- * - ASL 2.0: http://www.apache.org/licenses/LICENSE-2.0.txt
- */
-
 package com.github.reinert.jjschema.xproperties;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 import com.github.reinert.jjschema.v1.JsonSchemaFactory;
 import com.github.reinert.jjschema.v1.JsonSchemaV4Factory;
 
 import junit.framework.TestCase;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * @author reinert
@@ -64,54 +46,47 @@ public class XPropertiesTest extends TestCase {
         assertEquals(fromResource, fromJavaType);
     }
 
-    public static class DoubleFactory {
-        public static Double valueOf(String value) {
-            return Double.valueOf(value);
-        }
-    }
-
-    public static class RenameFactory implements XPropertyOperation {
+    public static class DoubleFactory implements XPropertyOperation {
         @Override
-        public JsonNode applyXProperty(JsonNode schema, String value) {
-            final String[] tokens = value.split("->");
-            if (tokens.length != 2) {
-                throw new IllegalArgumentException(value);
-            }
-            final String oldName = tokens[0].trim();
-            final String newName = tokens[1].trim();
-            final JsonNode node = ((ObjectNode) schema).remove(oldName);
-            ((ObjectNode) schema).set(newName, node);
-            return schema;
+        public Object applyXProperty(JsonNode schema, String value) {
+            return Double.valueOf(value);
         }
     }
 
     @Attributes(title = "Example Schema", xProperties = {
             "fieldsets.0.fields.0 = :firstName",
             "fieldsets.0.fields.1 = :lastName",
-            "fieldsets.1.fields.0 = :age",
-            "properties = com.github.reinert.jjschema.xproperties.XPropertiesTest$RenameFactory:example -> another_name"
+            "fieldsets.1.fields.0 = :age"
     })
     static class XPropertiesExample {
+
         @Attributes(title = "First Name", required = true, xProperties = {
                 "widget.id = :string",
                 "widget.aBooleanProp = true"
         })
         private String firstName;
+
         @Attributes(title = "Last Name", required = true, xProperties = {
                 "widget.id = :string",
                 "widget.anIntegerProp = 42",
         })
         private String lastName;
+
         @Attributes(title = "Age in years", minimum = 0, xProperties = {
                 "widget.id = :number",
-                "widget.aDoubleProp = com.github.reinert.jjschema.xproperties.XPropertiesTest$DoubleFactory:3.141"
+                "widget.aDoubleProp = java.lang.Double:3.141"
+                // "widget.anotherDoubleProp =
+                // com.github.reinert.jjschema.xproperties.XPropertiesTest$DoubleFactory:3.141"
         })
         private int age;
+
+        @JsonProperty(value = "another_name", required = true, defaultValue = "John Doe")
         @Attributes(title = "Example", xProperties = {
                 "widget.id = :TO_BE_REMOVED",
                 "widget.id = null"
         })
         private String example;
+
         @Attributes(title = "Enum String", xPropertiesFiles = {
                 "/xproperties_example.properties"
         })
