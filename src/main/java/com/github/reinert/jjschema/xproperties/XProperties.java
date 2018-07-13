@@ -29,7 +29,7 @@ public @interface XProperties {
 
     /**
      * 
-     * A list of X Properties Files
+     * A list of X Properties Files.
      * 
      */
     String[] files() default {};
