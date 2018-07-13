@@ -157,6 +157,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
                         }
                     }
                 }
+                ptr = ptr.getSuperclass();
             }
         }
         return listOfProperties;
