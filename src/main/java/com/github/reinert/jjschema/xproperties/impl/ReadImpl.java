@@ -3,7 +3,6 @@ package com.github.reinert.jjschema.xproperties.impl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -15,11 +14,11 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.reinert.jjschema.xproperties.XProperties;
 import com.github.reinert.jjschema.xproperties.XProperty;
-import com.github.reinert.jjschema.xproperties.XPropertyOperation;
 
 /**
  * Read Implementation
@@ -38,29 +37,11 @@ public class ReadImpl {
     // X Properties Errors
     //
     private static final String ERROR_NOT_EXACTLY_ONE_PROPERTY = "Exactly one property must be defined";
-    private static final String ERROR_PROPERTY_VALUE_HAS_NO_SEPARATOR = "Property value has no separator (:) and is not null, a boolean or an integer";
-    private static final String ERROR_CLASS_NOT_FOUND = "Custom property value factory/operation class not found:";
-    private static final String ERROR_METHOD_NOT_FOUND = "Custom property value factory/operation method not found or has error:";
 
     /**
      * Separator for path keys (Key0.Key1.Key2).
      */
     private static final String SEPARATOR_PROPERTY_PATH = "\\.";
-
-    /**
-     * Separator for type and value (type:value)
-     */
-    private static final String SEPARATOR_PROPERTY_VALUE = ":";
-
-    /**
-     * Regular expression for null values.
-     */
-    private static final String REGEX_NULL = "^null$";
-
-    /**
-     * Regular expression for booleans.
-     */
-    private static final String REGEX_BOOLEAN = "^(false|true)$";
 
     /**
      * Regular expression for integers.
@@ -81,6 +62,11 @@ public class ReadImpl {
      * JSON Schema required.
      */
     private static final String JSON_SCHEMA_DEFAULT = "default";
+
+    /**
+     * Factory for arrays and objects.
+     */
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     /**
      * Reads X Properties from an annotation instance.
@@ -349,130 +335,10 @@ public class ReadImpl {
      * @return An object supported by ArrayNode.insert/ObjectNode.put.
      */
     private static Object readPropertyValue(String propertyValue) {
-        propertyValue = propertyValue.trim();
-
-        //
-        // value without ':'
-        //
-
-        if (propertyValue.matches(REGEX_NULL)) {
-            return null;
-        }
-        if (propertyValue.matches(REGEX_BOOLEAN)) {
-            return Boolean.valueOf(propertyValue);
-        }
-        if (propertyValue.matches(REGEX_INTEGER)) {
-            return Integer.valueOf(propertyValue);
-        }
-
-        //
-        // value with ':'
-        //
-
-        final int index = propertyValue.indexOf(SEPARATOR_PROPERTY_VALUE);
-        if (index < 0) {
-            throw new IllegalArgumentException(ERROR_PROPERTY_VALUE_HAS_NO_SEPARATOR);
-        }
-        final String type = propertyValue.substring(0, index).trim();
-        final String value = propertyValue.substring(index + 1).trim();
-
-        //
-        // Short Names for java.lang.*
-        //
-
-        switch (type) {
-        case "Boolean":
-        case "b":
-            return callStaticFactoryMethod("java.lang.Boolean", value);
-        case "Double":
-        case "d":
-            return callStaticFactoryMethod("java.lang.Double", value);
-        case "Float":
-        case "f":
-            return callStaticFactoryMethod("java.lang.Float", value);
-        case "Integer":
-        case "i":
-            return callStaticFactoryMethod("java.lang.Integer", value);
-        case "Long":
-        case "l":
-            return callStaticFactoryMethod("java.lang.Long", value);
-        case "String":
-        case "s":
-            return value;
-        }
-        return callStaticFactoryMethod(type, value);
-    }
-
-    /**
-     * Calls applyXProperty or valueOf.
-     * 
-     * @param type
-     *            Name of the class to invoke applyXProperty or valueOf.
-     *
-     * @param value
-     *            Value to pass to applyXProperty or valueOf.
-     *
-     * @return An object supported by ArrayNode.insert/ObjectNode.put.
-     */
-    private static Object callStaticFactoryMethod(String type, String value) {
-        final Class<?> typeClass;
         try {
-            typeClass = Class.forName(type);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalArgumentException(ERROR_CLASS_NOT_FOUND + " " + type, e);
-        }
-
-        //
-        // Try to call the custom static factory method:
-        //
-        // Object applyXProperty(JsonNode schema, String value)
-        //
-
-        {
-            try {
-                final Method applyXProperty = typeClass.getMethod(
-                        XPropertyOperation.APPlY_X_PROPERTY_NAME,
-                        XPropertyOperation.APPLY_X_PROPERTY_ARGS);
-                final Object typeInstance = typeClass.getConstructor().newInstance();
-                final Runnable runnable = new Runnable() {
-                    public JsonNode input = null;
-                    @SuppressWarnings("unused")
-                    public Object output = null;
-
-                    @Override
-                    public void run() {
-                        try {
-                            final Object valueObject = applyXProperty.invoke(typeInstance, input, value);
-                            this.output = valueObject;
-                        } catch (ReflectiveOperationException e) {
-                            throw new IllegalArgumentException(
-                                    ERROR_METHOD_NOT_FOUND + " " + XPropertyOperation.APPlY_X_PROPERTY_NAME, e);
-                        }
-                    }
-                };
-                return runnable;
-            } catch (ReflectiveOperationException e) {
-                // Use default valueOf below...
-            }
-        }
-
-        //
-        // Call the default static factory method:
-        //
-        // Object valueOf (String value)
-        //
-
-        {
-            try {
-
-                final Method valueOf = typeClass.getMethod(
-                        XPropertyOperation.STATIC_FALL_BACK_NAME,
-                        XPropertyOperation.STATIC_FALL_BACK_ARGS);
-                final Object valueObject = valueOf.invoke(null, value);
-                return valueObject;
-            } catch (ReflectiveOperationException e) {
-                throw new IllegalArgumentException(ERROR_METHOD_NOT_FOUND, e);
-            }
+            return MAPPER.reader().readTree(propertyValue);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 }
