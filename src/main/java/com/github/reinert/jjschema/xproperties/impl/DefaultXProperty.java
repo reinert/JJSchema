@@ -12,7 +12,7 @@ import com.github.reinert.jjschema.xproperties.XProperty;
  * @author WhileTrueEndWhile
  */
 public class DefaultXProperty implements XProperty {
-    
+
     //
     // Errors
     //
