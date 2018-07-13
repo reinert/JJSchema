@@ -16,6 +16,9 @@ import junit.framework.TestCase;
 
 /**
  * X Properties Test
+ * 
+ * @author reinert
+ * @author WhileTrueEndWhile
  */
 public class XPropertiesTest extends TestCase {
 
@@ -69,9 +72,7 @@ public class XPropertiesTest extends TestCase {
 
         @JsonProperty(value = "EnumString", required = true, defaultValue = "foo")
         @Attributes(title = "Enum String")
-        @XProperties(files = {
-                "/xproperties_example.properties"
-        })
+        @XProperties(files = { "/xproperties_example.properties" })
         private String enumString;
 
         public String getFirstName() {
