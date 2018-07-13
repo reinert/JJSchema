@@ -23,6 +23,7 @@ import static com.github.reinert.jjschema.JJSchemaUtil.processCommonAttributes;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -250,9 +251,11 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 
     protected void processXProperties(ObjectNode node, Class<?> type) {
         final XPropertiesReader reader = new DefaultXPropertiesReader();
-        final XPropertiesWriter writer = new DefaultXPropertiesWriter();
+        final XPropertiesWriter writer = new DefaultXPropertiesWriter(true);
         try {
-            final List<XProperty> xProperties = reader.readXProperties(type);
+            final List<XProperty> xProperties = new ArrayList<>();
+            xProperties.addAll(reader.readXProperties(type));
+            xProperties.addAll(reader.readXProperties(type, node));
             writer.writeXProperties(node, xProperties);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(type.getTypeName(), e);
