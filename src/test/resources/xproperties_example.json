@@ -8,7 +8,8 @@
       "minimum" : 0,
       "widget" : {
         "id" : "number",
-        "aDoubleProp" : 3.141
+        "aDoubleProp" : 3.141,
+        "anotherDoubleProp" : 3.141
       }
     },
     "enumString" : {
