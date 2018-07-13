@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.reinert.jjschema.Attributes;
+import com.github.reinert.jjschema.xproperties.XProperties;
 import com.github.reinert.jjschema.xproperties.XPropertiesReader;
 import com.github.reinert.jjschema.xproperties.XProperty;
 import com.github.reinert.jjschema.xproperties.XPropertyOperation;
@@ -97,7 +97,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     public List<XProperty> readXProperties(Class<?> type) {
         type = Objects.requireNonNull(type);
 
-        final Attributes attributes = type.getAnnotation(Attributes.class);
+        final XProperties attributes = type.getAnnotation(XProperties.class);
         return readXProperties(attributes);
     }
 
@@ -114,7 +114,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     public List<XProperty> readXProperties(AccessibleObject accessibleObj) {
         accessibleObj = Objects.requireNonNull(accessibleObj);
 
-        final Attributes attributes = accessibleObj.getAnnotation(Attributes.class);
+        final XProperties attributes = accessibleObj.getAnnotation(XProperties.class);
         return readXProperties(attributes);
     }
 
@@ -216,15 +216,15 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * 
      * @return A list of X Properties.
      */
-    private static List<XProperty> readXProperties(Attributes attributes) {
+    private static List<XProperty> readXProperties(XProperties attributes) {
         final List<XProperty> listOfProperties = new ArrayList<>();
         listOfProperties.addAll(DefaultXPropertiesFileReader.readXProperties(attributes));
 
-        if (attributes == null || attributes.xProperties() == null) {
+        if (attributes == null || attributes.value() == null) {
             return listOfProperties;
         }
 
-        final String[] xProperties = attributes.xProperties();
+        final String[] xProperties = attributes.value();
         for (int i = 0; i < xProperties.length; ++i) {
             final String xProperty = xProperties[i];
             final XProperty property;
