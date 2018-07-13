@@ -33,6 +33,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     private static final String ERROR_PROPERTY_VALUE_HAS_NO_SEPARATOR = "Property value has no separator (:) and is not null, a boolean or an integer";
     private static final String ERROR_CLASS_NOT_FOUND = "Custom property value factory/operation class not found";
     private static final String ERROR_METHOD_NOT_FOUND = "Custom property value factory/operation method not found or has error";
+    private static final String ERROR_FIELD_NOT_FOUND = "Could not find field for JSON schema property named";
 
     /**
      * Separator for properties (Key=Value).
@@ -78,6 +79,11 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * JSON Schema required.
      */
     private static final String JSON_SCHEMA_DEFAULT = "default";
+
+    /**
+     * JSON Schema $ref.
+     */
+    private static final String JSON_SCHEMA_REF = "$ef";
 
     /**
      * Reads X Properties from a class.
@@ -137,28 +143,40 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         final Iterator<String> fieldNames = properties.fieldNames();
         while (fieldNames.hasNext()) {
             final String fieldName = fieldNames.next();
-            try {
-                final Field field = type.getDeclaredField(fieldName);
-                final JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
-                if (jsonProperty != null) {
-                    listOfProperties.addAll(readXProperties(type, schema, fieldName, jsonProperty));
-                }
-            } catch (NoSuchFieldException e) {
-                // e.printStackTrace();
-                final String methodName;
-                if (fieldName.isEmpty() || fieldName.equals("get")) {
-                    methodName = fieldName;
-                } else {
-                    methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-                }
+            final ObjectNode fieldSchema = (ObjectNode) properties.get(fieldName);
+            if (fieldSchema.get(JSON_SCHEMA_REF) != null) {
+                continue;
+            }
+            Class<?> ptr = type;
+            superClassLoop: while (ptr != null) {
                 try {
-                    final Method method = type.getDeclaredMethod(methodName);
-                    final JsonProperty jsonProperty = method.getAnnotation(JsonProperty.class);
+                    final Field field = ptr.getDeclaredField(fieldName);
+                    final JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
                     if (jsonProperty != null) {
-                        listOfProperties.addAll(readXProperties(type, schema, fieldName, jsonProperty));
+                        listOfProperties.addAll(readXProperties(ptr, schema, fieldName, jsonProperty));
                     }
-                } catch (NoSuchMethodException ex) {
-                    // ex.printStackTrace();
+                    break superClassLoop;
+                } catch (NoSuchFieldException e) {
+                    // e.printStackTrace();
+                    final String methodName;
+                    if (fieldName.isEmpty() || fieldName.equals("get")) {
+                        methodName = fieldName;
+                    } else {
+                        methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+                    }
+                    try {
+                        final Method method = ptr.getDeclaredMethod(methodName);
+                        final JsonProperty jsonProperty = method.getAnnotation(JsonProperty.class);
+                        if (jsonProperty != null) {
+                            listOfProperties.addAll(readXProperties(ptr, schema, fieldName, jsonProperty));
+                        }
+                        break superClassLoop;
+                    } catch (NoSuchMethodException ignored) {
+                        // ignored.printStackTrace();
+                        if (type.getSuperclass() == null) {
+                            throw new IllegalArgumentException(ERROR_FIELD_NOT_FOUND + " " + fieldName, e);
+                        }
+                    }
                 }
             }
         }
