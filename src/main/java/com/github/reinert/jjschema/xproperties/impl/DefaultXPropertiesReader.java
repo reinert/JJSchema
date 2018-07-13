@@ -152,7 +152,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
                         // of the field!
                         //
 
-                        if (type.getSuperclass() == null) {
+                        if (ptr.getSuperclass() == null) {
                             throw new IllegalArgumentException(ERROR_FIELD_NOT_FOUND + " " + fieldName, e);
                         }
                     }
