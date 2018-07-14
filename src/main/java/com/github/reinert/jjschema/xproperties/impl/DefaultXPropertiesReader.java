@@ -40,7 +40,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * Reads X Properties from a class.
      * 
      * @param type
-     *            A class to read X Properties from.
+     *             A class to read X Properties from.
      * 
      * @return A list of X Properties.
      */
@@ -57,7 +57,7 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * 
      * 
      * @param accessibleObj
-     *            A field to read X Properties from.
+     *                      A field to read X Properties from.
      * 
      * @return A list of X Properties.
      */
@@ -73,10 +73,10 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
      * Reads X Properties from JsonProperty annotation instances.
      * 
      * @param type
-     *            The class containing the fields to read from.
+     *               The class containing the fields to read from.
      * 
      * @param schema
-     *            Schema of the class containing the fields to read from.
+     *               Schema of the class containing the fields to read from.
      * 
      * @return A list of X Properties
      */
