@@ -32,11 +32,6 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
     private static final String JSON_SCHEMA_PROPERTIES = "properties";
 
     /**
-     * JSON Schema $ref.
-     */
-    private static final String JSON_SCHEMA_REF = "$ef";
-
-    /**
      * Reads X Properties from a class.
      * 
      * @param type
@@ -99,10 +94,6 @@ public class DefaultXPropertiesReader implements XPropertiesReader {
         final Iterator<String> fieldNames = properties.fieldNames();
         while (fieldNames.hasNext()) {
             final String fieldName = fieldNames.next();
-            final ObjectNode fieldSchema = (ObjectNode) properties.get(fieldName);
-            if (fieldSchema.get(JSON_SCHEMA_REF) != null) {
-                continue;
-            }
             Class<?> ptr = type;
 
             //
