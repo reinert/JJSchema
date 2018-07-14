@@ -72,7 +72,7 @@ public class ReadImpl {
      * Reads X Properties from an annotation instance.
      * 
      * @param attributes
-     *            An annotation instance.
+     *                   An annotation instance.
      * 
      * @return A list of X Properties.
      */
@@ -112,16 +112,17 @@ public class ReadImpl {
      * 
      * 
      * @param type
-     *            The class containing the field read from.
+     *                     The class containing the field read from.
      * 
      * @param schema
-     *            Schema of the class containing the field to read from.
+     *                     Schema of the class containing the field to read from.
      * 
      * @param fieldName
-     *            Name of the field to read X Properties from.
+     *                     Name of the field to read X Properties from.
      * 
      * @param jsonProperty
-     *            A JsonProperty annotation instance to read X Properties from.
+     *                     A JsonProperty annotation instance to read X Properties
+     *                     from.
      * 
      * @return A list of X Properties
      * 
@@ -190,7 +191,7 @@ public class ReadImpl {
      * Reads X Properties from an annotation instance.
      * 
      * @param attributes
-     *            An annotation instance.
+     *                   An annotation instance.
      * 
      * @return A list of X Properties.
      */
@@ -228,7 +229,7 @@ public class ReadImpl {
      * 
      * 
      * @param property
-     *            Property as string
+     *                 Property as string
      * 
      * @return Property as object
      */
@@ -259,10 +260,10 @@ public class ReadImpl {
      * 
      * 
      * @param propertyPath
-     *            Property path as string.
+     *                      Property path as string.
      * 
      * @param propertyValue
-     *            Property value as string.
+     *                      Property value as string.
      * 
      * @return Property as object.
      */
@@ -284,7 +285,7 @@ public class ReadImpl {
      * 
      * 
      * @param propertyPath
-     *            Property path as string.
+     *                     Property path as string.
      * 
      * @return Property path as list of objects.
      */
@@ -303,7 +304,7 @@ public class ReadImpl {
      * 
      * 
      * @param propertyPathKey
-     *            Property path key as string.
+     *                        Property path key as string.
      * 
      * @return Property path key as object (integer or string).
      */
@@ -330,7 +331,7 @@ public class ReadImpl {
      * 
      * 
      * @param propertyValue
-     *            Property value as string.
+     *                      Property value as string.
      * 
      * @return An object supported by ArrayNode.insert/ObjectNode.put.
      */
