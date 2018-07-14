@@ -32,10 +32,10 @@ public class DefaultXPropertiesWriter implements XPropertiesWriter {
      * 
      * 
      * @param schema
-     *            Destination schema.
+     *                   Destination schema.
      * 
      * @param properties
-     *            List of X Properties.
+     *                   List of X Properties.
      */
     @Override
     public void writeXProperties(ObjectNode schema, List<XProperty> properties) {
