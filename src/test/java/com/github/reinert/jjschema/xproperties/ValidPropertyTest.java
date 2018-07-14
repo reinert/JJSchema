@@ -93,6 +93,13 @@ public class ValidPropertyTest extends TestCase {
         assertEquals(fromResource, fromJavaType);
     }
 
+    public void testArrayOfArrays() throws Throwable {
+        JsonNode fromResource = MAPPER.readTree("{\"a\":[[11,12],[21,22]]}");
+        JsonNode fromJavaType = schemaFactory.createSchema(ArrayOfArraysExample.class);
+        System.out.println(MAPPER.writeValueAsString(fromJavaType));
+        assertEquals(fromResource, fromJavaType);
+    }
+
     // -----------------------------------------------------------------------
 
     @XProperties({ "type = null" })
@@ -187,5 +194,15 @@ public class ValidPropertyTest extends TestCase {
         public void setWrongProperty(String wrongProperty) {
             this.wrongProperty = wrongProperty;
         }
+    }
+
+    @XProperties({
+            "type = null",
+            "a.0.0 = 11",
+            "a.0.1 = 12",
+            "a.1.0 = 21",
+            "a.1.1 = 22"
+    })
+    public static class ArrayOfArraysExample {
     }
 }
