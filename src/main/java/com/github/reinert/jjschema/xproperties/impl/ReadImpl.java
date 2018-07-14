@@ -6,14 +6,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -141,23 +139,37 @@ public class ReadImpl {
         if (required) {
             final ArrayNode requiredArray = (ArrayNode) schema.get(JSON_SCHEMA_REQUIRED);
             if (requiredArray == null) {
-                listOfProperties.add(new DefaultXProperty(
-                        Arrays.asList(JSON_SCHEMA_REQUIRED, 0), fieldName));
-            } else {
-                final Iterator<JsonNode> it = requiredArray.elements();
-                int index = 0;
-                boolean isSet = false;
-                isSetLoop: while (it.hasNext()) {
-                    final String text = it.next().asText();
-                    if (fieldName.equals(text)) {
-                        isSet = true;
-                        break isSetLoop;
-                    }
-                    ++index;
-                }
-                if (!isSet) {
+
+                //
+                // Insert first entry...
+                //
+
+                if (!value.isEmpty()) {
                     listOfProperties.add(new DefaultXProperty(
-                            Arrays.asList(JSON_SCHEMA_REQUIRED, index), fieldName));
+                            Arrays.asList(JSON_SCHEMA_REQUIRED, -1), value));
+                } else {
+                    listOfProperties.add(new DefaultXProperty(
+                            Arrays.asList(JSON_SCHEMA_REQUIRED, -1), fieldName));
+                }
+            } else {
+
+                //
+                // Check if required entry already exists...
+                //
+
+                final List<String> requiredList = new ArrayList<>();
+                for (int i = 0; i < requiredArray.size(); ++i) {
+                    requiredList.add(requiredArray.get(i).asText());
+                }
+                final int index = requiredList.indexOf(fieldName);
+                if (index < 0) {
+                    if (!value.isEmpty()) {
+                        listOfProperties.add(new DefaultXProperty(
+                                Arrays.asList(JSON_SCHEMA_REQUIRED, -1), value));
+                    } else {
+                        listOfProperties.add(new DefaultXProperty(
+                                Arrays.asList(JSON_SCHEMA_REQUIRED, -1), fieldName));
+                    }
                 }
             }
         }
