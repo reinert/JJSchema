@@ -138,39 +138,36 @@ public class ReadImpl {
 
         if (required) {
             final ArrayNode requiredArray = (ArrayNode) schema.get(JSON_SCHEMA_REQUIRED);
-            if (requiredArray == null) {
+            final List<String> requiredList = new ArrayList<>();
 
-                //
-                // Insert first entry...
-                //
+            if (requiredArray != null) {
+                for (int i = 0; i < requiredArray.size(); ++i) {
+                    requiredList.add(requiredArray.get(i).asText());
+                }
+            }
 
-                if (!value.isEmpty()) {
+            //
+            // Check if required entry already exists...
+            //
+
+            final int index = requiredList.indexOf(fieldName);
+            if (value.isEmpty()) {
+                if (index < 0) {
+                    listOfProperties.add(new DefaultXProperty(
+                            Arrays.asList(JSON_SCHEMA_REQUIRED, -1), fieldName));
+                } else {
+                    listOfProperties.add(new DefaultXProperty(
+                            Arrays.asList(JSON_SCHEMA_REQUIRED, index), fieldName));
+                }
+            } else {
+                if (index < 0) {
                     listOfProperties.add(new DefaultXProperty(
                             Arrays.asList(JSON_SCHEMA_REQUIRED, -1), value));
                 } else {
                     listOfProperties.add(new DefaultXProperty(
-                            Arrays.asList(JSON_SCHEMA_REQUIRED, -1), fieldName));
+                            Arrays.asList(JSON_SCHEMA_REQUIRED, index), value));
                 }
-            } else {
 
-                //
-                // Check if required entry already exists...
-                //
-
-                final List<String> requiredList = new ArrayList<>();
-                for (int i = 0; i < requiredArray.size(); ++i) {
-                    requiredList.add(requiredArray.get(i).asText());
-                }
-                final int index = requiredList.indexOf(fieldName);
-                if (index < 0) {
-                    if (!value.isEmpty()) {
-                        listOfProperties.add(new DefaultXProperty(
-                                Arrays.asList(JSON_SCHEMA_REQUIRED, -1), value));
-                    } else {
-                        listOfProperties.add(new DefaultXProperty(
-                                Arrays.asList(JSON_SCHEMA_REQUIRED, -1), fieldName));
-                    }
-                }
             }
         }
 
