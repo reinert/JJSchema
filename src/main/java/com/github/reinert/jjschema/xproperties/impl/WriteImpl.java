@@ -1,6 +1,7 @@
 package com.github.reinert.jjschema.xproperties.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,34 +24,14 @@ public class WriteImpl {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     /**
-     * Field name of the runnable input.
+     * Method name for reflective insertions (ArrayNode).
      */
-    private static String RUNNABLE_INPUT = "input";
+    private static String ARRAY_ADD = "add";
 
     /**
-     * Field name of the runnable output
+     * Method name for reflective insertions (ObjectNode).
      */
-    private static String RUNNABLE_OUTPUT = "output";
-
-    /**
-     * Method name for insertions (ArrayNode)
-     */
-    private static String ARRAY_NODE_INSERT = "insert";
-
-    /**
-     * Method name for removing (ArrayNode)
-     */
-    private static String ARRAY_NODE_REMOVE = "insert";
-
-    /**
-     * Method name for insertions (ObjectNode)
-     */
-    private static String OBJECT_NODE_PUT = "put";
-
-    /**
-     * Method name for removing (ObjectNode)
-     */
-    private static String OBJECT_NODE_REMOVE = "remove";
+    private static String OBJECT_PUT = "put";
 
     /**
      * Sets one node value.
@@ -86,6 +67,11 @@ public class WriteImpl {
                 innerPtr = ((ObjectNode) outerPtr).get((String) outerKey);
             }
             if (innerPtr == null) {
+
+                //
+                // Create array and objects, if necessary...
+                //
+
                 prepareNodeStructure(outerPtr, outerKey, innerPtr, innerKey);
                 if (outerKey instanceof Integer) {
                     innerPtr = ((ArrayNode) outerPtr).get((Integer) outerKey);
@@ -95,6 +81,11 @@ public class WriteImpl {
             }
             outerPtr = innerPtr;
         }
+
+        //
+        // Apply value to last outer pointer...
+        //
+
         setNodeValue(outerPtr, propertyKey, propertyValue, removeNullValues);
     }
 
@@ -113,55 +104,79 @@ public class WriteImpl {
      *              Data source.
      */
     private static void setNodeValue(JsonNode ptr, Object key, Object value, boolean removeNullValues) {
-        if (value instanceof Runnable) {
-
-            //
-            // Call applyXProperty(ptr, value)
-            //
-
-            try {
-                if (key instanceof Integer) {
-                    value.getClass().getField(RUNNABLE_INPUT).set(value, ptr.get((Integer) key));
-                } else {
-                    value.getClass().getField(RUNNABLE_INPUT).set(value, ptr.get((String) key));
-                }
-            } catch (ReflectiveOperationException e) {
-                throw new IllegalArgumentException();
-            }
-            ((Runnable) value).run();
-            final Object output;
-            try {
-                output = value.getClass().getField(RUNNABLE_OUTPUT).get(value);
-            } catch (ReflectiveOperationException e) {
-                throw new IllegalArgumentException();
-            }
-            value = output;
-        }
         if (key instanceof Integer) {
-
             //
             // Array
             //
 
-            try {
-                if (removeNullValues && value == null) {
-                    final Method remove = ArrayNode.class.getMethod(ARRAY_NODE_REMOVE, int.class);
-                    remove.invoke(ptr, (Integer) key);
-                } else {
-                    final Method insert;
-                    if (value == null || value instanceof JsonNode) {
-                        insert = ArrayNode.class.getMethod(ARRAY_NODE_INSERT, int.class, JsonNode.class);
+            if (((Integer) key) < 0) {
+                key = ((ArrayNode) ptr).size() - ((Integer) key) - 1;
+            }
+
+            if (removeNullValues && (value == null || value instanceof NullNode)) {
+                ((ArrayNode) ptr).remove((Integer) key);
+            } else {
+                final List<Object> array = new ArrayList<>();
+
+                //
+                // 0 ... length(ptr)
+                //
+
+                for (int i = 0; i < ((ArrayNode) ptr).size(); ++i) {
+                    if (i == ((Integer) key)) {
+                        array.add(value);
                     } else {
-                        insert = ArrayNode.class.getMethod(ARRAY_NODE_INSERT, int.class, value.getClass());
-                    }
-                    if (value == null) {
-                        insert.invoke(ptr, (Integer) key, NullNode.instance);
-                    } else {
-                        insert.invoke(ptr, (Integer) key, value);
+                        array.add(ptr.get(i));
                     }
                 }
-            } catch (ReflectiveOperationException e) {
-                throw new RuntimeException(e);
+
+                if ((Integer) key >= ((ArrayNode) ptr).size()) {
+                    //
+                    // length(ptr) ... key
+                    //
+
+                    for (int i = ((ArrayNode) ptr).size(); i <= (Integer) key; ++i) {
+                        if (i == ((Integer) key)) {
+                            array.add(value);
+                        } else {
+                            array.add(null);
+                        }
+                    }
+                }
+
+                //
+                // ptr := {}
+                //
+
+                for (int i = ((ArrayNode) ptr).size() - 1; i >= 0; --i) {
+                    ((ArrayNode) ptr).remove(i);
+                }
+
+                //
+                // ptr[i] := array[i]
+                //
+
+                for (int i = 0; i < array.size(); ++i) {
+                    final Object v = array.get(i);
+                    if (v == null) {
+                        ((ArrayNode) ptr).add(NullNode.instance);
+                    } else if (v instanceof JsonNode) {
+                        ((ArrayNode) ptr).add((JsonNode) v);
+                    } else {
+                        try {
+
+                            //
+                            // Select overloaded method...
+                            //
+
+                            final Class<?> type = v.getClass();
+                            final Method add = ArrayNode.class.getMethod(ARRAY_ADD, type);
+                            add.invoke(ptr, v);
+                        } catch (ReflectiveOperationException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
             }
         } else {
 
@@ -169,25 +184,27 @@ public class WriteImpl {
             // Object
             //
 
-            try {
-                if (removeNullValues && value == null) {
-                    final Method remove = ObjectNode.class.getMethod(OBJECT_NODE_REMOVE, String.class);
-                    remove.invoke(ptr, (String) key);
+            if (removeNullValues && (value == null || value instanceof NullNode)) {
+                ((ObjectNode) ptr).remove((String) key);
+            } else {
+                if (value == null) {
+                    ((ObjectNode) ptr).set((String) key, NullNode.instance);
+                } else if (value instanceof JsonNode) {
+                    ((ObjectNode) ptr).set((String) key, (JsonNode) value);
                 } else {
-                    final Method put;
-                    if (value == null || value instanceof JsonNode) {
-                        put = ObjectNode.class.getMethod(OBJECT_NODE_PUT, String.class, JsonNode.class);
-                    } else {
-                        put = ObjectNode.class.getMethod(OBJECT_NODE_PUT, String.class, value.getClass());
-                    }
-                    if (value == null) {
-                        put.invoke(ptr, (String) key, NullNode.instance);
-                    } else {
+                    try {
+
+                        //
+                        // Select overloaded method...
+                        //
+
+                        final Class<?> type = value.getClass();
+                        final Method put = ObjectNode.class.getMethod(OBJECT_PUT, String.class, type);
                         put.invoke(ptr, (String) key, value);
+                    } catch (ReflectiveOperationException e) {
+                        throw new RuntimeException(e);
                     }
                 }
-            } catch (ReflectiveOperationException e) {
-                throw new RuntimeException(e);
             }
         }
     }
