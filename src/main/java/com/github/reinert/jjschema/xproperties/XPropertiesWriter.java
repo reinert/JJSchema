@@ -20,10 +20,10 @@ public interface XPropertiesWriter {
      * 
      * 
      * @param schema
-     *            Destination schema.
+     *                   Destination schema.
      * 
      * @param properties
-     *            A list of X Properties.
+     *                   A list of X Properties.
      * 
      */
     void writeXProperties(ObjectNode schema, List<XProperty> properties);
