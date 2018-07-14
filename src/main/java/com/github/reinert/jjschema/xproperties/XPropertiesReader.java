@@ -21,7 +21,7 @@ public interface XPropertiesReader {
      * 
      * 
      * @param type
-     *            A class to read X Properties from.
+     *             A class to read X Properties from.
      * 
      * @return A list of X Properties.
      * 
@@ -34,7 +34,7 @@ public interface XPropertiesReader {
      * 
      * 
      * @param accessibleObj
-     *            A field to read X Properties from.
+     *                      A field to read X Properties from.
      * 
      * @return A list of X Properties.
      * 
@@ -47,10 +47,10 @@ public interface XPropertiesReader {
      * 
      * 
      * @param type
-     *            The class containing the fields to read from.
+     *               The class containing the fields to read from.
      * 
      * @param schema
-     *            Schema of the class containing the fields to read from.
+     *               Schema of the class containing the fields to read from.
      * 
      * @return A list of X Properties
      * 
