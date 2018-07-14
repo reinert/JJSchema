@@ -46,14 +46,14 @@ public class XPropertiesTest extends TestCase {
     @Attributes(title = "X Properties Example Schema")
     @XProperties({
             "fieldsets.0.title = \"One\"",
-            "fieldsets.0.fields.0 = \"FirstName\"",
+            "fieldsets.0.fields.0 = \"firstName\"",
             "fieldsets.0.fields.1 = \"LastName\"",
             "fieldsets.1.title = \"Two\"",
             "fieldsets.1.fields.0 =  \"Age\"",
-            "fieldsets.1.fields.1 =  \"EnumString\""
+            "fieldsets.1.fields.1 =  \"enumString\""
     })
     static class XPropertiesExample {
-        @JsonProperty(value = "FirstName", required = true, defaultValue = "John")
+        @JsonProperty(required = true, defaultValue = "John")
         @Attributes(title = "First Name")
         @XProperties({ "widget.id = \"string\"" })
         private String firstName;
@@ -64,12 +64,12 @@ public class XPropertiesTest extends TestCase {
         private String lastName;
 
         @JsonProperty(value = "Age", required = true, defaultValue = "1")
-        @Attributes(title = "Age in years", minimum = 0)
+        @Attributes(title = "Age in years", required = true, minimum = 0)
         @XProperties({ "widget.id = \"number\"", "maximum = 100" })
         private int age;
 
-        @JsonProperty(value = "EnumString", required = true, defaultValue = "foo")
-        @Attributes(title = "Enum String")
+        @JsonProperty(required = true, defaultValue = "foo")
+        @Attributes(title = "Enum String", required = true)
         @XProperties(files = { "/xproperties_example.properties" })
         private String enumString;
 
