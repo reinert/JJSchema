@@ -78,6 +78,21 @@ public class ValidPropertyTest extends TestCase {
         assertEquals(fromResource, fromJavaType);
     }
 
+    public void testMethod() throws Throwable {
+        JsonNode fromResource = MAPPER.readTree(
+                "{\"type\":\"object\",\"properties\":{\"text\":{\"type\":\"string\",\"widget\":\"string\"}}}");
+        JsonNode fromJavaType = schemaFactory.createSchema(MethodExample.class);
+        System.out.println(MAPPER.writeValueAsString(fromJavaType));
+        assertEquals(fromResource, fromJavaType);
+    }
+
+    public void testClassOverridesField() throws Throwable {
+        JsonNode fromResource = MAPPER.readTree("{}");
+        JsonNode fromJavaType = schemaFactory.createSchema(ClassOverridesFieldExample.class);
+        System.out.println(MAPPER.writeValueAsString(fromJavaType));
+        assertEquals(fromResource, fromJavaType);
+    }
+
     // -----------------------------------------------------------------------
 
     @XProperties({ "type = null" })
@@ -150,5 +165,27 @@ public class ValidPropertyTest extends TestCase {
             "o = { \"foo\": 11, \"bar\": 22 }"
     })
     public static class ObjectInValueExample {
+    }
+
+    public static interface MethodExample {
+        @XProperties({ "widget = \"string\"" })
+        public String getText();
+    }
+
+    @XProperties({
+            "type = null",
+            "properties = null"
+    })
+    public static class ClassOverridesFieldExample {
+        @XProperties({ "k=true" })
+        private String wrongProperty;
+
+        public String getWrongProperty() {
+            return wrongProperty;
+        }
+
+        public void setWrongProperty(String wrongProperty) {
+            this.wrongProperty = wrongProperty;
+        }
     }
 }
