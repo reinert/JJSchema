@@ -44,7 +44,7 @@ public class ReadImpl {
     /**
      * Regular expression for integers.
      */
-    private static final String REGEX_INTEGER = "^[0-9]+$";
+    private static final String REGEX_INTEGER = "^-?[0-9]+$";
 
     /**
      * JSON Schema properties.
@@ -215,10 +215,20 @@ public class ReadImpl {
         final String[] xPropertiesFiles = attributes.files();
         for (int i = 0; i < xPropertiesFiles.length; ++i) {
             final String xPropertiesFileName = xPropertiesFiles[i];
+
+            //
+            // Load file via System
+            //
+
             final InputStream xPropertiesFile = System.class.getResourceAsStream(xPropertiesFileName);
             if (xPropertiesFile == null) {
                 throw new IllegalArgumentException(ERROR_RESOURCE_NOT_FOUND + ": " + xPropertiesFileName);
             }
+
+            //
+            // Read via Properties
+            //
+
             final Properties properties = new Properties();
             try {
                 properties.load(xPropertiesFile);
@@ -247,6 +257,11 @@ public class ReadImpl {
      */
     private static XProperty readProperty(String property) {
         final InputStream xPropertiesStream = new ByteArrayInputStream(property.getBytes());
+
+        //
+        // Read pairs via Properties
+        //
+
         final Properties properties = new Properties();
         try {
             properties.load(xPropertiesStream);
@@ -261,6 +276,11 @@ public class ReadImpl {
             final XProperty xProperty = readProperty(propertyPath, propertyValue);
             listOfProperties.add(xProperty);
         }
+
+        //
+        // Exactly one pair is to be read
+        //
+
         if (listOfProperties.size() != 1) {
             throw new IllegalArgumentException(ERROR_NOT_EXACTLY_ONE_PROPERTY);
         }
