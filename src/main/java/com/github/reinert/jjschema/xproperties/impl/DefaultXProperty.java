@@ -17,6 +17,7 @@ public class DefaultXProperty implements XProperty {
     // Errors
     //
     private static final String ERROR_PROPERTY_PATH_EMPTY = "Property path is empty";
+    private static final String ERROR_PROPERTY_PATH_FIRST_KEY_NOT_STRING = "First key of the property path is not a string";
     private static final String ERROR_PROPERTY_PATH_FIRST_KEY_EMPTY = "First key of property path is empty";
     private static final String ERROR_PROPERTY_PATH_KEY_TYPE = "At least one key of the property path is not an integer or a string";
 
@@ -35,16 +36,19 @@ public class DefaultXProperty implements XProperty {
      * 
      * 
      * @param propertyPath
-     *            Property path as list of objects.
+     *                      Property path as list of objects.
      * 
      * @param propertyValue
-     *            Property value as object (integer or string).
+     *                      Property value as object (integer or string).
      */
     public DefaultXProperty(List<Object> propertyPath, Object propertyValue) {
         if (propertyPath.size() < 1) {
             throw new IllegalArgumentException(ERROR_PROPERTY_PATH_EMPTY);
         }
         if (!(propertyPath.get(0) instanceof String)) {
+            throw new IllegalArgumentException(ERROR_PROPERTY_PATH_FIRST_KEY_NOT_STRING);
+        }
+        if (((String) propertyPath.get(0)).isEmpty()) {
             throw new IllegalArgumentException(ERROR_PROPERTY_PATH_FIRST_KEY_EMPTY);
         }
         propertyPath.forEach(propertyPathKey -> validatePropertyPathKey(propertyPathKey));
@@ -80,7 +84,7 @@ public class DefaultXProperty implements XProperty {
      * 
      * 
      * @param propertyPathKey
-     *            Property path key to validate.
+     *                        Property path key to validate.
      */
     private static void validatePropertyPathKey(Object propertyPathKey) {
         final boolean isInteger = propertyPathKey instanceof Integer;
