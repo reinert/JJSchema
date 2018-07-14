@@ -18,6 +18,11 @@ import com.github.reinert.jjschema.xproperties.XProperty;
  */
 public class WriteImpl {
 
+    //
+    // Errors
+    //
+    public static final String ERROR_INDEX_OUT_OF_BOUNDS = "At least one array index is negative (after normalization)";
+
     /**
      * Factory for arrays and objects.
      */
@@ -43,6 +48,11 @@ public class WriteImpl {
      *                 Data source.
      */
     public static void setNodeValue(ObjectNode schema, XProperty property, boolean removeNullValues) {
+
+        //
+        // Walk into the tree
+        //
+
         final List<Object> propertyPath = property.getPropertyPath();
         final Object propertyKey = propertyPath.get(propertyPath.size() - 1);
         final Object propertyValue = property.getPropertyValue();
@@ -57,7 +67,7 @@ public class WriteImpl {
             final Object innerKey = propertyPath.get(i + 1);
 
             //
-            // Get inner pointer...
+            // Get inner pointer
             //
 
             JsonNode innerPtr;
@@ -83,7 +93,7 @@ public class WriteImpl {
         }
 
         //
-        // Apply value to last outer pointer...
+        // Apply value to last outer pointer
         //
 
         setNodeValue(outerPtr, propertyKey, propertyValue, removeNullValues);
@@ -110,12 +120,35 @@ public class WriteImpl {
             //
 
             if (((Integer) key) < 0) {
-                key = ((ArrayNode) ptr).size() - ((Integer) key) - 1;
+
+                //
+                // Normalize negative indices
+                //
+
+                key = ((((ArrayNode) ptr).size()) - ((Integer) key) - 1);
+            }
+
+            //
+            // Validate the key (index)
+            //
+
+            if (((Integer) key) < 0) {
+                throw new IllegalArgumentException(ERROR_INDEX_OUT_OF_BOUNDS);
             }
 
             if (removeNullValues && (value == null || value instanceof NullNode)) {
+
+                //
+                // Remove
+                //
+
                 ((ArrayNode) ptr).remove((Integer) key);
             } else {
+
+                //
+                // Insert
+                //
+
                 final List<Object> array = new ArrayList<>();
 
                 //
@@ -131,6 +164,7 @@ public class WriteImpl {
                 }
 
                 if ((Integer) key >= ((ArrayNode) ptr).size()) {
+
                     //
                     // length(ptr) ... key
                     //
@@ -173,7 +207,7 @@ public class WriteImpl {
                             final Method add = ArrayNode.class.getMethod(ARRAY_ADD, type);
                             add.invoke(ptr, v);
                         } catch (ReflectiveOperationException e) {
-                            throw new RuntimeException(e);
+                            throw new IllegalArgumentException(e);
                         }
                     }
                 }
@@ -185,8 +219,18 @@ public class WriteImpl {
             //
 
             if (removeNullValues && (value == null || value instanceof NullNode)) {
+
+                //
+                // Remove
+                //
+
                 ((ObjectNode) ptr).remove((String) key);
             } else {
+
+                //
+                // Insert
+                //
+
                 if (value == null) {
                     ((ObjectNode) ptr).set((String) key, NullNode.instance);
                 } else if (value instanceof JsonNode) {
@@ -202,7 +246,7 @@ public class WriteImpl {
                         final Method put = ObjectNode.class.getMethod(OBJECT_PUT, String.class, type);
                         put.invoke(ptr, (String) key, value);
                     } catch (ReflectiveOperationException e) {
-                        throw new RuntimeException(e);
+                        throw new IllegalArgumentException(e);
                     }
                 }
             }
@@ -228,28 +272,48 @@ public class WriteImpl {
         if (innerKey instanceof Integer) {
 
             //
-            // Array
+            // Insert array...
             //
 
             if (!(innerPtr instanceof ArrayNode)) {
                 final ArrayNode arrayNode = MAPPER.createArrayNode();
                 if (outerKey instanceof Integer) {
+
+                    //
+                    // ... into array
+                    //
+
                     ((ArrayNode) outerPtr).insert((Integer) outerKey, arrayNode);
                 } else {
+
+                    //
+                    // ... into object
+                    //
+
                     ((ObjectNode) outerPtr).set((String) outerKey, arrayNode);
                 }
             }
         } else {
 
             //
-            // Object
+            // Insert object...
             //
 
             if (!(innerPtr instanceof ObjectNode)) {
                 final ObjectNode objectNode = MAPPER.createObjectNode();
                 if (outerKey instanceof Integer) {
+
+                    //
+                    // ... into array
+                    //
+
                     ((ArrayNode) outerPtr).insert((Integer) outerKey, objectNode);
                 } else {
+
+                    //
+                    // ... into object
+                    //
+
                     ((ObjectNode) outerPtr).set((String) outerKey, objectNode);
                 }
             }
