@@ -3,6 +3,8 @@ package com.github.reinert.jjschema.xproperties;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.junit.Test;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,23 +18,17 @@ import junit.framework.TestCase;
 
 /**
  * X Properties Test
- * 
- * @author reinert
- * @author WhileTrueEndWhile
  */
 public class XPropertiesTest extends TestCase {
 
-    static ObjectMapper MAPPER = new ObjectMapper();
-    JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
+    private static ObjectMapper MAPPER = new ObjectMapper();
+    private JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
     public XPropertiesTest(String testName) {
         super(testName);
     }
 
-    /**
-     * Test the scheme generate following a scheme source, available at
-     * http://json-schema.org/examples.html the output should match the example.
-     */
+    @Test()
     public void testGenerateSchema() throws UnavailableVersion, JsonProcessingException, IOException {
 
         final InputStream in = XPropertiesTest.class.getResourceAsStream("/xproperties_example.json");
@@ -44,6 +40,8 @@ public class XPropertiesTest extends TestCase {
 
         assertEquals(fromResource, fromJavaType);
     }
+
+    // -----------------------------------------------------------------------
 
     @Attributes(title = "X Properties Example Schema")
     @XProperties({
