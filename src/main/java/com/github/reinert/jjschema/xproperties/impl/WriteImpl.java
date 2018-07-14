@@ -56,10 +56,10 @@ public class WriteImpl {
      * Sets one node value.
      * 
      * @param schema
-     *            Node to apply value.
+     *                 Node to apply value.
      * 
      * @param property
-     *            Data source.
+     *                 Data source.
      */
     public static void setNodeValue(ObjectNode schema, XProperty property, boolean removeNullValues) {
         final List<Object> propertyPath = property.getPropertyPath();
@@ -104,13 +104,13 @@ public class WriteImpl {
      * Sets one node value.
      * 
      * @param ptr
-     *            Node to apply value.
+     *              Node to apply value.
      * 
      * @param key
-     *            Property name to apply value.
+     *              Property name to apply value.
      * 
      * @param value
-     *            Data source.
+     *              Data source.
      */
     private static void setNodeValue(JsonNode ptr, Object key, Object value, boolean removeNullValues) {
         if (value instanceof Runnable) {
@@ -196,16 +196,16 @@ public class WriteImpl {
      * Creates arrays and objects.
      * 
      * @param outerPtr
-     *            Outer pointer (immutable).
+     *                 Outer pointer (immutable).
      * 
      * @param outerKey
-     *            Outer key (integer or string).
+     *                 Outer key (integer or string).
      * 
      * @param innerPtr
-     *            Inner pointer (mutable).
+     *                 Inner pointer (mutable).
      * 
      * @param innerKey
-     *            Inner key (integer or string).
+     *                 Inner key (integer or string).
      */
     private static void prepareNodeStructure(JsonNode outerPtr, Object outerKey, JsonNode innerPtr, Object innerKey) {
         if (innerKey instanceof Integer) {
