@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -62,7 +63,8 @@ public enum SimpleTypeMappings {
     ZONEDDATETIME(ZonedDateTime.class, "string"),
     LOCALDATE(LocalDate.class, "string"),
     LOCALTIME(LocalTime.class, "string"),
-    INSTANT(Instant.class, "string");
+    INSTANT(Instant.class, "string"),
+    ZONE_ID(ZoneId.class, "string");
 
     private static final Map<Class<?>, String> MAPPINGS;
 
