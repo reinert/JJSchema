@@ -1,0 +1,32 @@
+{
+  "type" : "object",
+  "properties" : {
+    "OneOfExample" : {
+      "type" : "object",
+      "properties" : { },
+      "oneOf" : [ {
+        "IBar" : {
+          "type" : "object",
+          "properties" : {
+            "BarProperty" : {
+              "type" : "integer",
+              "description" : "Bar Propertry"
+            }
+          },
+          "title" : "Bar"
+        }
+      }, {
+        "IFoo" : {
+          "type" : "object",
+          "properties" : {
+            "FooProperty" : {
+              "type" : "string",
+              "description" : "Foo Property"
+            }
+          },
+          "title" : "Foo"
+        }
+      } ]
+    }
+  }
+}
