@@ -29,6 +29,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -42,6 +43,9 @@ import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaIgnore;
 import com.github.reinert.jjschema.SchemaIgnoreProperties;
 import com.google.common.base.Objects;
+import com.github.reinert.jjschema.xproperties.api.XPropertiesReader;
+import com.github.reinert.jjschema.xproperties.api.XPropertiesWriter;
+import com.github.reinert.jjschema.xproperties.api.XProperty;
 
 /**
  * @author Danilo Reinert
@@ -150,6 +154,7 @@ public class PropertyWrapper extends SchemaWrapper {
             }
             processAttributes(getNode(), getAccessibleObject());
             processNullable();
+            processXProperties(getNode(), getAccessibleObject());
         }
     }
 
@@ -362,5 +367,16 @@ public class PropertyWrapper extends SchemaWrapper {
 
     protected boolean shouldIgnoreProperties() {
         return getAccessibleObject().getAnnotation(SchemaIgnoreProperties.class) != null;
+    }
+
+    protected void processXProperties(ObjectNode node, AccessibleObject accessibleObj) {
+        final XPropertiesReader reader = XPropertiesReader.instance;
+        final XPropertiesWriter writer = XPropertiesWriter.instance;
+        try {
+            final List<XProperty> xProperties = reader.readFromField(accessibleObj);
+            writer.writeXProperties(node, xProperties);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(getOwnerSchema().getJavaType().getName() + "." + getName(), e);
+        }
     }
 }

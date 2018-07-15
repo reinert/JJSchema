@@ -1,0 +1,55 @@
+{
+  "type" : "object",
+  "title" : "X Properties Example Schema",
+  "properties" : {
+    "enumString" : {
+      "type" : "string",
+      "title" : "Enum String",
+      "widget" : {
+        "id" : "select"
+      },
+      "oneOf" : [ {
+        "description" : "Foo",
+        "enum" : [ "foo" ]
+      }, {
+        "enum" : [ "bar" ],
+        "description" : "Bar"
+      } ],
+      "default" : "foo"
+    },
+    "Age" : {
+      "type" : "integer",
+      "title" : "Age in years",
+      "minimum" : 0,
+      "widget" : {
+        "id" : "number"
+      },
+      "maximum" : 100,
+      "default" : "1"
+    },
+    "firstName" : {
+      "type" : "string",
+      "title" : "First Name",
+      "widget" : {
+        "id" : "string"
+      },
+      "default" : "John"
+    },
+    "LastName" : {
+      "type" : "string",
+      "title" : "Last Name",
+      "widget" : {
+        "id" : "string"
+      },
+      "default" : "Doe"
+    }
+  },
+  "required" : [ "Age", "enumString", "firstName", "LastName" ],
+  "fieldsets" : [ {
+    "title" : "One",
+    "fields" : [ "firstName", "LastName" ]
+  }, {
+    "title" : "Two",
+    "fields" : [ "Age", "enumString" ]
+  } ]
+}

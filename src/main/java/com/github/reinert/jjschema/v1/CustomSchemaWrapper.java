@@ -23,6 +23,7 @@ import static com.github.reinert.jjschema.JJSchemaUtil.processCommonAttributes;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +42,9 @@ import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.ManagedReference;
 import com.google.common.collect.Lists;
 import com.google.common.collect.ObjectArrays;
+import com.github.reinert.jjschema.xproperties.api.XPropertiesReader;
+import com.github.reinert.jjschema.xproperties.api.XPropertiesWriter;
+import com.github.reinert.jjschema.xproperties.api.XProperty;
 
 /**
  * @author Danilo Reinert
@@ -86,6 +90,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 
         this.propertyWrappers = Lists.newArrayListWithExpectedSize(getJavaType().getDeclaredFields().length);
         processProperties();
+        processXProperties(getNode(), getJavaType());
     }
 
     public String getRelativeId() {
@@ -238,6 +243,20 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             if (!attributes.additionalProperties()) {
                 node.put("additionalProperties", false);
             }
+        }
+    }
+
+    protected void processXProperties(ObjectNode node, Class<?> type) {
+        final XPropertiesReader reader = XPropertiesReader.instance;
+        final XPropertiesWriter writer = XPropertiesWriter.withRemoveNullValues;
+        try {
+            final List<XProperty> xProperties = new ArrayList<>();
+            xProperties.addAll(reader.readFromClass(type));
+            xProperties.addAll(reader.readFromJsonProperty(type, node));
+            xProperties.addAll(reader.readOneOf(type, node));
+            writer.writeXProperties(node, xProperties);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(type.getTypeName(), e);
         }
     }
 }
