@@ -2,6 +2,7 @@ package com.github.reinert.jjschema.xproperties;
 
 import com.github.reinert.jjschema.v1.JsonSchemaFactory;
 import com.github.reinert.jjschema.v1.JsonSchemaV4Factory;
+import com.github.reinert.jjschema.xproperties.annotations.XProperties;
 
 import junit.framework.TestCase;
 
