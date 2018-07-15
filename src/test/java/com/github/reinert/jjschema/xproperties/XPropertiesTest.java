@@ -13,6 +13,7 @@ import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
 import com.github.reinert.jjschema.v1.JsonSchemaFactory;
 import com.github.reinert.jjschema.v1.JsonSchemaV4Factory;
+import com.github.reinert.jjschema.xproperties.annotations.XProperties;
 
 import junit.framework.TestCase;
 
@@ -34,10 +35,9 @@ public class XPropertiesTest extends TestCase {
         final InputStream in = XPropertiesTest.class.getResourceAsStream("/xproperties_example.json");
         if (in == null)
             throw new IOException("resource not found");
-        JsonNode fromResource = MAPPER.readTree(in);
-        JsonNode fromJavaType = schemaFactory.createSchema(XPropertiesExample.class);
+        final JsonNode fromResource = MAPPER.readTree(in);
+        final JsonNode fromJavaType = schemaFactory.createSchema(XPropertiesExample.class);
         System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(fromJavaType));
-
         assertEquals(fromResource, fromJavaType);
     }
 
