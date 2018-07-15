@@ -9,19 +9,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.reinert.jjschema.xproperties.XProperty;
+import com.github.reinert.jjschema.xproperties.api.XProperty;
 
 /**
  * Write Implementation
  * 
  * @author WhileTrueEndWhile
  */
-public class WriteImpl {
-
-    //
-    // Errors
-    //
-    public static final String ERROR_INDEX_OUT_OF_BOUNDS = "At least one array index is negative (after normalization)";
+final class WriteImpl {
 
     /**
      * Factory for arrays and objects.
@@ -133,7 +128,7 @@ public class WriteImpl {
             //
 
             if (((Integer) key) < 0) {
-                throw new IllegalArgumentException(ERROR_INDEX_OUT_OF_BOUNDS);
+                throw new IllegalArgumentException(Errors.ERROR_INDEX_OUT_OF_BOUNDS);
             }
 
             if (removeNullValues && (value == null || value instanceof NullNode)) {
@@ -280,14 +275,14 @@ public class WriteImpl {
                 if (outerKey instanceof Integer) {
 
                     //
-                    // ... into array
+                    // ... into an array
                     //
 
                     ((ArrayNode) outerPtr).insert((Integer) outerKey, arrayNode);
                 } else {
 
                     //
-                    // ... into object
+                    // ... into an object
                     //
 
                     ((ObjectNode) outerPtr).set((String) outerKey, arrayNode);
@@ -304,19 +299,22 @@ public class WriteImpl {
                 if (outerKey instanceof Integer) {
 
                     //
-                    // ... into array
+                    // ... into an array
                     //
 
                     ((ArrayNode) outerPtr).insert((Integer) outerKey, objectNode);
                 } else {
 
                     //
-                    // ... into object
+                    // ... into an object
                     //
 
                     ((ObjectNode) outerPtr).set((String) outerKey, objectNode);
                 }
             }
         }
+    }
+
+    private WriteImpl() {
     }
 }
