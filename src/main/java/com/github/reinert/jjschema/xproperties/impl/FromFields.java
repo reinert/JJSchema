@@ -29,11 +29,21 @@ abstract class FromFields {
      * JSON Schema required.
      */
     protected static final String JSON_SCHEMA_DEFAULT = "default";
+    
+    /**
+     * JSON Schema oneOf.
+     */
+    protected static final String JSON_SCHEMA_TYPE = "type";
 
     /**
      * JSON Schema oneOf.
      */
     protected static final String JSON_SCHEMA_ONE_OF = "oneOf";
+    
+    /**
+     * JSON Schema additionalProperties
+     */
+    protected static final String JSON_SCHEMA_ADDITIONAL_PROPERTIES = "additionalProperties";
 
     /**
      * Reads X Properties from fields.
