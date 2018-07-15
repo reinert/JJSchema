@@ -43,12 +43,9 @@ import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaIgnore;
 import com.github.reinert.jjschema.SchemaIgnoreProperties;
 import com.google.common.base.Objects;
-
-import com.github.reinert.jjschema.xproperties.XProperty;
-import com.github.reinert.jjschema.xproperties.XPropertiesReader;
-import com.github.reinert.jjschema.xproperties.XPropertiesWriter;
-import com.github.reinert.jjschema.xproperties.impl.DefaultXPropertiesReader;
-import com.github.reinert.jjschema.xproperties.impl.DefaultXPropertiesWriter;
+import com.github.reinert.jjschema.xproperties.api.XPropertiesReader;
+import com.github.reinert.jjschema.xproperties.api.XPropertiesWriter;
+import com.github.reinert.jjschema.xproperties.api.XProperty;
 
 /**
  * @author Danilo Reinert
@@ -373,10 +370,10 @@ public class PropertyWrapper extends SchemaWrapper {
     }
 
     protected void processXProperties(ObjectNode node, AccessibleObject accessibleObj) {
-        final XPropertiesReader reader = new DefaultXPropertiesReader();
-        final XPropertiesWriter writer = new DefaultXPropertiesWriter();
+        final XPropertiesReader reader = XPropertiesReader.instance;
+        final XPropertiesWriter writer = XPropertiesWriter.instance;
         try {
-            final List<XProperty> xProperties = reader.readXProperties(accessibleObj);
+            final List<XProperty> xProperties = reader.readFromField(accessibleObj);
             writer.writeXProperties(node, xProperties);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(getOwnerSchema().getJavaType().getName() + "." + getName(), e);
