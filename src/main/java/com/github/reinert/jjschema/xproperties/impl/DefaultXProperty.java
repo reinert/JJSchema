@@ -3,23 +3,16 @@ package com.github.reinert.jjschema.xproperties.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-import com.github.reinert.jjschema.xproperties.XProperty;
+import com.github.reinert.jjschema.xproperties.api.XProperty;
 
 /**
  * X Property Implementation
  * 
  * @author WhileTrueEndWhile
  */
-public class DefaultXProperty implements XProperty {
-
-    //
-    // Errors
-    //
-    private static final String ERROR_PROPERTY_PATH_EMPTY = "Property path is empty";
-    private static final String ERROR_PROPERTY_PATH_FIRST_KEY_NOT_STRING = "First key of the property path is not a string";
-    private static final String ERROR_PROPERTY_PATH_FIRST_KEY_EMPTY = "First key of property path is empty";
-    private static final String ERROR_PROPERTY_PATH_KEY_TYPE = "At least one key of the property path is not an integer or a string";
+class DefaultXProperty implements XProperty {
 
     /**
      * Property Path
@@ -42,14 +35,16 @@ public class DefaultXProperty implements XProperty {
      *                      Property value as object (integer or string).
      */
     public DefaultXProperty(List<Object> propertyPath, Object propertyValue) {
+
+        propertyPath = Objects.requireNonNull(propertyPath);
         if (propertyPath.size() < 1) {
-            throw new IllegalArgumentException(ERROR_PROPERTY_PATH_EMPTY);
+            throw new IllegalArgumentException(Errors.ERROR_PROPERTY_PATH_EMPTY);
         }
         if (!(propertyPath.get(0) instanceof String)) {
-            throw new IllegalArgumentException(ERROR_PROPERTY_PATH_FIRST_KEY_NOT_STRING);
+            throw new IllegalArgumentException(Errors.ERROR_PROPERTY_PATH_FIRST_KEY_NOT_STRING);
         }
         if (((String) propertyPath.get(0)).isEmpty()) {
-            throw new IllegalArgumentException(ERROR_PROPERTY_PATH_FIRST_KEY_EMPTY);
+            throw new IllegalArgumentException(Errors.ERROR_PROPERTY_PATH_FIRST_KEY_EMPTY);
         }
         propertyPath.forEach(propertyPathKey -> validatePropertyPathKey(propertyPathKey));
         propertyPath = new ArrayList<>(propertyPath);
@@ -65,6 +60,7 @@ public class DefaultXProperty implements XProperty {
      */
     @Override
     public List<Object> getPropertyPath() {
+
         return Arrays.asList(this.propertyPath);
     }
 
@@ -76,8 +72,11 @@ public class DefaultXProperty implements XProperty {
      */
     @Override
     public Object getPropertyValue() {
+
         return this.propertyValue;
     }
+
+    // -----------------------------------------------------------------------
 
     /**
      * Validates one key of the property path.
@@ -87,10 +86,11 @@ public class DefaultXProperty implements XProperty {
      *                        Property path key to validate.
      */
     private static void validatePropertyPathKey(Object propertyPathKey) {
+
         final boolean isInteger = propertyPathKey instanceof Integer;
         final boolean isString = propertyPathKey instanceof String;
         if ((!isInteger) && (!isString)) {
-            throw new IllegalArgumentException(ERROR_PROPERTY_PATH_KEY_TYPE);
+            throw new IllegalArgumentException(Errors.ERROR_PROPERTY_PATH_KEY_TYPE);
         }
     }
 }
