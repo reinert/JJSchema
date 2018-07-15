@@ -5,27 +5,37 @@
       "type" : "object",
       "properties" : { },
       "oneOf" : [ {
-        "IBar" : {
-          "type" : "object",
-          "properties" : {
-            "BarProperty" : {
-              "type" : "integer",
-              "description" : "Bar Propertry"
-            }
-          },
-          "title" : "Bar"
-        }
+        "type" : "object",
+        "required" : [ "IBar" ],
+        "properties" : {
+          "IBar" : {
+            "type" : "object",
+            "properties" : {
+              "BarProperty" : {
+                "type" : "integer",
+                "description" : "Bar Propertry"
+              }
+            },
+            "title" : "Bar"
+          }
+        },
+        "additionalProperties" : false
       }, {
-        "IFoo" : {
-          "type" : "object",
-          "properties" : {
-            "FooProperty" : {
-              "type" : "string",
-              "description" : "Foo Property"
-            }
-          },
-          "title" : "Foo"
-        }
+        "type" : "object",
+        "required" : [ "IFoo" ],
+        "properties" : {
+          "IFoo" : {
+            "type" : "object",
+            "properties" : {
+              "FooProperty" : {
+                "type" : "string",
+                "description" : "Foo Property"
+              }
+            },
+            "title" : "Foo"
+          }
+        },
+        "additionalProperties" : false
       } ]
     }
   }
