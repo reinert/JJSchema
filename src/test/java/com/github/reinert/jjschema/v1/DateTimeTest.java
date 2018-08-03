@@ -27,6 +27,8 @@ import junit.framework.TestCase;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
@@ -56,14 +58,18 @@ public class DateTimeTest extends TestCase {
         assertEquals("string", ((Map) properties.get("date")).get("type"));
         assertEquals("string", ((Map) properties.get("instant")).get("type"));
         assertEquals("string", ((Map) properties.get("localDate")).get("type"));
+        assertEquals("string", ((Map) properties.get("localTime")).get("type"));
         assertEquals("string", ((Map) properties.get("zonedDateTime")).get("type"));
+        assertEquals("string", ((Map) properties.get("zoneId")).get("type"));
     }
 
     static class DateTime {
         private Date date;
         private Instant instant;
         private LocalDate localDate;
+        private LocalTime localTime;
         private ZonedDateTime zonedDateTime;
+        private ZoneId zoneId;
 
         public Date getDate() {
             return date;
@@ -77,8 +83,16 @@ public class DateTimeTest extends TestCase {
             return localDate;
         }
 
+        public LocalTime getLocalTime() {
+            return localTime;
+        }
+
         public ZonedDateTime getZonedDateTime() {
             return zonedDateTime;
+        }
+
+        public ZoneId getZoneId() {
+            return zoneId;
         }
     }
 }
