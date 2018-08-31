@@ -33,6 +33,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -344,7 +345,14 @@ public class PropertyWrapper extends SchemaWrapper {
     }
 
     private String processPropertyName() {
-        if (field != null) return field.getName();
+        if (field != null) {
+
+            if (field.isAnnotationPresent(JsonProperty.class)) {
+                return field.getAnnotation(JsonProperty.class).value();
+            }
+
+            return field.getName();
+        }
 
         if ("get".equals(method.getName())) return "get";
 
