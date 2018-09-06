@@ -25,11 +25,7 @@ import com.github.reinert.jjschema.exception.UnavailableVersion;
 import junit.framework.TestCase;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.Date;
 import java.util.Map;
 
@@ -61,6 +57,7 @@ public class DateTimeTest extends TestCase {
         assertEquals("string", ((Map) properties.get("localTime")).get("type"));
         assertEquals("string", ((Map) properties.get("zonedDateTime")).get("type"));
         assertEquals("string", ((Map) properties.get("zoneId")).get("type"));
+        assertEquals("string", ((Map) properties.get("offsetDateTime")).get("type"));
     }
 
     static class DateTime {
@@ -70,6 +67,7 @@ public class DateTimeTest extends TestCase {
         private LocalTime localTime;
         private ZonedDateTime zonedDateTime;
         private ZoneId zoneId;
+        private OffsetDateTime offsetDateTime;
 
         public Date getDate() {
             return date;
@@ -93,6 +91,10 @@ public class DateTimeTest extends TestCase {
 
         public ZoneId getZoneId() {
             return zoneId;
+        }
+
+        public OffsetDateTime getOffsetDateTime() {
+            return offsetDateTime;
         }
     }
 }
