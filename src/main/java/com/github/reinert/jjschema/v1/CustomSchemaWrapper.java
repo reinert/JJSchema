@@ -23,24 +23,13 @@ import static com.github.reinert.jjschema.JJSchemaUtil.processCommonAttributes;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.ManagedReference;
-import com.google.common.collect.Lists;
-import com.google.common.collect.ObjectArrays;
 
 /**
  * @author Danilo Reinert
@@ -84,7 +73,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
             return;
         }
 
-        this.propertyWrappers = Lists.newArrayListWithExpectedSize(getJavaType().getDeclaredFields().length);
+        this.propertyWrappers = newArrayListWithExpectedSize(getJavaType().getDeclaredFields().length);
         processProperties();
     }
 
@@ -162,7 +151,7 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
         Field[] fields = new Field[0];
         Class<?> javaType = getJavaType();
         while(javaType.getSuperclass() != null) {
-            fields = ObjectArrays.concat(fields, javaType.getDeclaredFields(), Field.class);
+            fields = concatFieldArrays(fields, javaType.getDeclaredFields());
             javaType = javaType.getSuperclass();
         }
 
@@ -222,6 +211,17 @@ public class CustomSchemaWrapper extends SchemaWrapper implements Iterable<Prope
 
         fieldName = fieldName.substring(0, 1).toLowerCase() + fieldName.substring(1);
         return fieldName;
+    }
+
+    private Field[] concatFieldArrays(Field[] first, Field[] second) {
+        Field[] result = new Field[first.length + second.length];
+        System.arraycopy(first, 0, result, 0, first.length);
+        System.arraycopy(second, 0, result, first.length, second.length);
+        return result;
+    }
+
+    private <E> ArrayList<E> newArrayListWithExpectedSize(int estimatedSize) {
+        return new ArrayList<>(5 + estimatedSize + (estimatedSize / 10));
     }
 
     protected void setRequired(boolean required) {

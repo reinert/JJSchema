@@ -20,24 +20,22 @@ package com.github.reinert.jjschema.v1;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.reinert.jjschema.Attributes;
 import com.github.reinert.jjschema.exception.UnavailableVersion;
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
 
 import junit.framework.TestCase;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 public class ProductTest extends TestCase {
 
-    ObjectWriter om = new ObjectMapper().writerWithDefaultPrettyPrinter();
     JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
 
     {
@@ -53,8 +51,7 @@ public class ProductTest extends TestCase {
     public void testProductSchema() throws UnavailableVersion, IOException {
         JsonNode productSchema = schemaFactory.createSchema(Product.class);
         
-        String expectedResult = CharStreams.toString(new InputStreamReader(
-       		 Thread.currentThread().getContextClassLoader().getResourceAsStream("product_schema.json"), Charsets.UTF_8));
+        String expectedResult = readFile("src/test/resources/product_schema.json", Charset.defaultCharset());
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode actualObj = mapper.readTree(expectedResult);
@@ -217,7 +214,10 @@ public class ProductTest extends TestCase {
         public Iterator<ComplexProduct> iterator() {
             return products.iterator();
         }
-
     }
 
+    private static String readFile(String path, Charset encoding) throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, encoding);
+    }
 }

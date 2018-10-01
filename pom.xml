@@ -113,11 +113,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>${dep.jackson.version}</version>
         </dependency>
-         <dependency>
-             <groupId>com.google.guava</groupId>
-             <artifactId>guava</artifactId>
-            <version>16.0.1</version>
-        </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>

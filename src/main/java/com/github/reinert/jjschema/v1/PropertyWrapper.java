@@ -42,7 +42,6 @@ import com.github.reinert.jjschema.ManagedReference;
 import com.github.reinert.jjschema.Nullable;
 import com.github.reinert.jjschema.SchemaIgnore;
 import com.github.reinert.jjschema.SchemaIgnoreProperties;
-import com.google.common.base.Objects;
 
 /**
  * @author Danilo Reinert
