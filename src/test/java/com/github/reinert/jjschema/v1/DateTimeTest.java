@@ -56,6 +56,7 @@ public class DateTimeTest extends TestCase {
         assertEquals("string", ((Map) properties.get("localDate")).get("type"));
         assertEquals("string", ((Map) properties.get("localTime")).get("type"));
         assertEquals("string", ((Map) properties.get("zonedDateTime")).get("type"));
+        assertEquals("string", ((Map) properties.get("localDateTime")).get("type"));
         assertEquals("string", ((Map) properties.get("zoneId")).get("type"));
         assertEquals("string", ((Map) properties.get("offsetDateTime")).get("type"));
     }
@@ -68,6 +69,7 @@ public class DateTimeTest extends TestCase {
         private ZonedDateTime zonedDateTime;
         private ZoneId zoneId;
         private OffsetDateTime offsetDateTime;
+        private LocalDateTime localDateTime;
 
         public Date getDate() {
             return date;
@@ -95,6 +97,10 @@ public class DateTimeTest extends TestCase {
 
         public OffsetDateTime getOffsetDateTime() {
             return offsetDateTime;
+        }
+
+        public LocalDateTime getLocalDateTime() {
+            return localDateTime;
         }
     }
 }
