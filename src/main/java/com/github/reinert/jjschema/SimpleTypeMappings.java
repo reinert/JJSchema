@@ -59,6 +59,7 @@ public enum SimpleTypeMappings {
     ZONEDDATETIME(ZonedDateTime.class, "string"),
     LOCALDATE(LocalDate.class, "string"),
     LOCALTIME(LocalTime.class, "string"),
+    LOCALDATETIME(LocalDateTime.class, "string"),
     INSTANT(Instant.class, "string"),
     ZONE_ID(ZoneId.class, "string"),
     OFFSETDATETIME(OffsetDateTime.class, "string");
