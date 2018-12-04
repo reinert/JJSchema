@@ -32,7 +32,7 @@ import junit.framework.TestCase;
 
 public class EmployeeTest extends TestCase {
     private final ObjectMapper MAPPER = new ObjectMapper();
-    ObjectWriter ow = MAPPER.writerWithDefaultPrettyPrinter();
+//    ObjectWriter ow = MAPPER.writerWithDefaultPrettyPrinter();
 
     static class Employee {
         @Attributes(required = true, minLength = 5, maxLength = 50, description = "Name")

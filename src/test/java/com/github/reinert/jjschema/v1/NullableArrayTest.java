@@ -46,7 +46,7 @@ public class NullableArrayTest extends TestCase {
     public void testGenerateSchema() {
 
         JsonNode schema = schemaFactory.createSchema(Something.class);
-        System.out.println(schema);
+//        System.out.println(schema);
 
         JsonNode expected = MAPPER.createArrayNode().add("array").add("null");
 

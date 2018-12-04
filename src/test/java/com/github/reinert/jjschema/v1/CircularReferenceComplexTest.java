@@ -49,13 +49,13 @@ public class CircularReferenceComplexTest extends TestCase {
     public void testGenerateSchema() throws IOException {
 
         JsonNode taskSchema = schemaFactory.createSchema(Task.class);
-        System.out.println(WRITER.writeValueAsString(taskSchema));
+//        System.out.println(WRITER.writeValueAsString(taskSchema));
 
         JsonNode personSchema = schemaFactory.createSchema(Person.class);
-        System.out.println(WRITER.writeValueAsString(personSchema));
+//        System.out.println(WRITER.writeValueAsString(personSchema));
 
         JsonNode taskListSchema = schemaFactory.createSchema(TaskList.class);
-        System.out.println(WRITER.writeValueAsString(taskListSchema));
+//        System.out.println(WRITER.writeValueAsString(taskListSchema));
     }
 
 }

@@ -46,10 +46,10 @@ public class CircularReferenceSimpleTest extends TestCase {
     public void testGenerateSchema() throws JsonProcessingException {
 
         JsonNode schema = schemaFactory.createSchema(Sale.class);
-        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+//        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
 
         schema = schemaFactory.createSchema(SaleItem.class);
-        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
+//        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(schema));
     }
 
     @Attributes(id = "#sale")

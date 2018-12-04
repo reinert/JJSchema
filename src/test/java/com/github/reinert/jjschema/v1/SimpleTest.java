@@ -55,7 +55,7 @@ public class SimpleTest extends TestCase {
             throw new IOException("resource not found");
         JsonNode fromResource = MAPPER.readTree(in);
         JsonNode fromJavaType = schemaFactory.createSchema(SimpleExample.class);
-        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(fromJavaType));
+//        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(fromJavaType));
 
         assertEquals(fromResource, fromJavaType);
     }

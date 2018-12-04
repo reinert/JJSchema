@@ -52,7 +52,7 @@ public class InterfaceTest extends TestCase {
     public void testGenerateSchema() throws UnavailableVersion, JsonProcessingException, IOException {
 
         JsonNode fromJavaType = schemaFactory.createSchema(UserInterface.class);
-        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(fromJavaType));
+//        System.out.println(MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(fromJavaType));
     }
 
     interface UserInterface {

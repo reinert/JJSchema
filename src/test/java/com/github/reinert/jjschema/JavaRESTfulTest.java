@@ -40,7 +40,7 @@ public class JavaRESTfulTest extends TestCase {
         assertEquals("base64", userHyperSchema.get("properties").get("photo").get("binaryEncoding").asText());
 
         JsonNode userResourceHyperSchema = v4hyperGenerator.generateSchema(UserResource.class);
-        System.out.println(om.writeValueAsString(userResourceHyperSchema));
+//        System.out.println(om.writeValueAsString(userResourceHyperSchema));
     }
 
 }
