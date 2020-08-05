@@ -20,8 +20,9 @@ package com.github.reinert.jjschema.v1;
 
 import static com.github.reinert.jjschema.JJSchemaUtil.processCommonAttributes;
 
+
+import com.github.reinert.jjschema.SchemaIgnoredFields;
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -86,17 +87,17 @@ public class PropertyWrapper extends SchemaWrapper {
         		propertyType = (Class<?>) p.getActualTypeArguments()[i];
         	}
         }
-        
+
         if (Collection.class.isAssignableFrom((Class<?>) propertyType)) {
             collectionType = method.getReturnType();
             if (!(genericType instanceof ParameterizedType)) {
             	genericType = collectionType.getGenericSuperclass();
-                while (!(genericType instanceof ParameterizedType) ) {                    
+                while (!(genericType instanceof ParameterizedType) ) {
                 	genericType = ((Class<?>) genericType).getGenericSuperclass();
                 }
             }
         	propertyType =  ((ParameterizedType) genericType).getActualTypeArguments()[0];
-            
+
 
             relativeId = propertiesStr + getName() + itemsStr;
         } else {
@@ -364,7 +365,19 @@ public class PropertyWrapper extends SchemaWrapper {
     }
 
     protected boolean shouldIgnoreField() {
-        return getAccessibleObject().getAnnotation(SchemaIgnore.class) != null;
+        return getAccessibleObject().getAnnotation(SchemaIgnore.class) != null || isIgnoredField();
+    }
+
+    private boolean isIgnoredField() {
+        SchemaIgnoredFields annotation = getOwnerSchema().getJavaType().getAnnotation(SchemaIgnoredFields.class);
+        if(annotation != null){
+            for(String ignoredField : annotation.names()) {
+                if (ignoredField.equals(field.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     protected boolean shouldIgnoreProperties() {
