@@ -372,7 +372,7 @@ public class PropertyWrapper extends SchemaWrapper {
         SchemaIgnoredFields annotation = getOwnerSchema().getJavaType().getAnnotation(SchemaIgnoredFields.class);
         if(annotation != null){
             for(String ignoredField : annotation.names()) {
-                if (ignoredField.equals(field.getName())) {
+                if (ignoredField.equals(name)) {
                     return true;
                 }
             }
