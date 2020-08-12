@@ -12,7 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dep.jackson.version>2.9.5</dep.jackson.version>
+        <dep.jackson.version>2.11.2</dep.jackson.version>
     </properties>
 
     <licenses>
